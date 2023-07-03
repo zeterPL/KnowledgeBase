@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.Web", "KnowledgeBase.Web\KnowledgeBase.Web.csproj", "{FDC143A8-D75D-4C7F-8BD9-295376DCC97A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowledgeBase.Data", "KnowledgeBase.Data\KnowledgeBase.Data.csproj", "{2CBF837C-F088-41E5-B004-16A76698319A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.Data", "KnowledgeBase.Data\KnowledgeBase.Data.csproj", "{2CBF837C-F088-41E5-B004-16A76698319A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowledgeBase.Logic", "KnowledgeBase.Logic\KnowledgeBase.Logic.csproj", "{C6346312-C09A-4A16-9D61-43C6B2B2275D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.Logic", "KnowledgeBase.Logic\KnowledgeBase.Logic.csproj", "{C6346312-C09A-4A16-9D61-43C6B2B2275D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.Web", "KnowledgeBase.Web\KnowledgeBase.Web.csproj", "{C81CB6AC-168E-4162-B2B0-B05A0D840518}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FDC143A8-D75D-4C7F-8BD9-295376DCC97A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDC143A8-D75D-4C7F-8BD9-295376DCC97A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDC143A8-D75D-4C7F-8BD9-295376DCC97A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FDC143A8-D75D-4C7F-8BD9-295376DCC97A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2CBF837C-F088-41E5-B004-16A76698319A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2CBF837C-F088-41E5-B004-16A76698319A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CBF837C-F088-41E5-B004-16A76698319A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +23,10 @@ Global
 		{C6346312-C09A-4A16-9D61-43C6B2B2275D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6346312-C09A-4A16-9D61-43C6B2B2275D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6346312-C09A-4A16-9D61-43C6B2B2275D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C81CB6AC-168E-4162-B2B0-B05A0D840518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C81CB6AC-168E-4162-B2B0-B05A0D840518}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C81CB6AC-168E-4162-B2B0-B05A0D840518}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C81CB6AC-168E-4162-B2B0-B05A0D840518}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

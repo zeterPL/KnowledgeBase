@@ -1,8 +1,10 @@
-﻿namespace KnowledgeBase.Data.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace KnowledgeBase.Data.Models;
+
+public class User : IdentityUser
 {
-    public Guid Id { get; set; }
-    public ICollection<Resource> Resources { get; set; }
-    public ICollection<Project> Projects { get; set; }
+    //public Guid Id { get; set; }
+    public virtual ICollection<Resource> Resources { get; set; }
+    public virtual ICollection<UserProject> Projects { get; set; }
 }

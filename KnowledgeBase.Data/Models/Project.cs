@@ -2,13 +2,11 @@
 
 public class Project
 {
-    private Guid Id { get; set; }
-    private string Name { get; set; }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
 
-    private List<Resource> Resources { get; set; }
-    
+    public List<Resource> Resources { get; set; }
 
-
-
+    public User User { get; set; }
 }
 

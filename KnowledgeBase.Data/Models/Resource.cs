@@ -7,5 +7,6 @@ public class Resource
     public string Description { get; set; }
     public Project Project { get; set; }
     public ResourceCategory Category { get; set; }
+    public User User { get; set; }
 }
 

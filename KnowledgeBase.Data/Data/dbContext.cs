@@ -1,12 +1,12 @@
 ﻿using KnowledgeBase.Data.Models;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace KnowledgeBase.Data.Data
 {
-    public class dbContext : IdentityDbContext<User>
+    public class DbContext : IdentityDbContext<User>
     {
-        public dbContext() : base() 
+        public DbContext(DbContextOptions<DbContext> options) : base(options) 
         {
                 
         }

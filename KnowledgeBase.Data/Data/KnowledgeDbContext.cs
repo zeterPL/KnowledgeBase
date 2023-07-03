@@ -7,6 +7,10 @@ namespace KnowledgeBase.Data.Data;
 
 public class KnowledgeDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
+    public KnowledgeDbContext()
+    {
+    }
+
     public KnowledgeDbContext(DbContextOptions<KnowledgeDbContext> options) : base(options)
     {
     }

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.Data.Repositories
 {
-    public class GenericRepo<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly KnowledgeDbContext _context;
 
-        public GenericRepo(KnowledgeDbContext context)
+        public GenericRepository(KnowledgeDbContext context)
         {
             _context = context;
         }

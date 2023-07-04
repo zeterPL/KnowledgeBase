@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230703114607_init")]
+    [Migration("20230703115255_init")]
     partial class init
     {
         /// <inheritdoc />

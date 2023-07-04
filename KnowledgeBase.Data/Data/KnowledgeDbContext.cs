@@ -5,6 +5,10 @@ namespace KnowledgeBase.Data.Data;
 
 public class KnowledgeDbContext : DbContext
 {
+    public KnowledgeDbContext()
+    {
+    }
+
     public KnowledgeDbContext(DbContextOptions<KnowledgeDbContext> options) : base(options)
     {
     }

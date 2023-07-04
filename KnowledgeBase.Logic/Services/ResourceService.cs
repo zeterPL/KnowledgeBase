@@ -18,7 +18,8 @@ namespace KnowledgeBase.Logic.Services
 
 		public Resource Add(Resource resource)
 		{
-			return _resourceService.Add(resource);
+			 _resourceService.Add(resource);
+			return _resourceService.GeById(resource.Id);
 		}
 
 		public IEnumerable<Resource> GetAllResources()
@@ -33,7 +34,13 @@ namespace KnowledgeBase.Logic.Services
 
 		public Resource Update(Resource resource)
 		{
-			return _resourceService.Update(resource);
+			 _resourceService.Update(resource);
+			return _resourceService.GeById(resource.Id);
+		}
+
+		public Resource GetById(Guid id)
+		{
+			return _resourceService.GeById(id);
 		}
 	}
 }

@@ -14,6 +14,8 @@ namespace KnowledgeBase.Logic.Services
 		public IEnumerable<Resource> GetAllResources();
 		public void Remove(Resource rsource);
 
+		public Resource GeById(Guid id);
+
 
 	}
 }

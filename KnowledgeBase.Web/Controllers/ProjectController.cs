@@ -67,4 +67,12 @@ public class ProjectController : Controller
 		projectService.Update(project);
 		return RedirectToAction("List");
 	}
+
+	[HttpGet]
+	public IActionResult Delete(Guid id)
+	{
+		Project project = projectService.Get(id);
+		projectService.Remove(project);
+		return RedirectToAction("List");
+	}
 }

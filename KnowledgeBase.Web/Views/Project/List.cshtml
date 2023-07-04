@@ -9,7 +9,7 @@
 	<div>
 		@project.Id
 		@project.Name
-		<a href="edit/@project.Id">edit</a>
-		<a href="delete/@project.Id">delete</a>
+		<a asp-action="Edit" asp-route-id="@project.Id">edit</a>
+		<a asp-action="Delete" asp-route-id="@project.Id">delete</a>
 	</div>
 }

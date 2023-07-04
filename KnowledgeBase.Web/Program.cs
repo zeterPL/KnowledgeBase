@@ -1,5 +1,7 @@
 using KnowledgeBase.Data.Data;
 using KnowledgeBase.Data.Models;
+using KnowledgeBase.Data.Repositories;
+using KnowledgeBase.Logic.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +14,14 @@ builder.Services.AddDbContext<KnowledgeDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+builder.Services.AddScoped<IResourceService, ResourceService>();
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+	.AddEntityFrameworkStores<KnowledgeDbContext>();
+
 builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -37,5 +46,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
+app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller}/{action=Index}/{id?}");
 app.Run();

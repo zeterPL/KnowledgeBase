@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.Data.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+	public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly KnowledgeDbContext _context;
 
@@ -28,7 +28,12 @@ namespace KnowledgeBase.Data.Repositories
             return entity;
         }
 
-        public void Remove(T entity)
+		public IEnumerable<T> GetAll()
+		{
+			return _context.Set<T>();
+		}
+
+		public void Remove(T entity)
         {
             _context.Set<T>().Remove(entity);
             _context.SaveChanges();

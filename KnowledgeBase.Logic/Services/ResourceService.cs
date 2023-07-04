@@ -1,46 +1,53 @@
 ﻿using KnowledgeBase.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using KnowledgeBase.Data.Repositories;
 
 namespace KnowledgeBase.Logic.Services
 {
-	internal class ResourceService : IResourceService
+	public class ResourceService : IResourceService
 	{
-		private readonly IResourceService _resourceService;
+		private readonly IResourceRepository _resourceRepository;
 
-		public ResourceService(IResourceService resourceService)
+		public ResourceService(IResourceRepository resourceService)
 		{
-			_resourceService = resourceService;
+			_resourceRepository = resourceService;
 		}
 
-		public Resource Add(Resource resource)
+		public Resource Get(Guid id)
 		{
-			 _resourceService.Add(resource);
-			return _resourceService.GeById(resource.Id);
+			return _resourceRepository.Get(id);
+		}
+
+
+		public void Add(Resource resource)
+		{
+			_resourceRepository.Add(resource);
+			 _resourceRepository.Get(resource.Id);
 		}
 
 		public IEnumerable<Resource> GetAllResources()
 		{
-			return _resourceService.GetAllResources();
+			return _resourceRepository.GetAll();
 		}
 
 		public void Remove(Resource rsource)
 		{
-			_resourceService.Remove(rsource);
+			_resourceRepository.Remove(rsource);
 		}
 
-		public Resource Update(Resource resource)
+		public void Update(Resource resource)
 		{
-			 _resourceService.Update(resource);
-			return _resourceService.GeById(resource.Id);
+			_resourceRepository.Update(resource);
+			_resourceRepository.Get(resource.Id);
 		}
 
-		public Resource GetById(Guid id)
+		public IEnumerable<Resource> GetAll()
 		{
-			return _resourceService.GeById(id);
+			IEnumerable<Resource> resourceList = _resourceRepository.GetAll();
+			return resourceList.ToList();
 		}
+
 	}
 }
+
+
+

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.Logic.Services
 {
-	internal interface IResourceService
+	public interface IResourceService
 	{
-		public Resource Add(Resource resource);
-		public Resource Update(Resource resource);
-		public IEnumerable<Resource> GetAllResources();
-		public void Remove(Resource rsource);
+		public void Add(Resource entity);
+		public Resource Get(Guid id);
+		public void Remove(Resource entity);
+		public void Update(Resource entity);
 
-		public Resource GeById(Guid id);
+		public IEnumerable<Resource> GetAll();
 
 
 	}

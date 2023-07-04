@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.Data.Repositories
 {
-	internal interface IResourceRepository : IGenericRepository<Resource>
+	public interface IResourceRepository : IGenericRepository<Resource>
 	{
 	}
 }

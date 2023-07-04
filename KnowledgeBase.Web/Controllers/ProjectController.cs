@@ -30,9 +30,41 @@ public class ProjectController : Controller
 	}
 
 	[HttpPost]
+	[ValidateAntiForgeryToken]
 	public IActionResult Create(Project project)
 	{
+		if (!ModelState.IsValid)
+		{
+			// return View(project);
+		}
+
 		projectService.Add(project);
-		return View();
+		return RedirectToAction("List");
+	}
+
+	[HttpGet]
+	public IActionResult Edit(Guid id)
+	{
+		Project project = projectService.Get(id);
+
+		if (project == null)
+		{
+			return NotFound();
+		}
+
+		return View(project);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public IActionResult Edit(Project project)
+	{
+		if (!ModelState.IsValid)
+		{
+			return View(project);
+		}
+
+		projectService.Update(project);
+		return RedirectToAction("List");
 	}
 }

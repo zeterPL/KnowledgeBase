@@ -1,6 +1,11 @@
-﻿@model KnowledgeBase.Data.Models.Project;
+﻿@using KnowledgeBase.Data.Models;
+@model KnowledgeBase.Data.Models.Project
 
-@using (Html.BeginForm("Create", "Project", FormMethod.Post))
+@{
+	Project project = Model;
+}
+
+@using (Html.BeginForm("Edit", "Project", FormMethod.Post))
 {
 	@Html.AntiForgeryToken()
 	<div>

@@ -12,6 +12,9 @@ builder.Services.AddDbContext<KnowledgeDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<KnowledgeDbContext>();
+
 builder.Services.AddRazorPages();
 
 var app = builder.Build();

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowledgeBase.Data", "Knowl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowledgeBase.Logic", "KnowledgeBase.Logic\KnowledgeBase.Logic.csproj", "{C6346312-C09A-4A16-9D61-43C6B2B2275D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.Web", "KnowledgeBase.Web\KnowledgeBase.Web.csproj", "{C81CB6AC-168E-4162-B2B0-B05A0D840518}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowledgeBase.Web", "KnowledgeBase.Web\KnowledgeBase.Web.csproj", "{C81CB6AC-168E-4162-B2B0-B05A0D840518}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

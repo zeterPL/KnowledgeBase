@@ -3,9 +3,14 @@ using KnowledgeBase.Data.Repositories;
 
 namespace KnowledgeBase.Logic.Services;
 
-internal class ProjectService : IProjectService
+public class ProjectService : IProjectService
 {
     private readonly IProjectRepository projectRepository;
+    public ProjectService(IProjectRepository projectRepository)
+    {
+        this.projectRepository = projectRepository;
+    }
+
     public Project Add(Project project)
     {
         projectRepository.Add(project);

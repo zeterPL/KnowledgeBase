@@ -2,7 +2,7 @@
 
 namespace KnowledgeBase.Data.Models;
 
-public class User : IdentityUser
+public class User : IdentityUser<Guid>
 {
     //public Guid Id { get; set; }
     public virtual ICollection<Resource> Resources { get; set; }

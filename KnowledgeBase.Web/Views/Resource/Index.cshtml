@@ -1,9 +1,22 @@
-﻿@{
+﻿﻿@using KnowledgeBase.Data.Models;
+@model IEnumerable<Resource>
+@{
 	ViewData["Title"] = "Index";
+
+	IEnumerable<Resource> resources = Model;
 }
 
 <h2>Hello World</h2>
 
 
-<a asp-action="GetAll">Get All Repositories</a>
+@foreach (Resource resource in resources)
+{
+	<div>
+		@resource.Id
+		@resource.Name
+		<a asp-action="Edit" asp-route-id="@resource.Id">edit</a>
+		<a asp-action="Delete" asp-route-id="@resource.Id">delete</a>
+	</div>
+}
+
 

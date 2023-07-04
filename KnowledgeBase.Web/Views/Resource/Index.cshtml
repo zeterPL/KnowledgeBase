@@ -7,8 +7,9 @@
 @foreach (var item in Model)
 {
 	<div>
-		@item.Id
-		@item.Name
+		@Html.DisplayFor(modelItem => item.Name)
+		@Html.DisplayFor(modelItem => item.Description)
+		@Html.DisplayFor(modelItem => item.Category)
 		<a asp-action="Edit" asp-route-id="@item.Id">edit</a>
 		<a asp-action="Delete" asp-route-id="@item.Id">delete</a>
 	</div>

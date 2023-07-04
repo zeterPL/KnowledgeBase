@@ -1,0 +1,35 @@
+﻿@page
+@model KnowledgeBase.Data.Models.Resource
+@{
+	ViewData["Title"] = "Index";
+}
+
+
+<h1>Create New Resource</h1>
+
+
+<form asp-action="Create">
+	<div asp-validation-summary="ModelOnly"></div>
+	<div>
+		<label asp-for="Name"></label>
+		<input asp-for="Name"/>
+		<span asp-validation-for="Name"></span>
+	</div>
+	<div>
+		<label asp-for="Description"></label>
+		<input asp-for="Description" />
+		<span asp-validation-for="Description"></span>
+	</div>
+	<div>
+		<label asp-for="Category"></label>
+		<input asp-for="Category" />
+		<span asp-validation-for="Category"></span>
+	</div>
+	<div>
+		<input type="submit" value="Create"/>
+	</div>
+</form>
+
+
+
+

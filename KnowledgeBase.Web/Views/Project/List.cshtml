@@ -1,0 +1,14 @@
+﻿@using KnowledgeBase.Data.Models;
+@model IEnumerable<Project>
+@{
+	IEnumerable<Project> projects = Model;
+}
+
+@foreach(Project project in projects)
+{
+	<div>
+		@project.Id
+		@project.Name
+		<a href="edit/@project.Id">edit</a>
+	</div>
+}

@@ -20,8 +20,9 @@ namespace KnowledgeBase.Logic.Services
 
 		public void Add(Resource resource)
 		{
+
 			_resourceRepository.Add(resource);
-			 _resourceRepository.Get(resource.Id);
+			_resourceRepository.Get(resource.Id);
 		}
 
 		public IEnumerable<Resource> GetAllResources()

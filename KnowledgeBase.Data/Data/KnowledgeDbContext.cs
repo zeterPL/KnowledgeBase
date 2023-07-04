@@ -20,9 +20,39 @@ public class KnowledgeDbContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
     DbSet<User> Users { get; set; }
     DbSet<UserProject> UserProjects { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(
+            "");
+        }
+
+    }
+
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<IdentityRole<Guid>>().HasData(new IdentityRole<Guid>()
+        {
+            Id = Guid.NewGuid(),
+            Name = KnowledgeBase.Data.Models.UserRoles.SuperAdmin.ToString()
+        },
+        new IdentityRole<Guid>()
+        {
+            Id = Guid.NewGuid(),
+            Name = KnowledgeBase.Data.Models.UserRoles.Admin.ToString()
+        },
+        new IdentityRole<Guid>()
+        {
+            Id = Guid.NewGuid(),
+            Name = KnowledgeBase.Data.Models.UserRoles.Basic.ToString()
+        });
+
+
+
         builder.Entity<UserProject>().HasKey(up => new { up.ProjectId, up.UserId});
 
         builder.Entity<User>().HasMany(e => e.Resources)

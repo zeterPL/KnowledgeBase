@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230704091744_init2")]
-    partial class init2
+    [Migration("20230704104438_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -187,6 +187,26 @@ namespace KnowledgeBase.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8cb67639-9e32-44b0-9577-8ecc756bfc6b"),
+                            ConcurrencyStamp = "3a3cc24c-c3f9-4ac6-8d7b-fa6062e03918",
+                            Name = "SuperAdmin"
+                        },
+                        new
+                        {
+                            Id = new Guid("98e1e280-44c7-4da1-bfc4-09c7eabc1075"),
+                            ConcurrencyStamp = "714763bc-ca4c-44eb-9990-c5b777fcb9f7",
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("09bfd769-38ef-49f9-a191-4978e43de04e"),
+                            ConcurrencyStamp = "509fe306-7d38-4468-9c19-2eeeb56420ca",
+                            Name = "Basic"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -240,12 +260,10 @@ namespace KnowledgeBase.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -281,12 +299,10 @@ namespace KnowledgeBase.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");

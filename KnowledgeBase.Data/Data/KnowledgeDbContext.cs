@@ -20,5 +20,14 @@ public class KnowledgeDbContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
     {
         base.OnModelCreating(builder);
         builder.Entity<UserProject>().HasKey(up => new { up.ProjectId, up.UserId});
+
+        builder.Entity<User>().HasMany(e => e.Resources)
+            .WithOne(e => e.User).HasForeignKey(e => e.UserId)
+            .IsRequired(false);
+
+        builder.Entity<Project>().HasMany(e => e.Resources)
+            .WithOne(e => e.Project).HasForeignKey(e => e.ProjectId)
+            .IsRequired(false);
+
     }
 }

@@ -20,7 +20,6 @@ public class KnowledgeDbContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
 		{
 			optionsBuilder.UseSqlServer("");
 		}
-
 	}
 
     
@@ -42,6 +41,5 @@ public class KnowledgeDbContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
         builder.Entity<Project>().HasMany(e => e.Resources)
             .WithOne(e => e.Project).HasForeignKey(e => e.ProjectId)
             .IsRequired(false);
-
     }
 }

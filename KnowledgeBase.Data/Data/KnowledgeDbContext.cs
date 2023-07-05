@@ -21,9 +21,9 @@ public class KnowledgeDbContext : DbContext
 
 	}
 
-	
+    
 
-	DbSet<Project> Projects { get; set; }
+    DbSet<Project> Projects { get; set; }
     DbSet<Resource> Resources { get; set; }
     DbSet<User> Users { get; set; }
 }

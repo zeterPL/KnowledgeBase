@@ -10,7 +10,6 @@ public class Resource : IDeletableEntity
     public Project Project { get; set; }
     public ResourceCategory Category { get; set; }
     public User? User { get; set; }
-    
     public bool IsDeleted { get; set; }
 }
 

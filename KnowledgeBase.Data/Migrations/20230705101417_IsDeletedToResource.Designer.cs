@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230705080839_IsDeletedEntity")]
-    partial class IsDeletedEntity
+    [Migration("20230705101417_IsDeletedToResource")]
+    partial class IsDeletedToResource
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,7 +60,7 @@ namespace KnowledgeBase.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ProjectId")
+                    b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("UserId")
@@ -105,7 +105,9 @@ namespace KnowledgeBase.Data.Migrations
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
                         .WithMany("Resources")
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KnowledgeBase.Data.Models.User", "User")
                         .WithMany("Resources")

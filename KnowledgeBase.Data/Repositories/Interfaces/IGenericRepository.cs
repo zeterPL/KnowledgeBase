@@ -1,4 +1,4 @@
-﻿namespace KnowledgeBase.Data.Repositories;
+﻿namespace KnowledgeBase.Data.Repositories.Interfaces;
 
 public interface IGenericRepository<T>
 {
@@ -7,5 +7,5 @@ public interface IGenericRepository<T>
     public void Remove(T entity);
     public void Update(T entity);
 
-	public IEnumerable<T> GetAll();
+    public IEnumerable<T> GetAll();
 }

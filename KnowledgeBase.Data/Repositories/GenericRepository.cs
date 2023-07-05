@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Data.Data;
+using KnowledgeBase.Data.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.Data.Repositories
 {
-	public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly KnowledgeDbContext _context;
 

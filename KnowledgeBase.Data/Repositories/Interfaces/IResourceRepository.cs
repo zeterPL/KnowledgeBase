@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KnowledgeBase.Data.Repositories
+namespace KnowledgeBase.Data.Repositories.Interfaces
 {
-	public interface IResourceRepository : IGenericRepository<Resource>
-	{
-	}
+    public interface IResourceRepository : IGenericRepository<Resource>
+    {
+    }
 }

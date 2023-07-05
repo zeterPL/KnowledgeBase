@@ -1,9 +1,10 @@
 ﻿using KnowledgeBase.Data.Models;
-using KnowledgeBase.Data.Repositories;
+using KnowledgeBase.Data.Repositories.Interfaces;
+using KnowledgeBase.Logic.Services.Interfaces;
 
 namespace KnowledgeBase.Logic.Services
 {
-	public class ResourceService : IResourceService
+    public class ResourceService : IResourceService
 	{
 		private readonly IResourceRepository _resourceRepository;
 

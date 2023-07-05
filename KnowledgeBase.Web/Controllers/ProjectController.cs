@@ -75,4 +75,11 @@ public class ProjectController : Controller
 		projectService.SoftDelete(project);
 		return RedirectToAction("List");
 	}
+
+	[HttpGet]
+	public IActionResult Details(Guid id)
+	{
+		Project project = projectService.Get(id);
+		return View(project);
+	}
 }

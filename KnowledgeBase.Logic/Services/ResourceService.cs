@@ -41,7 +41,7 @@ namespace KnowledgeBase.Logic.Services
 
 		public void Update(Resource resource)
 		{
-            _resourceRepository.Update(resource);
+           		 _resourceRepository.Update(resource);
 		}
 
 		public IEnumerable<Resource> GetAll()

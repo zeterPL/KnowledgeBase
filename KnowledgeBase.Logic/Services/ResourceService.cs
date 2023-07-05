@@ -1,6 +1,7 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Services.Interfaces;
+using System.Web.Mvc;
 
 namespace KnowledgeBase.Logic.Services
 {
@@ -18,12 +19,9 @@ namespace KnowledgeBase.Logic.Services
 			return _resourceRepository.Get(id);
 		}
 
-
 		public void Add(Resource resource)
 		{
-
 			_resourceRepository.Add(resource);
-			_resourceRepository.Get(resource.Id);
 		}
 
 		public IEnumerable<Resource> GetAllResources()
@@ -36,15 +34,14 @@ namespace KnowledgeBase.Logic.Services
 			_resourceRepository.Remove(rsource);
 		}
 
-		public void IsRemoved(Resource rsource)
+		public void Deleted(Resource rsource)
 		{
-			_resourceRepository.IsRemoved(rsource);
+			_resourceRepository.Deleted(rsource);
 		}
 
 		public void Update(Resource resource)
 		{
-			_resourceRepository.Update(resource);
-			_resourceRepository.Get(resource.Id);
+            _resourceRepository.Update(resource);
 		}
 
 		public IEnumerable<Resource> GetAll()
@@ -52,7 +49,6 @@ namespace KnowledgeBase.Logic.Services
 			IEnumerable<Resource> resourceList = _resourceRepository.GetAll();
 			return resourceList.ToList();
 		}
-
 	}
 }
 

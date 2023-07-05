@@ -10,7 +10,7 @@ public class ResourceRepository : GenericRepository<Resource>, IGenericRepositor
 	{
 	}
 
-	public void IsRemoved(Resource resource)
+	public void Deleted(Resource resource)
 	{
 		resource.IsDeleted = true;
 		Update(resource);

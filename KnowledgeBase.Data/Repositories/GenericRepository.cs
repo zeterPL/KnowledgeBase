@@ -29,12 +29,12 @@ namespace KnowledgeBase.Data.Repositories
             return entity;
         }
 
-		public IEnumerable<T> GetAll()
-		{
-			return _context.Set<T>();
-		}
+        public IEnumerable<T> GetAll()
+        {
+            return _context.Set<T>();
+        }
 
-		public void Remove(T entity)
+        public void Remove(T entity)
         {
             _context.Set<T>().Remove(entity);
             _context.SaveChanges();

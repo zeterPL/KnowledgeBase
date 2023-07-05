@@ -30,13 +30,15 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<Role> _roleManager;
 
         public RegisterModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +46,7 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -117,6 +120,10 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
                 user.FirstName = "Test";
                 user.LastName = "Test";
 
+                // var roleResult = _userManager.AddToRoleAsync(currentUser, UserRoles.SuperAdmin.ToString());
+                //var roleResult = _roleManager.FindByNameAsync(UserRoles.Basic.ToString());
+
+                user.AssignedRole = UserRoles.Basic;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -127,8 +134,6 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var currentUser = await _userManager.FindByIdAsync(userId);
-
-                    var roleResult = _userManager.AddToRoleAsync(currentUser, UserRoles.Basic.ToString());
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

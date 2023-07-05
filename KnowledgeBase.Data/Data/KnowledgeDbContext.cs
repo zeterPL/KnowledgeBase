@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KnowledgeBase.Data.Data;
 
-public class KnowledgeDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
 {
     public KnowledgeDbContext()
     {
@@ -13,11 +13,13 @@ public class KnowledgeDbContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
 
     public KnowledgeDbContext(DbContextOptions<KnowledgeDbContext> options) : base(options)
     {
+
     }
 
     DbSet<Project> Projects { get; set; }
     DbSet<Resource> Resources { get; set; }
     DbSet<User> Users { get; set; }
+    DbSet<Role> Roles { get; set; }
     DbSet<UserProject> UserProjects { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -35,21 +37,30 @@ public class KnowledgeDbContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<IdentityRole<Guid>>().HasData(new IdentityRole<Guid>()
+        /*
+        if(!Roles.Any())
         {
-            Id = Guid.NewGuid(),
-            Name = KnowledgeBase.Data.Models.UserRoles.SuperAdmin.ToString()
-        },
-        new IdentityRole<Guid>()
-        {
-            Id = Guid.NewGuid(),
-            Name = KnowledgeBase.Data.Models.UserRoles.Admin.ToString()
-        },
-        new IdentityRole<Guid>()
-        {
-            Id = Guid.NewGuid(),
-            Name = KnowledgeBase.Data.Models.UserRoles.Basic.ToString()
-        });
+            builder.Entity<Role>().HasData(new Role()
+            {
+                Id = Guid.NewGuid(),
+                Name = KnowledgeBase.Data.Models.UserRoles.SuperAdmin.ToString(),
+                Description = "SuperAdmin role"
+            },
+            new Role()
+            {
+                Id = Guid.NewGuid(),
+                Name = KnowledgeBase.Data.Models.UserRoles.Admin.ToString(),
+                Description = "Admin role"
+            },
+            new Role()
+            {
+                Id = Guid.NewGuid(),
+                Name = KnowledgeBase.Data.Models.UserRoles.Basic.ToString(),
+                Description = "Basic role"
+            });
+        }
+        */
+        
 
 
 

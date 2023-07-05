@@ -1,6 +1,8 @@
-﻿namespace KnowledgeBase.Data.Models;
+﻿using KnowledgeBase.Data.Models.Interfaces;
 
-public class Resource
+namespace KnowledgeBase.Data.Models;
+
+public class Resource : IDeletableEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -8,5 +10,7 @@ public class Resource
     public Project? Project { get; set; }
     public ResourceCategory Category { get; set; }
     public User? User { get; set; }
+    
+    public bool IsDeleted { get; set; }
 }
 

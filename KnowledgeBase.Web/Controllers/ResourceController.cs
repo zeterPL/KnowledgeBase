@@ -75,7 +75,8 @@ namespace KnowledgeBase.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult Delete(Resource resource)
 		{
-			_service.Remove(resource);
+			Resource resourceToRemove = _service.Get(resource.Id);
+			_service.IsRemoved(resourceToRemove);
 			return RedirectToAction(actionName: "Index");
 		}
 	}

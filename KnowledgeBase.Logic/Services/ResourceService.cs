@@ -36,6 +36,11 @@ namespace KnowledgeBase.Logic.Services
 			_resourceRepository.Remove(rsource);
 		}
 
+		public void IsRemoved(Resource rsource)
+		{
+			_resourceRepository.IsRemoved(rsource);
+		}
+
 		public void Update(Resource resource)
 		{
 			_resourceRepository.Update(resource);

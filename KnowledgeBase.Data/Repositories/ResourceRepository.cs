@@ -9,4 +9,10 @@ public class ResourceRepository : GenericRepository<Resource>, IGenericRepositor
 	public ResourceRepository(KnowledgeDbContext context) : base(context)
 	{
 	}
+
+	public void IsRemoved(Resource resource)
+	{
+		resource.IsDeleted = true;
+		Update(resource);
+	}
 }

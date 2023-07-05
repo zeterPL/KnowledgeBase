@@ -1,4 +1,4 @@
-﻿namespace KnowledgeBase.Data.Repositories;
+﻿namespace KnowledgeBase.Data.Repositories.Interfaces;
 
 public interface IGenericRepository<T>
 {

@@ -1,6 +1,7 @@
 using KnowledgeBase.Data.Data;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories;
+using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Services;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,5 @@
 ﻿using KnowledgeBase.Data.Models;
-using KnowledgeBase.Data.Repositories;
+using KnowledgeBase.Data.Repositories.Interfaces;
 
 namespace KnowledgeBase.Logic.Services;
 

@@ -72,7 +72,7 @@ public class ProjectController : Controller
 	public IActionResult Delete(Guid id)
 	{
 		Project project = projectService.Get(id);
-		projectService.Remove(project);
+		projectService.SoftDelete(project);
 		return RedirectToAction("List");
 	}
 }

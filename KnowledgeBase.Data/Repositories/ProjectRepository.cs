@@ -9,4 +9,10 @@ public class ProjectRepository : GenericRepository<Project>, IGenericRepository<
     public ProjectRepository(KnowledgeDbContext context) : base(context)
     {
     }
+
+    public void SoftDelete(Project project)
+    {
+        project.IsDeleted = true;
+        Update(project);
+    }
 }

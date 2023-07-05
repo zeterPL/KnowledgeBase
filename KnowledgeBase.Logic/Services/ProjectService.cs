@@ -29,12 +29,17 @@ public class ProjectService : IProjectService
 
     public IEnumerable<Project> GetAll()
     {
-        return projectRepository.GetAll();
+        return projectRepository.GetAll().Where(p => !p.IsDeleted);
     }
 
     public Project Update(Project project)
     {
         projectRepository.Update(project);
         return projectRepository.Get(project.Id);
+    }
+
+    public void SoftDelete(Project project)
+    {
+        projectRepository.SoftDelete(project);
     }
 }

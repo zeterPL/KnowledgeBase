@@ -34,6 +34,7 @@ namespace KnowledgeBase.Web.Controllers
             return RedirectToAction(actionName: "Index");
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Resource resource)

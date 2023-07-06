@@ -23,11 +23,6 @@ namespace KnowledgeBase.Logic.Services
             _resourceRepository.Add(resource);
         }
 
-        public IEnumerable<Resource> GetAllResources()
-        {
-            return _resourceRepository.GetAll();
-        }
-
         public void Remove(Resource rsource)
         {
             _resourceRepository.Remove(rsource);

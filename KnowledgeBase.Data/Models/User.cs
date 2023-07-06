@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using KnowledgeBase.Data.Models.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace KnowledgeBase.Data.Models;
 

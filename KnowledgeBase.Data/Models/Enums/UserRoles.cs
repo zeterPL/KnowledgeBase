@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KnowledgeBase.Data.Models
+namespace KnowledgeBase.Data.Models.Enums
 {
     public enum UserRoles
     {

@@ -11,11 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<KnowledgeDbContext>(options =>
-	options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString, optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-	.AddEntityFrameworkStores<KnowledgeDbContext>();
+    .AddRoles<Role>()
+    .AddEntityFrameworkStores<KnowledgeDbContext>();
 
 // Dependency injection
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
@@ -24,6 +25,15 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<KnowledgeDbContext>();
+    context.Database.EnsureCreated();
+    DbInitializer.Initialize(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -1,5 +1,4 @@
 ﻿using KnowledgeBase.Data.Models;
-using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,7 +40,7 @@ namespace KnowledgeBase.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-               // return View(resource);
+                // return View(resource);
             }
             _service.Update(resource);
             return RedirectToAction(actionName: "Index");

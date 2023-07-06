@@ -1,9 +1,8 @@
-﻿namespace KnowledgeBase.Data.Models;
+﻿namespace KnowledgeBase.Data.Models.Enums;
 
 public enum ResourceCategory
 {
     Documents,
     Documentation,
-
 }
 

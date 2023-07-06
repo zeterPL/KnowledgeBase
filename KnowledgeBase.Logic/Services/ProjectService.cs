@@ -1,45 +1,61 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
+using KnowledgeBase.Logic.Dto;
 
 namespace KnowledgeBase.Logic.Services;
 
 public class ProjectService : IProjectService
 {
     private readonly IProjectRepository projectRepository;
+
     public ProjectService(IProjectRepository projectRepository)
     {
         this.projectRepository = projectRepository;
     }
 
-    public Project Add(Project project)
+    public ProjectDto Add(ProjectDto projectDto)
     {
-        projectRepository.Add(project);
-        return projectRepository.Get(project.Id);
+        Project newProject = new Project
+        {
+            Name = projectDto.Name,
+        };
+        projectRepository.Add(newProject);
+
+        projectDto.Id = newProject.Id;
+        return projectDto;
     }
 
-    public void Remove(Project project)
+    public void Remove(ProjectDto projectDto)
     {
+        Project project = projectRepository.Get(projectDto.Id);
         projectRepository.Remove(project);
     }
 
-    public Project Get(Guid id)
+    public ProjectDto Get(Guid id)
     {
-        return projectRepository.Get(id);
+        return projectRepository.Get(id).ToProjectDto();
     }
 
-    public IEnumerable<Project> GetAll()
+    public IEnumerable<ProjectDto> GetAll()
     {
-        return projectRepository.GetAll().Where(p => !p.IsDeleted);
+        var projects = projectRepository.GetAll().Where(p => !p.IsDeleted);
+        return projects.Select(p => p.ToProjectDto());
     }
 
-    public Project Update(Project project)
+    public ProjectDto Update(ProjectDto projectDto)
     {
+        Project project = projectRepository.Get(projectDto.Id);
+        
+        // Update project prop using projectDto props
+        project.Name = projectDto.Name;
+        
         projectRepository.Update(project);
-        return projectRepository.Get(project.Id);
+        return project.ToProjectDto();
     }
 
-    public void SoftDelete(Project project)
+    public void SoftDelete(ProjectDto projectDto)
     {
+        Project project = projectRepository.Get(projectDto.Id);
         projectRepository.SoftDelete(project);
     }
 }

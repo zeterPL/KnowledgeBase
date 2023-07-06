@@ -1,19 +1,19 @@
-﻿@using KnowledgeBase.Data.Models;
-@model KnowledgeBase.Data.Models.Project
+﻿@using KnowledgeBase.Logic.Dto
+@model KnowledgeBase.Logic.Dto.ProjectDto;
 
 @{
-	Project project = Model;
+    ProjectDto project = Model;
 }
 
 @using (Html.BeginForm("Edit", "Project", FormMethod.Post))
 {
-	@Html.AntiForgeryToken()
-	<div>
-		@Html.LabelFor(project=>project.Name)
-		@Html.EditorFor(project=>project.Name)
-		@Html.ValidationMessageFor(project=>project.Name)
-	</div>
-	<div>
-		<input type="submit" value="Save" />
-	</div>
+    @Html.AntiForgeryToken()
+    <div>
+        @Html.LabelFor(project => project.Name)
+        @Html.EditorFor(project => project.Name)
+        @Html.ValidationMessageFor(project => project.Name)
+    </div>
+    <div>
+        <input type="submit" value="Save"/>
+    </div>
 }

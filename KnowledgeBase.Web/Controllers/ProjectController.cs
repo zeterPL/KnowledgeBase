@@ -1,4 +1,4 @@
-﻿using KnowledgeBase.Data.Models;
+﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +19,7 @@ public class ProjectController : Controller
 
 	public IActionResult List()
 	{
-		IEnumerable<Project> projects = projectService.GetAll();
+		IEnumerable<ProjectDto> projects = projectService.GetAll();
 		return View(projects.ToList());
 	}
 
@@ -31,11 +31,11 @@ public class ProjectController : Controller
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public IActionResult Create(Project project)
+	public IActionResult Create(ProjectDto project)
 	{
 		if (!ModelState.IsValid)
 		{
-			// return View(project);
+			return View(project);
 		}
 
 		projectService.Add(project);
@@ -45,7 +45,7 @@ public class ProjectController : Controller
 	[HttpGet]
 	public IActionResult Edit(Guid id)
 	{
-		Project project = projectService.Get(id);
+		ProjectDto project = projectService.Get(id);
 
 		if (project == null)
 		{
@@ -57,7 +57,7 @@ public class ProjectController : Controller
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public IActionResult Edit(Project project)
+	public IActionResult Edit(ProjectDto project)
 	{
 		if (!ModelState.IsValid)
 		{
@@ -71,15 +71,14 @@ public class ProjectController : Controller
 	[HttpGet]
 	public IActionResult Delete(Guid id)
 	{
-		Project project = projectService.Get(id);
-		projectService.SoftDelete(project);
+		projectService.SoftDelete(new ProjectDto{Id = id});
 		return RedirectToAction("List");
 	}
 
 	[HttpGet]
 	public IActionResult Details(Guid id)
 	{
-		Project project = projectService.Get(id);
+		ProjectDto project = projectService.Get(id);
 		return View(project);
 	}
 }

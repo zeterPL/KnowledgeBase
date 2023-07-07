@@ -10,7 +10,7 @@ namespace KnowledgeBase.Logic.Services.Interfaces
     public interface IUserService
     {
         public IEnumerable<UserDto> GetAllUsers();
-        public UserDto GetById(int id);
+        public UserDto GetById(Guid id);
         public bool AddUser(UserDto user);
         public UserDto Update(UserDto user);
         public bool Delete(UserDto user);

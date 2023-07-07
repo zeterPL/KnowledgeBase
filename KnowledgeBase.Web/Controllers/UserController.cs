@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Logic.Services.Interfaces;
+﻿using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KnowledgeBase.Web.Controllers
@@ -21,6 +22,15 @@ namespace KnowledgeBase.Web.Controllers
         {
             var users = _userService.GetAllUsers();
             return View(users.ToList());
+        }
+
+        [HttpGet]
+        public IActionResult Details(Guid id)
+        {
+            UserDto user = new UserDto();
+            user = _userService.GetById(id);
+
+            return View(user);
         }
     }
 }

@@ -34,9 +34,10 @@ namespace KnowledgeBase.Logic.Services
             return users.Select(u => u.ToUserDto());
         }
 
-        public UserDto GetById(int id)
-        {
-            throw new NotImplementedException();
+        public UserDto GetById(Guid id)
+        {                    
+            var user = _userRepository.Get(id).ToUserDto();          
+            return user;
         }
 
         public bool SoftDelete(UserDto user)

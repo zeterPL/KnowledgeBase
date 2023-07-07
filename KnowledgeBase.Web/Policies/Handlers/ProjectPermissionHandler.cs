@@ -22,14 +22,10 @@ public class ProjectPermissionHandler : AuthorizationHandler<ProjectPermissionRe
             return Task.CompletedTask;
         }
 
-        var projectId = new Guid((string?)httpContext.Request.RouteValues["Id"] ?? string.Empty);
-        if (projectId == Guid.Empty)
-        {
-            return Task.CompletedTask;
-        }
-
+        var parsed = Guid.TryParse((string?)httpContext.Request.RouteValues["Id"] ?? string.Empty, out var projectId);
         var userId = context.User.GetUserId();
-        if (userId == Guid.Empty)
+
+        if (!parsed || projectId == Guid.Empty || userId == Guid.Empty)
         {
             return Task.CompletedTask;
         }

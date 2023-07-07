@@ -23,7 +23,7 @@ namespace KnowledgeBase.Logic.Services
             _userRepository = userRepository;
         }
 
-        public bool AddUser(UserDto userDto)
+        public void AddUser(UserDto userDto)
         {
             User user = new User
             {
@@ -31,20 +31,20 @@ namespace KnowledgeBase.Logic.Services
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
                 Email = userDto.Email,
-                UserName = userDto.UserName,
-                EmailConfirmed = true
+                UserName = userDto.Email,
+                EmailConfirmed = true,
+                NormalizedEmail = userDto.Email.ToUpper(),
+                NormalizedUserName = userDto.UserName.ToUpper(),
+                AssignedRole = Data.Models.Enums.UserRoles.Basic
             };
             var hashedPass = new PasswordHasher<object>().HashPassword(null, userDto.Password);
             user.PasswordHash = hashedPass;
-            
 
-            try
-            {
-                _userRepository.Add(user);
-            }
-            catch (Exception ex) { return false; }
+            var securityStamp = Guid.NewGuid().ToString("D").ToUpper();
+            user.SecurityStamp = securityStamp;
+          
+            _userRepository.Add(user);
 
-            return true;
         }
 
         public bool Delete(UserDto user)
@@ -69,9 +69,19 @@ namespace KnowledgeBase.Logic.Services
             throw new NotImplementedException();
         }
 
-        public UserDto Update(UserDto user)
+        public UserDto Update(UserDto userDto)
         {
-            throw new NotImplementedException();
+            var user = _userRepository.Get(userDto.Id);
+
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.UserName = userDto.UserName;
+            user.Email = userDto.Email;
+            
+            _userRepository.Update(user);
+            return user.ToUserDto();
+
+            
         }
 
       

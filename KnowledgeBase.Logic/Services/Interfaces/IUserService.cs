@@ -11,7 +11,7 @@ namespace KnowledgeBase.Logic.Services.Interfaces
     {
         public IEnumerable<UserDto> GetAllUsers();
         public UserDto GetById(Guid id);
-        public bool AddUser(UserDto user);
+        public void AddUser(UserDto user);
         public UserDto Update(UserDto user);
         public bool Delete(UserDto user);
         public bool SoftDelete(UserDto user);

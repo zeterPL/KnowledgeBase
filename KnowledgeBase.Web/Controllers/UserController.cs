@@ -16,7 +16,7 @@ namespace KnowledgeBase.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("List");
         }
 
         public IActionResult List()
@@ -49,6 +49,27 @@ namespace KnowledgeBase.Web.Controllers
                 return RedirectToAction("List");
             }
 
+            return View(user);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(Guid id)
+        {
+            var user = _userService.GetById(id);
+         
+            return View(user);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(UserDto user)
+        {           
+            if(ModelState.IsValid)
+            {
+                user.UserName = user.Email;
+                _userService.Update(user);
+                return RedirectToAction("List");
+            }
+                    
             return View(user);
         }
     }

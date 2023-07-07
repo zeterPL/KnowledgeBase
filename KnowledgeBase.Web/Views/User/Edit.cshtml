@@ -1,5 +1,33 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using KnowledgeBase.Logic.Dto
+@model KnowledgeBase.Logic.Dto.UserDto
+
 @{
+    UserDto user = Model;
+}
+
+@using (Html.BeginForm("Edit", "User", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div>
+        @Html.LabelFor(user => user.Email)
+        @Html.EditorFor(user => user.Email)
+        @Html.ValidationMessageFor(user => user.Email)
+    </div>
+    <div>
+        @Html.LabelFor(user => user.FirstName)
+        @Html.EditorFor(user => user.FirstName)
+        @Html.ValidationMessageFor(user => user.FirstName)
+    </div>
+    <div>
+        @Html.LabelFor(user => user.LastName)
+        @Html.EditorFor(user => user.LastName)
+        @Html.ValidationMessageFor(user => user.LastName)
+    </div>
+
+    @Html.HiddenFor(user => user.Password, new {@Value = "Default"})
+    @Html.HiddenFor(user => user.UserName, new {@Value = Model.UserName})
+
+    <div>
+        <input type="submit" value="Save" />
+    </div>
 }

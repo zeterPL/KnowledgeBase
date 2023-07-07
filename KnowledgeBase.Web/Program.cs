@@ -15,7 +15,7 @@ builder.Services.AddDbContext<KnowledgeDbContext>(options =>
     options.UseSqlServer(connectionString, optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<Role>()
     .AddEntityFrameworkStores<KnowledgeDbContext>();
 

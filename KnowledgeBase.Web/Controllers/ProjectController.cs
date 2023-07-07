@@ -3,20 +3,16 @@ using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using KnowledgeBase.Data.Models.Enums;
 
 namespace KnowledgeBase.Web.Controllers;
 
-[Authorize]
 public class ProjectController : Controller
 {
     private readonly IProjectService _projectService;
-    private readonly IPermissionService _permissionService;
 
-    public ProjectController(IProjectService projectService, IPermissionService permissionService)
+    public ProjectController(IProjectService projectService)
     {
         _projectService = projectService;
-        _permissionService = permissionService;
     }
 
     public IActionResult Index()
@@ -62,15 +58,9 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
+    [Authorize(Policy = "canEditProject")]
     public IActionResult Edit(Guid id)
     {
-        var userId = User.GetUserId();
-        if (userId == Guid.Empty ||
-            !_permissionService.UserHadProjectPermission(userId, id, PermissionName.EditProject))
-        {
-            return Forbid();
-        }
-
         ProjectDto? project = _projectService.Get(id);
 
         if (project == null)
@@ -83,15 +73,9 @@ public class ProjectController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Policy = "canEditProject")]
     public IActionResult Edit(ProjectDto project)
     {
-        var userId = User.GetUserId();
-        if (userId == Guid.Empty ||
-            !_permissionService.UserHadProjectPermission(userId, project.Id.ToGuid(), PermissionName.EditProject))
-        {
-            return Forbid();
-        }
-
         if (!ModelState.IsValid)
         {
             // TODO validation
@@ -103,29 +87,17 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
+    [Authorize(Policy = "canDeleteProject")]
     public IActionResult Delete(Guid id)
     {
-        var userId = User.GetUserId();
-        if (userId == Guid.Empty ||
-            !_permissionService.UserHadProjectPermission(userId, id, PermissionName.DeleteProject))
-        {
-            return Forbid();
-        }
-
         _projectService.SoftDelete(new ProjectDto { Id = id });
         return RedirectToAction("List");
     }
 
     [HttpGet]
+    [Authorize(Policy = "canReadProject")]
     public IActionResult Details(Guid id)
     {
-        var userId = User.GetUserId();
-        if (userId == Guid.Empty ||
-            !_permissionService.UserHadProjectPermission(userId, id, PermissionName.ReadProject))
-        {
-            return Forbid();
-        }
-
         ProjectDto? project = _projectService.Get(id);
         if (project == null)
         {

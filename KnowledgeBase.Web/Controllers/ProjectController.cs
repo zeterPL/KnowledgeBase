@@ -1,9 +1,12 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace KnowledgeBase.Web.Controllers;
 
+[Authorize]
 public class ProjectController : Controller
 {
 	private readonly IProjectService projectService;
@@ -33,9 +36,16 @@ public class ProjectController : Controller
 	[ValidateAntiForgeryToken]
 	public IActionResult Create(ProjectDto project)
 	{
+		var userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+		project.User = new UserDto
+		{
+			Id = userId,
+		};
+
 		if (!ModelState.IsValid)
 		{
-			return View(project);
+			// return View(project);
 		}
 
 		projectService.Add(project);

@@ -1,0 +1,14 @@
+﻿@using KnowledgeBase.Data.Models;
+@using KnowledgeBase.Logic.Dto
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model KnowledgeBase.Logic.Dto.ProjectDto;
+@{
+    ProjectDto project = Model;
+}
+
+<div>
+    @project.Id
+    @project.Name
+    <a asp-action="Edit" asp-route-id="@project.Id">edit</a>
+    <a asp-action="Delete" asp-route-id="@project.Id">delete</a>
+</div>

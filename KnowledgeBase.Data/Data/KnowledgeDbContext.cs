@@ -5,34 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KnowledgeBase.Data.Data;
 
-public class KnowledgeDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
 {
-    public KnowledgeDbContext()
-    {
-    }
+    public KnowledgeDbContext() { }
 
     public KnowledgeDbContext(DbContextOptions<KnowledgeDbContext> options) : base(options)
-    {
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer("");
-        }
-    }
-
-
+    { }
 
     DbSet<Project> Projects { get; set; }
     DbSet<Resource> Resources { get; set; }
     DbSet<User> Users { get; set; }
+    DbSet<Role> Roles { get; set; }
     DbSet<UserProject> UserProjects { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.Entity<UserProject>().HasKey(up => new { up.ProjectId, up.UserId });
+        builder.Entity<UserProject>().HasKey(up => new { up.ProjectId, up.UserId});
 
         builder.Entity<User>().HasMany(e => e.Resources)
             .WithOne(e => e.User).HasForeignKey(e => e.UserId)

@@ -1,7 +1,7 @@
-﻿namespace KnowledgeBase.Data.Models.Interfaces
+﻿namespace KnowledgeBase.Data.Models.Interfaces;
+
+public interface IDeletableEntity
 {
-    internal interface IDeletableEntity
-    {
-        public bool IsDeleted { get; set; }
-    }
+    public bool IsDeleted { get; set; }
+}
 }

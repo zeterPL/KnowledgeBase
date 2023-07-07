@@ -105,6 +105,13 @@ public class ProjectController : Controller
     [HttpGet]
     public IActionResult Delete(Guid id)
     {
+        var userId = User.GetUserId();
+        if (userId == Guid.Empty ||
+            !_permissionService.UserHadProjectPermission(userId, id, PermissionName.DeleteProject))
+        {
+            return Forbid();
+        }
+        
         _projectService.SoftDelete(new ProjectDto { Id = id });
         return RedirectToAction("List");
     }

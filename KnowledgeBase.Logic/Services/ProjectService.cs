@@ -13,16 +13,14 @@ public class ProjectService : IProjectService
         this.projectRepository = projectRepository;
     }
 
-    public ProjectDto Add(ProjectDto projectDto)
+    public Guid Add(ProjectDto projectDto)
     {
         Project newProject = new Project
         {
             Name = projectDto.Name,
         };
         projectRepository.Add(newProject);
-
-        projectDto.Id = newProject.Id;
-        return projectDto;
+        return newProject.Id;
     }
 
     public void Remove(ProjectDto projectDto)
@@ -42,7 +40,7 @@ public class ProjectService : IProjectService
         return projects.Select(p => p.ToProjectDto());
     }
 
-    public ProjectDto Update(ProjectDto projectDto)
+    public Guid Update(ProjectDto projectDto)
     {
         Project project = projectRepository.Get(projectDto.Id);
         
@@ -50,7 +48,7 @@ public class ProjectService : IProjectService
         project.Name = projectDto.Name;
         
         projectRepository.Update(project);
-        return project.ToProjectDto();
+        return project.Id;
     }
 
     public void SoftDelete(ProjectDto projectDto)

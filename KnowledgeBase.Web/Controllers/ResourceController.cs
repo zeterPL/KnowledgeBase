@@ -37,6 +37,7 @@ namespace KnowledgeBase.Web.Controllers
 		public IActionResult Create(ResourceDto resourcedto)
 		{
 			resourcedto.UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+			resourcedto.ProjectId = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b");
 			_service.Add(resourcedto);
 			return RedirectToAction(actionName: "Index");
 		}
@@ -50,6 +51,8 @@ namespace KnowledgeBase.Web.Controllers
 			{
 				// return View(resource);
 			}
+			resourcedto.UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+			resourcedto.ProjectId = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b");
 			_service.Update(resourcedto);
 			return RedirectToAction(actionName: "Index");
 		}

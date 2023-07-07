@@ -3,6 +3,7 @@ using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace KnowledgeBase.Logic.Services
 {
@@ -36,7 +37,7 @@ namespace KnowledgeBase.Logic.Services
 
         public void Deleted(ResourceDto resourcedto)
         {
-			Resource resource = _mapper.Map<Resource>(resourcedto);
+			Resource resource = Get(_mapper.Map<Resource>(resourcedto).Id);
 			_resourceRepository.Deleted(resource);
         }
 

@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,24 @@ namespace KnowledgeBase.Web.Controllers
         {
             UserDto user = new UserDto();
             user = _userService.GetById(id);
+
+            return View(user);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(UserDto user)
+        {
+            if(ModelState.IsValid)
+            {
+                _userService.AddUser(user);
+                return RedirectToAction("List");
+            }
 
             return View(user);
         }

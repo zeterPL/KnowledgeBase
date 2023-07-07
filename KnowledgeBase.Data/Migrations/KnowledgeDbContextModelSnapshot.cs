@@ -37,7 +37,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
@@ -69,7 +69,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Resources");
+                    b.ToTable("Resources", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Right", b =>
@@ -84,7 +84,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rights");
+                    b.ToTable("Rights", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
@@ -208,7 +208,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserProjects");
+                    b.ToTable("UserProjects", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserRight", b =>
@@ -223,7 +223,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("RightId");
 
-                    b.ToTable("UserRights");
+                    b.ToTable("UserRights", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserRole", b =>
@@ -238,7 +238,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserRoleRight", b =>
@@ -258,7 +258,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoleRights");
+                    b.ToTable("UserRoleRights", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

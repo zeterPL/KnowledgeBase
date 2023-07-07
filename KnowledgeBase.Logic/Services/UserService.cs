@@ -1,11 +1,16 @@
-﻿using KnowledgeBase.Data.Repositories.Interfaces;
+﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+
+
 
 namespace KnowledgeBase.Logic.Services
 {
@@ -18,9 +23,28 @@ namespace KnowledgeBase.Logic.Services
             _userRepository = userRepository;
         }
 
-        public bool AddUser(UserDto user)
+        public bool AddUser(UserDto userDto)
         {
-            throw new NotImplementedException();
+            User user = new User
+            {
+                Id = userDto.Id,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                Email = userDto.Email,
+                UserName = userDto.UserName,
+                EmailConfirmed = true
+            };
+            var hashedPass = new PasswordHasher<object>().HashPassword(null, userDto.Password);
+            user.PasswordHash = hashedPass;
+            
+
+            try
+            {
+                _userRepository.Add(user);
+            }
+            catch (Exception ex) { return false; }
+
+            return true;
         }
 
         public bool Delete(UserDto user)

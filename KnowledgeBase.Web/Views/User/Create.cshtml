@@ -1,0 +1,37 @@
+﻿@model KnowledgeBase.Logic.Dto.UserDto;
+
+@using (Html.BeginForm("Create", "User", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div>
+        @Html.LabelFor(user => user.UserName)
+        @Html.EditorFor(user => user.UserName)
+        @Html.ValidationMessageFor(user => user.UserName)
+    </div>
+    <div>
+        @Html.LabelFor(user => user.FirstName)
+        @Html.EditorFor(user => user.FirstName)
+        @Html.ValidationMessageFor(user => user.FirstName)
+    </div>
+    <div>
+        @Html.LabelFor(user => user.LastName)
+        @Html.EditorFor(user => user.LastName)
+        @Html.ValidationMessageFor(user => user.LastName)
+    </div>
+    <div>
+        @Html.LabelFor(user => user.Email)
+        @Html.EditorFor(user => user.Email)
+        @Html.ValidationMessageFor(user => user.Email)
+    </div>
+    <div>
+        @Html.LabelFor(user => user.Password)
+        @Html.EditorFor(user => user.Password, "password")
+        @Html.ValidationMessageFor(user => user.Password)
+    </div>
+
+
+
+    <div>
+        <input type="submit" value="Save" />
+    </div>
+}

@@ -4,15 +4,19 @@ using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace KnowledgeBase.Web.Controllers
 {
 	public class ResourceController : Controller
 	{
 		private readonly IResourceService _service;
-		public ResourceController(IResourceService service)
+		private readonly UserManager<User> _userManager;
+		public ResourceController(IResourceService service, UserManager<User> userManager)
 		{
 			_service = service;
+			_userManager = userManager;
 		}
 
 
@@ -32,6 +36,7 @@ namespace KnowledgeBase.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult Create(ResourceDto resourcedto)
 		{
+			resourcedto.UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 			_service.Add(resourcedto);
 			return RedirectToAction(actionName: "Index");
 		}

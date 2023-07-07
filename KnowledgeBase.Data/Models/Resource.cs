@@ -1,4 +1,6 @@
 ﻿using KnowledgeBase.Data.Models.Interfaces;
+using KnowledgeBase.Data.Models.Enums;
+
 
 namespace KnowledgeBase.Data.Models;
 

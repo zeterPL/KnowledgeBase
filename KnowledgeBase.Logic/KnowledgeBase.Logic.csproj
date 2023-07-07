@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KnowledgeBase.Data\KnowledgeBase.Data.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.Shared\KnowledgeBase.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿using KnowledgeBase.Data.Models;
+﻿using KnowledgeBase.Data.Models.Enums;
 
 namespace KnowledgeBase.Logic.Dto
 {

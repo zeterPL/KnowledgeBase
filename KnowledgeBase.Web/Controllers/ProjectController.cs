@@ -111,7 +111,7 @@ public class ProjectController : Controller
         {
             return Forbid();
         }
-        
+
         _projectService.SoftDelete(new ProjectDto { Id = id });
         return RedirectToAction("List");
     }
@@ -119,6 +119,13 @@ public class ProjectController : Controller
     [HttpGet]
     public IActionResult Details(Guid id)
     {
+        var userId = User.GetUserId();
+        if (userId == Guid.Empty ||
+            !_permissionService.UserHadProjectPermission(userId, id, PermissionName.ReadProject))
+        {
+            return Forbid();
+        }
+
         ProjectDto? project = _projectService.Get(id);
         if (project == null)
         {

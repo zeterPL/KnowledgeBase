@@ -1,99 +1,123 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using KnowledgeBase.Data.Models.Enums;
 
 namespace KnowledgeBase.Web.Controllers;
 
 [Authorize]
 public class ProjectController : Controller
 {
-	private readonly IProjectService projectService;
-	public ProjectController(IProjectService projectService)
-	{
-		this.projectService = projectService;
-	}
+    private readonly IProjectService _projectService;
+    private readonly IPermissionService _permissionService;
 
-	public IActionResult Index()
-	{
-		return View();
-	}
+    public ProjectController(IProjectService projectService, IPermissionService permissionService)
+    {
+        _projectService = projectService;
+        _permissionService = permissionService;
+    }
 
-	public IActionResult List()
-	{
-		IEnumerable<ProjectDto> projects = projectService.GetAll();
-		return View(projects.ToList());
-	}
+    public IActionResult Index()
+    {
+        return View();
+    }
 
-	[HttpGet]
-	public IActionResult Create()
-	{
-		return View();
-	}
+    public IActionResult List()
+    {
+        IEnumerable<ProjectDto> projects = _projectService.GetAll();
+        return View(projects.ToList());
+    }
 
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public IActionResult Create(ProjectDto project)
-	{
-		var userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
 
-		project.User = new UserDto
-		{
-			Id = userId,
-		};
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(ProjectDto project)
+    {
+        var userId = User.GetUserId();
+        if (userId == Guid.Empty)
+        {
+            return Forbid();
+        }
 
-		if (!ModelState.IsValid)
-		{
-			// return View(project);
-		}
+        project.User = new UserDto
+        {
+            Id = userId,
+        };
 
-		projectService.Add(project);
-		return RedirectToAction("List");
-	}
+        if (!ModelState.IsValid)
+        {
+            // TODO validation
+            // return View(project);
+        }
 
-	[HttpGet]
-	public IActionResult Edit(Guid id)
-	{
-		ProjectDto? project = projectService.Get(id);
+        _projectService.Add(project);
+        return RedirectToAction("List");
+    }
 
-		if (project == null)
-		{
-			return NotFound();
-		}
+    [HttpGet]
+    public IActionResult Edit(Guid id)
+    {
+        var userId = User.GetUserId();
+        if (userId == Guid.Empty ||
+            !_permissionService.UserHadProjectPermission(userId, id, PermissionName.EditProject))
+        {
+            return Forbid();
+        }
 
-		return View(project);
-	}
+        ProjectDto? project = _projectService.Get(id);
 
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public IActionResult Edit(ProjectDto project)
-	{
-		if (!ModelState.IsValid)
-		{
-			return View(project);
-		}
+        if (project == null)
+        {
+            return NotFound();
+        }
 
-		projectService.Update(project);
-		return RedirectToAction("List");
-	}
+        return View(project);
+    }
 
-	[HttpGet]
-	public IActionResult Delete(Guid id)
-	{
-		projectService.SoftDelete(new ProjectDto{Id = id});
-		return RedirectToAction("List");
-	}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(ProjectDto project)
+    {
+        var userId = User.GetUserId();
+        if (userId == Guid.Empty ||
+            !_permissionService.UserHadProjectPermission(userId, project.Id.ToGuid(), PermissionName.EditProject))
+        {
+            return Forbid();
+        }
 
-	[HttpGet]
-	public IActionResult Details(Guid id)
-	{
-		ProjectDto? project = projectService.Get(id);
-		if(project == null)
-		{
-			return NotFound();
-		}
+        if (!ModelState.IsValid)
+        {
+            // TODO validation
+            // return View(project);
+        }
 
-		return View(project);
-	}
+        _projectService.Update(project);
+        return RedirectToAction("List");
+    }
+
+    [HttpGet]
+    public IActionResult Delete(Guid id)
+    {
+        _projectService.SoftDelete(new ProjectDto { Id = id });
+        return RedirectToAction("List");
+    }
+
+    [HttpGet]
+    public IActionResult Details(Guid id)
+    {
+        ProjectDto? project = _projectService.Get(id);
+        if (project == null)
+        {
+            return NotFound();
+        }
+
+        return View(project);
+    }
 }

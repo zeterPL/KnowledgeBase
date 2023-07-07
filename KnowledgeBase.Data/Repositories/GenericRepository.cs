@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Data.Data;
+using KnowledgeBase.Data.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

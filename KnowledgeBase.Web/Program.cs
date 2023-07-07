@@ -1,6 +1,9 @@
 using KnowledgeBase.Data.Data;
 using KnowledgeBase.Data.Models;
-using Microsoft.AspNetCore.Identity;
+using KnowledgeBase.Data.Repositories;
+using KnowledgeBase.Data.Repositories.Interfaces;
+using KnowledgeBase.Logic.Services;
+using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -16,9 +19,11 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddRoles<Role>()
     .AddEntityFrameworkStores<KnowledgeDbContext>();
 
-builder.Services.AddRazorPages();
+// Dependency injection
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
-
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -34,16 +39,14 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
+	app.UseMigrationsEndPoint();
 }
 else
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Error");
+	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+	app.UseHsts();
 }
-
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -55,6 +58,8 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller}/{action=Index}/{id?}");
+
 app.Run();
-
-

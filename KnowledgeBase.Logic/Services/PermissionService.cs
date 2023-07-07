@@ -15,7 +15,7 @@ public class PermissionService : IPermissionService
         _userRepository = userRepository;
         _projectRepository = projectRepository;
     }
-    
+
     public bool UserHadProjectPermission(Guid userId, Guid projectId, PermissionName permission)
     {
         User? user = _userRepository.Get(userId);
@@ -24,14 +24,13 @@ public class PermissionService : IPermissionService
             return false;
         }
 
-        Project? project = _projectRepository.Get(projectId);
+        Project? project = _projectRepository.GetProjectWithPermissions(projectId);
         if (project == null)
         {
             return false;
         }
 
         var permissions = project.UsersPermissions.Where(p => p.UserId == userId);
-
         return permissions.Any(p => p.PermissionName == permission);
     }
 }

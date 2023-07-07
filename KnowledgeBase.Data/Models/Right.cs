@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.Data.Models
 {
-    public class Role : IdentityRole<Guid>
+    public class Right
     {
-        public string Description { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
 
-        public ICollection<UserRole> AssignedUsers { get; set; }
+        public ICollection<UserRight> AssignedUsers { get; set; }
         public ICollection<UserRoleRight> AssignedUserRoleRights { get; set; }
     }
 }

@@ -19,6 +19,6 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
 
     public Project? GetProjectWithPermissions(Guid id)
     {
-        return _context.Set<Project>().Include(p => p.UsersPermissions).Single(p => p.Id == id);
+        return _context.Set<Project>().Include(p => p.UsersPermissions).SingleOrDefault(p => p.Id == id);
     }
 }

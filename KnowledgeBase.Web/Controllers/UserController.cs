@@ -72,5 +72,14 @@ namespace KnowledgeBase.Web.Controllers
                     
             return View(user);
         }
+
+        [HttpGet]
+        public IActionResult Delete(Guid id)
+        {
+            var user = _userService.GetById(id);
+            _userService.Delete(user);
+
+            return RedirectToAction("List");
+        }
     }
 }

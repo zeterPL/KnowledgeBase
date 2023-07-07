@@ -47,9 +47,13 @@ namespace KnowledgeBase.Logic.Services
 
         }
 
-        public bool Delete(UserDto user)
+        public bool Delete(UserDto userDto)
         {
-            throw new NotImplementedException();
+            var user = _userRepository.Get(userDto.Id);
+            if (user == null) { return false; }
+
+            _userRepository.Remove(user);
+            return true;
         }
 
         public IEnumerable<UserDto> GetAllUsers()

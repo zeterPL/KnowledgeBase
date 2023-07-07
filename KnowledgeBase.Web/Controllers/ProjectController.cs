@@ -1,5 +1,5 @@
 ﻿using KnowledgeBase.Logic.Dto;
-using KnowledgeBase.Logic.Services;
+using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KnowledgeBase.Web.Controllers;
@@ -45,7 +45,7 @@ public class ProjectController : Controller
 	[HttpGet]
 	public IActionResult Edit(Guid id)
 	{
-		ProjectDto project = projectService.Get(id);
+		ProjectDto? project = projectService.Get(id);
 
 		if (project == null)
 		{
@@ -78,7 +78,12 @@ public class ProjectController : Controller
 	[HttpGet]
 	public IActionResult Details(Guid id)
 	{
-		ProjectDto project = projectService.Get(id);
+		ProjectDto? project = projectService.Get(id);
+		if(project == null)
+		{
+			return NotFound();
+		}
+
 		return View(project);
 	}
 }

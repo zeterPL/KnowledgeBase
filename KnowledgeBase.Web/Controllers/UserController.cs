@@ -30,6 +30,10 @@ namespace KnowledgeBase.Web.Controllers
         {
             UserDto user = new UserDto();
             user = _userService.GetById(id);
+            if(user is null)
+            {
+                return NotFound();
+            }
 
             return View(user);
         }
@@ -56,6 +60,10 @@ namespace KnowledgeBase.Web.Controllers
         public IActionResult Edit(Guid id)
         {
             var user = _userService.GetById(id);
+            if(user is null)
+            {
+                return NotFound();
+            }
          
             return View(user);
         }
@@ -77,6 +85,11 @@ namespace KnowledgeBase.Web.Controllers
         public IActionResult Delete(Guid id)
         {
             var user = _userService.GetById(id);
+            if(user is null)
+            {
+                return NotFound();
+            }
+
             _userService.Delete(user);
 
             return RedirectToAction("List");

@@ -24,6 +24,11 @@
 		@Html.ValidationMessageFor(resource=>resource.Category)
 	</div>
 	<div>
+		@Html.LabelFor(resource=>resource.ProjectId)
+		@Html.EditorFor(resource=>resource.ProjectId)
+		@Html.ValidationMessageFor(resource=>resource.ProjectId)
+	</div>
+	<div>
 		<input type="submit" value="Save" />
 	</div>
 }

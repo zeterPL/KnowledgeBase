@@ -1,6 +1,9 @@
-﻿using KnowledgeBase.Data.Models;
+﻿using AutoMapper;
+using KnowledgeBase.Data.Models;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.AutoMapper;
 
 namespace KnowledgeBase.Web.Controllers
 {
@@ -27,22 +30,22 @@ namespace KnowledgeBase.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Create(Resource resource)
+		public IActionResult Create(ResourceDto resourcedto)
 		{
-			_service.Add(resource);
+			_service.Add(resourcedto);
 			return RedirectToAction(actionName: "Index");
 		}
 
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Edit(Resource resource)
+		public IActionResult Edit(ResourceDto resourcedto)
 		{
 			if (!ModelState.IsValid)
 			{
 				// return View(resource);
 			}
-			_service.Update(resource);
+			_service.Update(resourcedto);
 			return RedirectToAction(actionName: "Index");
 		}
 
@@ -61,9 +64,9 @@ namespace KnowledgeBase.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Delete(Resource resource)
+		public IActionResult Delete(ResourceDto resourcedto)
 		{
-			_service.Deleted(_service.Get(resource.Id));
+			_service.Deleted(resourcedto);
 			return RedirectToAction(actionName: "Index");
 		}
 	}

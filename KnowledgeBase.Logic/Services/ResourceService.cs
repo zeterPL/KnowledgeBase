@@ -1,5 +1,7 @@
-﻿using KnowledgeBase.Data.Models;
+﻿using AutoMapper;
+using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
+using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 
 namespace KnowledgeBase.Logic.Services
@@ -7,35 +9,41 @@ namespace KnowledgeBase.Logic.Services
     public class ResourceService : IResourceService
     {
         private readonly IResourceRepository _resourceRepository;
+		private readonly IMapper _mapper;
 
-        public ResourceService(IResourceRepository resourceService)
+		public ResourceService(IResourceRepository resourceService, IMapper mapper)
         {
             _resourceRepository = resourceService;
-        }
+			_mapper = mapper;
+		}
 
-        public Resource Get(Guid id)
+		public Resource Get(Guid id)
         {
             return _resourceRepository.Get(id);
         }
 
-        public void Add(Resource resource)
+        public void Add(ResourceDto resourcedto)
         {
-            _resourceRepository.Add(resource);
+			Resource resource = _mapper.Map<Resource>(resourcedto);
+			_resourceRepository.Add(resource);
         }
 
-        public void Remove(Resource rsource)
+        public void Remove(ResourceDto resourcedto)
         {
-            _resourceRepository.Remove(rsource);
+			Resource resource = _mapper.Map<Resource>(resourcedto);
+			_resourceRepository.Remove(resource);
         }
 
-        public void Deleted(Resource rsource)
+        public void Deleted(ResourceDto resourcedto)
         {
-            _resourceRepository.Deleted(rsource);
+			Resource resource = _mapper.Map<Resource>(resourcedto);
+			_resourceRepository.Deleted(resource);
         }
 
-        public void Update(Resource resource)
+        public void Update(ResourceDto resourcedto)
         {
-            _resourceRepository.Update(resource);
+			Resource resource = _mapper.Map<Resource>(resourcedto);
+			_resourceRepository.Update(resource);
         }
 
         public IEnumerable<Resource> GetAll()

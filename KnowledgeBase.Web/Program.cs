@@ -23,6 +23,8 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

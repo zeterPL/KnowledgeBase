@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
@@ -9,10 +10,30 @@ namespace KnowledgeBase.Logic.Services;
 public class ProjectService : IProjectService
 {
     private readonly IProjectRepository projectRepository;
+    private readonly IPermissionRepository permissionRepository;
 
-    public ProjectService(IProjectRepository projectRepository)
+    public ProjectService(IProjectRepository projectRepository, IPermissionRepository permissionRepository)
     {
         this.projectRepository = projectRepository;
+        this.permissionRepository = permissionRepository;
+    }
+
+    private void SavePermissions(IEnumerable<Permission> permissions)
+    {
+        foreach (var permission in permissions)
+        {
+            permissionRepository.Add(permission);
+        }
+    }
+
+    private static ICollection<PermissionName> DefaultCreatePermissions
+    {
+        get => new List<PermissionName>
+        {
+            PermissionName.ReadProject,
+            PermissionName.EditProject,
+            PermissionName.DeleteProject,
+        };
     }
 
     public Guid Add(ProjectDto projectDto)
@@ -22,6 +43,16 @@ public class ProjectService : IProjectService
             Name = projectDto.Name,
         };
         projectRepository.Add(newProject);
+
+        // Default permissions
+        var permissions = DefaultCreatePermissions.Select(p => new Permission
+        {
+            PermissionName = p,
+            UserId = projectDto.User.Id,
+            ProjectId = newProject.Id,
+        });
+        SavePermissions(permissions);
+
         return newProject.Id;
     }
 

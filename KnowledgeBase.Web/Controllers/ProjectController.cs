@@ -1,5 +1,5 @@
 ﻿using KnowledgeBase.Logic.Dto;
-using KnowledgeBase.Logic.Services;
+using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KnowledgeBase.Web.Controllers;

@@ -1,0 +1,15 @@
+﻿@using KnowledgeBase.Logic.Dto
+@model IEnumerable<UserDto>
+@{
+    IEnumerable<UserDto> users = Model;
+}
+
+@foreach (UserDto user in users)
+{
+    <div>
+        @user.FirstName
+        @user.LastName
+        @user.Email
+        
+    </div>
+}

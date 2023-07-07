@@ -1,0 +1,19 @@
+﻿using KnowledgeBase.Logic.Dto;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace KnowledgeBase.Logic.Services.Interfaces
+{
+    public interface IUserService
+    {
+        public IEnumerable<UserDto> GetAllUsers();
+        public UserDto GetById(int id);
+        public bool AddUser(UserDto user);
+        public UserDto Update(UserDto user);
+        public bool Delete(UserDto user);
+        public bool SoftDelete(UserDto user);
+    }
+}

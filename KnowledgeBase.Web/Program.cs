@@ -3,6 +3,7 @@ using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Services;
+using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -19,8 +20,15 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddEntityFrameworkStores<KnowledgeDbContext>();
 
 // Dependency injection
+#region Dependency injection
+
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+#endregion
 
 builder.Services.AddControllersWithViews();
 

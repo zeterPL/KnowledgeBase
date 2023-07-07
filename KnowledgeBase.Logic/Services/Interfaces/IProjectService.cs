@@ -1,6 +1,6 @@
 ﻿using KnowledgeBase.Logic.Dto;
 
-namespace KnowledgeBase.Logic.Services;
+namespace KnowledgeBase.Logic.Services.Interfaces;
 
 public interface IProjectService
 {

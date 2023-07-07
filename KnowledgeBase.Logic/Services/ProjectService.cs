@@ -1,6 +1,7 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Services.Interfaces;
 
 namespace KnowledgeBase.Logic.Services;
 

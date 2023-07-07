@@ -1,5 +1,4 @@
 ﻿using KnowledgeBase.Data.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +22,7 @@ public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<UserProject>().HasKey(up => new { up.ProjectId, up.UserId});
+        builder.Entity<UserProject>().HasKey(up => new { up.ProjectId, up.UserId });
 
         builder.Entity<User>().HasMany(e => e.Resources)
             .WithOne(e => e.User).HasForeignKey(e => e.UserId)
@@ -33,5 +32,6 @@ public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
             .WithOne(e => e.Project).HasForeignKey(e => e.ProjectId)
             .IsRequired(false);
 
+        builder.Entity<Permission>().HasKey(e => new { e.ProjectId, e.UserId });
     }
 }

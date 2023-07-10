@@ -11,5 +11,11 @@
     <label><b>Email: </b></label> <br />
     @user.Email <br />
     <label><b>Role: </b></label> <br />
-    @ViewBag.Role.Name
+    @ViewBag.Role.Name <br/>
+
+    <label><b>Permissions</b></label>
+    @foreach(PermissionDto perm in ViewBag.Permissions)
+    {
+        <div>@perm.ProjectId @perm.PermissionName </div>
+    }
 </div>

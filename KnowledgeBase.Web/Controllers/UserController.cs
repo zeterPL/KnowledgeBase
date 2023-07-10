@@ -11,11 +11,13 @@ namespace KnowledgeBase.Web.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
+        private readonly IPermissionService _permissionService;
 
-        public UserController(IUserService userService, IRoleService roleService)
+        public UserController(IUserService userService, IRoleService roleService, IPermissionService permissionService)
         {
             _userService = userService;
             _roleService = roleService;
+            _permissionService = permissionService;
         }
 
         public IActionResult Index()
@@ -40,6 +42,8 @@ namespace KnowledgeBase.Web.Controllers
             {
                 return NotFound();
             }
+            var perms = _permissionService.GetPermissionsbyUserId(id);
+            ViewBag.Permissions = perms;
 
             return View(user);
         }

@@ -4,8 +4,12 @@
     UserDto user = Model;
 }
 <div>
-    @user.FirstName
-    @user.LastName
-    @user.Email
+    <label> <b> First name: </b> </label> <br />
+    @user.FirstName <br />
+    <label><b>Last name:</b> </label> <br />
+    @user.LastName <br />
+    <label><b>Email: </b></label> <br />
+    @user.Email <br />
+    <label><b>Role: </b></label> <br />
     @ViewBag.Role.Name
 </div>

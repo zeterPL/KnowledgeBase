@@ -1,84 +1,109 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KnowledgeBase.Web.Controllers;
 
 public class ProjectController : Controller
 {
-	private readonly IProjectService projectService;
-	public ProjectController(IProjectService projectService)
-	{
-		this.projectService = projectService;
-	}
+    private readonly IProjectService _projectService;
 
-	public IActionResult Index()
-	{
-		return View();
-	}
+    public ProjectController(IProjectService projectService)
+    {
+        _projectService = projectService;
+    }
 
-	public IActionResult List()
-	{
-		IEnumerable<ProjectDto> projects = projectService.GetAll();
-		return View(projects.ToList());
-	}
+    public IActionResult Index()
+    {
+        return View();
+    }
 
-	[HttpGet]
-	public IActionResult Create()
-	{
-		return View();
-	}
+    public IActionResult List()
+    {
+        IEnumerable<ProjectDto> projects = _projectService.GetAll();
+        return View(projects.ToList());
+    }
 
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public IActionResult Create(ProjectDto project)
-	{
-		if (!ModelState.IsValid)
-		{
-			return View(project);
-		}
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
 
-		projectService.Add(project);
-		return RedirectToAction("List");
-	}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(ProjectDto project)
+    {
+        var userId = User.GetUserId();
+        if (userId == Guid.Empty)
+        {
+            return Forbid();
+        }
 
-	[HttpGet]
-	public IActionResult Edit(Guid id)
-	{
-		ProjectDto project = projectService.Get(id);
+        project.User = new UserDto
+        {
+            Id = userId,
+        };
 
-		if (project == null)
-		{
-			return NotFound();
-		}
+        if (!ModelState.IsValid)
+        {
+            // TODO validation
+            // return View(project);
+        }
 
-		return View(project);
-	}
+        _projectService.Add(project);
+        return RedirectToAction("List");
+    }
 
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public IActionResult Edit(ProjectDto project)
-	{
-		if (!ModelState.IsValid)
-		{
-			return View(project);
-		}
+    [HttpGet]
+    [Authorize(Policy = "canEditProject")]
+    public IActionResult Edit(Guid id)
+    {
+        ProjectDto? project = _projectService.Get(id);
 
-		projectService.Update(project);
-		return RedirectToAction("List");
-	}
+        if (project == null)
+        {
+            return NotFound();
+        }
 
-	[HttpGet]
-	public IActionResult Delete(Guid id)
-	{
-		projectService.SoftDelete(new ProjectDto{Id = id});
-		return RedirectToAction("List");
-	}
+        return View(project);
+    }
 
-	[HttpGet]
-	public IActionResult Details(Guid id)
-	{
-		ProjectDto project = projectService.Get(id);
-		return View(project);
-	}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = "canEditProject")]
+    public IActionResult Edit(ProjectDto project)
+    {
+        if (!ModelState.IsValid)
+        {
+            // TODO validation
+            // return View(project);
+        }
+
+        _projectService.Update(project);
+        return RedirectToAction("List");
+    }
+
+    [HttpGet]
+    [Authorize(Policy = "canDeleteProject")]
+    public IActionResult Delete(Guid id)
+    {
+        _projectService.SoftDelete(new ProjectDto { Id = id });
+        return RedirectToAction("List");
+    }
+
+    [HttpGet]
+    [Authorize(Policy = "canReadProject")]
+    public IActionResult Details(Guid id)
+    {
+        ProjectDto? project = _projectService.Get(id);
+        if (project == null)
+        {
+            return NotFound();
+        }
+
+        return View(project);
+    }
 }

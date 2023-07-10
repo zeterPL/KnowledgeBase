@@ -4,6 +4,7 @@ using KnowledgeBase.Data.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    partial class KnowledgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230707112431_valid-permission-primary-key")]
+    partial class validpermissionprimarykey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +64,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
@@ -93,22 +96,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Resources", (string)null);
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.Right", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rights", (string)null);
+                    b.ToTable("Resources");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
@@ -232,57 +220,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserProjects", (string)null);
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.UserRight", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RightId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("UserId", "RightId");
-
-                    b.HasIndex("RightId");
-
-                    b.ToTable("UserRights", (string)null);
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.UserRole", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.UserRoleRight", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RightId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("UserId", "RoleId", "RightId");
-
-                    b.HasIndex("RightId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRoleRights", (string)null);
+                    b.ToTable("UserProjects");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -445,71 +383,6 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.UserRight", b =>
-                {
-                    b.HasOne("KnowledgeBase.Data.Models.Right", "Right")
-                        .WithMany("AssignedUsers")
-                        .HasForeignKey("RightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KnowledgeBase.Data.Models.User", "User")
-                        .WithMany("AssignedRights")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Right");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.UserRole", b =>
-                {
-                    b.HasOne("KnowledgeBase.Data.Models.Role", "Role")
-                        .WithMany("AssignedUsers")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KnowledgeBase.Data.Models.User", "User")
-                        .WithMany("AssignedRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.UserRoleRight", b =>
-                {
-                    b.HasOne("KnowledgeBase.Data.Models.Right", "Right")
-                        .WithMany("AssignedUserRoleRights")
-                        .HasForeignKey("RightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KnowledgeBase.Data.Models.Role", "Role")
-                        .WithMany("AssignedUserRoleRights")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KnowledgeBase.Data.Models.User", "User")
-                        .WithMany("AssignedRolesRights")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Right");
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Role", null)
@@ -570,31 +443,11 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("UsersPermissions");
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.Right", b =>
-                {
-                    b.Navigation("AssignedUserRoleRights");
-
-                    b.Navigation("AssignedUsers");
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
-                {
-                    b.Navigation("AssignedUserRoleRights");
-
-                    b.Navigation("AssignedUsers");
-                });
-
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
                     b.Navigation("AssignedProjects");
 
                     b.Navigation("ProjectsPermissions");
-
-                    b.Navigation("AssignedRights");
-
-                    b.Navigation("AssignedRoles");
-
-                    b.Navigation("AssignedRolesRights");
 
                     b.Navigation("Resources");
                 });

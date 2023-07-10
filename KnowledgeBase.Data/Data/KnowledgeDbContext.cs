@@ -1,5 +1,4 @@
 ﻿using KnowledgeBase.Data.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +38,5 @@ public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
         builder.Entity<Project>().HasMany(e => e.Resources)
             .WithOne(e => e.Project).HasForeignKey(e => e.ProjectId)
             .IsRequired(false);
-
     }
 }

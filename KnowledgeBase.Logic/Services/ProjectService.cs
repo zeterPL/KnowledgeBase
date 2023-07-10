@@ -1,20 +1,42 @@
 ﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Shared;
 
 namespace KnowledgeBase.Logic.Services;
 
 public class ProjectService : IProjectService
 {
     private readonly IProjectRepository projectRepository;
+    private readonly IPermissionRepository permissionRepository;
 
-    public ProjectService(IProjectRepository projectRepository)
+    public ProjectService(IProjectRepository projectRepository, IPermissionRepository permissionRepository)
     {
         this.projectRepository = projectRepository;
+        this.permissionRepository = permissionRepository;
     }
 
-    public ProjectDto Add(ProjectDto projectDto)
+    private void SavePermissions(IEnumerable<Permission> permissions)
+    {
+        foreach (var permission in permissions)
+        {
+            permissionRepository.Add(permission);
+        }
+    }
+
+    private static ICollection<PermissionName> DefaultCreatePermissions
+    {
+        get => new List<PermissionName>
+        {
+            PermissionName.ReadProject,
+            PermissionName.EditProject,
+            PermissionName.DeleteProject,
+        };
+    }
+
+    public Guid Add(ProjectDto projectDto)
     {
         Project newProject = new Project
         {
@@ -22,19 +44,26 @@ public class ProjectService : IProjectService
         };
         projectRepository.Add(newProject);
 
-        projectDto.Id = newProject.Id;
-        return projectDto;
+        // Default permissions
+        var permissions = DefaultCreatePermissions.Select(p => new Permission
+        {
+            PermissionName = p,
+            UserId = projectDto.User.Id,
+            ProjectId = newProject.Id,
+        });
+        SavePermissions(permissions);
+
+        return newProject.Id;
     }
 
-    public void Remove(ProjectDto projectDto)
+    public ProjectDto? Get(Guid id)
     {
-        Project project = projectRepository.Get(projectDto.Id);
-        projectRepository.Remove(project);
-    }
-
-    public ProjectDto Get(Guid id)
-    {
-        return projectRepository.Get(id).ToProjectDto();
+        Project project = projectRepository.Get(id);
+        if (project == null)
+        {
+            return null;
+        }
+        return project.ToProjectDto();
     }
 
     public IEnumerable<ProjectDto> GetAll()
@@ -43,20 +72,41 @@ public class ProjectService : IProjectService
         return projects.Select(p => p.ToProjectDto());
     }
 
-    public ProjectDto Update(ProjectDto projectDto)
+    public Guid Update(ProjectDto projectDto)
     {
-        Project project = projectRepository.Get(projectDto.Id);
-        
+        var id = projectDto.Id.ToGuid();
+        if (id == Guid.Empty)
+        {
+            return Guid.Empty;
+        }
+
+        Project project = projectRepository.Get(id);
+        if (project == null) // Project doesnt exist
+        {
+            return Guid.Empty;
+        }
+
         // Update project prop using projectDto props
         project.Name = projectDto.Name;
-        
+
         projectRepository.Update(project);
-        return project.ToProjectDto();
+        return project.Id;
     }
 
     public void SoftDelete(ProjectDto projectDto)
     {
-        Project project = projectRepository.Get(projectDto.Id);
+        var id = projectDto.Id.ToGuid();
+        if (id == Guid.Empty)
+        {
+            return;
+        }
+
+        Project project = projectRepository.Get(id);
+        if (project == null) // Project doesnt exist
+        {
+            return;
+        }
+
         projectRepository.SoftDelete(project);
     }
 }

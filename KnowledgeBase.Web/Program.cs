@@ -1,5 +1,6 @@
 using AutoMapper;
 using KnowledgeBase.Data.Data;
+using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
@@ -42,7 +43,6 @@ using (var scope = app.Services.CreateScope())
 
     var context = services.GetRequiredService<KnowledgeDbContext>();
     context.Database.EnsureCreated();
-    DbInitializer.Initialize(context);
 }
 
 // Configure the HTTP request pipeline.

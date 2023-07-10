@@ -19,6 +19,21 @@ public class PermissionService : IPermissionService
         _permissionRepsitory = permissionRepository;
     }
 
+    public void Delete(PermissionDto permission)
+    {
+        var perm = _permissionRepsitory.Get(permission.Id);
+        if (perm == null) { return; }
+
+        _permissionRepsitory.Remove(perm);
+    }
+
+    public PermissionDto GetById(Guid id)
+    {
+        return _permissionRepsitory.Get(id).ToPermissionDto();
+    }
+
+
+
     public PermissionDto GetPermissionsbyProjectId(Guid projectId)
     {
         return _permissionRepsitory.Get(projectId).ToPermissionDto();
@@ -28,6 +43,13 @@ public class PermissionService : IPermissionService
     {
        return _permissionRepsitory.GetAll().Where(p => p.UserId == userId)
             .Select(p => p.ToPermissionDto()).ToList();
+    }
+
+    public IList<PermissionDto> GetUserPermissionsByProjectIdAndUserId(Guid userId, Guid projectId)
+    {
+        var userPermissions = GetPermissionsbyUserId(userId);
+        var userProjectPermissions = userPermissions.Where(p => p.ProjectId == projectId).ToList();
+        return userProjectPermissions;
     }
 
     public bool UserHadProjectPermission(Guid userId, Guid projectId, PermissionName permission)

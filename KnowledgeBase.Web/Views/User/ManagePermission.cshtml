@@ -1,0 +1,23 @@
+﻿@using KnowledgeBase.Logic.Dto;
+@using KnowledgeBase.Logic.ViewModels;
+@{
+    PermissionViewModel permissionViewModel = Model;
+}
+<h3>@permissionViewModel.ProjectName</h3>
+@if(permissionViewModel.Permissions.Count != 3)
+{
+    <a href="#" class="btn btn-primary">Add</a>
+}
+else
+{
+    <label>max</label>
+}
+
+<div>
+    @foreach(PermissionDto permission in permissionViewModel.Permissions)
+    {
+        <div>
+            <label>@permission.PermissionName</label> <a asp-action="DeletePermission" asp-route-id="@permission.Id" class="btn btn-danger">Delete</a>
+        </div>      
+    }
+</div>

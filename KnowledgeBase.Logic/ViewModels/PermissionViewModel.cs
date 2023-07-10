@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.Logic.ViewModels
 {
-    public class AddPermissionViewModel
+    public class PermissionViewModel
     {
         public Guid ProjectId { get; set; }
         public string ProjectName { get; set; }

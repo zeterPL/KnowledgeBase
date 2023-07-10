@@ -9,4 +9,7 @@ public interface IPermissionService
     public bool UserHadProjectPermission(Guid userId, Guid projectId, PermissionName permission);
     public IList<PermissionDto> GetPermissionsbyUserId(Guid userId);
     public PermissionDto GetPermissionsbyProjectId(Guid projectId);
+    public IList<PermissionDto> GetUserPermissionsByProjectIdAndUserId(Guid userId, Guid projectId);
+    public PermissionDto GetById(Guid id);
+    public void Delete(PermissionDto permission);
 }

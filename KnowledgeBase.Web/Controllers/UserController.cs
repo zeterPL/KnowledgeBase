@@ -6,6 +6,7 @@ using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Logic.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 
 namespace KnowledgeBase.Web.Controllers
 {
@@ -14,15 +15,15 @@ namespace KnowledgeBase.Web.Controllers
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
         private readonly IPermissionService _permissionService;
-        private readonly IProjectRepository _projectRepository;
+        private readonly IProjectService _projectService;
 
         public UserController(IUserService userService, IRoleService roleService, 
-            IPermissionService permissionService, IProjectRepository projectRepository)
+            IPermissionService permissionService, IProjectService projectService)
         {
             _userService = userService;
             _roleService = roleService;
             _permissionService = permissionService;
-            _projectRepository = projectRepository;
+            _projectService = projectService;
         }
 
         public IActionResult Index()
@@ -83,16 +84,17 @@ namespace KnowledgeBase.Web.Controllers
         [HttpGet]
         public IActionResult Permissions(Guid id)
         {
+            ViewBag.UserId = id;
             var projects = _permissionService.GetPermissionsbyUserId(id).Select(p=>p.ProjectId).Distinct();
             var perms = _permissionService.GetPermissionsbyUserId(id);
-            List<AddPermissionViewModel> viewModels = new List<AddPermissionViewModel>();
+            List<PermissionViewModel> viewModels = new List<PermissionViewModel>();
             foreach(Guid project in projects)
             {
                 
-                var projctName = _projectRepository.Get(project).Name;
+                var projctName = _projectService.Get(project).Name;
                 var permsByProject = perms.Where(p => p.ProjectId == project).ToList();
 
-                AddPermissionViewModel vm = new AddPermissionViewModel();
+                PermissionViewModel vm = new PermissionViewModel();
                 vm.ProjectId = project;
                 vm.ProjectName = projctName;
                 vm.Permissions = permsByProject;
@@ -102,10 +104,37 @@ namespace KnowledgeBase.Web.Controllers
             return View(viewModels);
         }
 
-        [HttpPost]
-        public IActionResult Permissions(PermissionDto id)
+
+        [HttpGet]
+        public IActionResult ManagePermission(
+            Guid userId, Guid projectId)
         {
-            return View();
+            var permissions = _permissionService.GetUserPermissionsByProjectIdAndUserId(userId, projectId);
+            var projectName = _projectService.Get(projectId).Name;
+
+            var viewModel = new PermissionViewModel();
+            viewModel.ProjectId = projectId;
+            viewModel.ProjectName = projectName;
+            viewModel.Permissions = permissions.ToList();
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult DeletePermission(Guid id)
+        {
+            
+            var permission = _permissionService.GetById(id);
+            var userId = permission.UserId;
+            var projectId = permission.ProjectId;
+
+            if(permission is null)
+            {
+                return NotFound();
+            }
+            _permissionService.Delete(permission);
+
+            return RedirectToAction("ManagePermission", new { userId = userId, projectId = projectId});
         }
 
         [HttpGet]

@@ -1,5 +1,6 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KnowledgeBase.Web.Controllers;
@@ -7,6 +8,7 @@ namespace KnowledgeBase.Web.Controllers;
 public class ProjectController : Controller
 {
 	private readonly IProjectService projectService;
+	private static readonly ILog Log = LogManager.GetLogger(typeof(ProjectController));
 	public ProjectController(IProjectService projectService)
 	{
 		this.projectService = projectService;

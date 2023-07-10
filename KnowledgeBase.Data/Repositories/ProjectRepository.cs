@@ -41,6 +41,7 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
         // Get all projects assigned to user
         var assignedToUserProjects = GetAllAssignedToUser(userId);
 
-        return assignedToUserProjects.Union(assignedToUserProjects);
+        var result = projects.Union(assignedToUserProjects);
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -58,7 +59,7 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
-    [Authorize(Policy = "canEditProject")]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult Edit(Guid id)
     {
         ProjectDto? project = _projectService.Get(id);
@@ -73,7 +74,7 @@ public class ProjectController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Policy = "canEditProject")]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult Edit(ProjectDto project)
     {
         if (!ModelState.IsValid)
@@ -87,7 +88,7 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
-    [Authorize(Policy = "canDeleteProject")]
+    [Authorize(Policy = ProjectPermission.CanDeleteProject)]
     public IActionResult Delete(Guid id)
     {
         _projectService.SoftDelete(new ProjectDto { Id = id });
@@ -95,7 +96,7 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
-    [Authorize(Policy = "canReadProject")]
+    [Authorize(Policy = ProjectPermission.CanReadProject)]
     public IActionResult Details(Guid id)
     {
         ProjectDto? project = _projectService.Get(id);

@@ -75,13 +75,15 @@ public class ProjectController : Controller
     [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult Edit(ProjectDto project)
     {
+        project.UserId = Guid.NewGuid();
+        ModelState.Clear();
+        TryValidateModel(project);
         if (!ModelState.IsValid)
         {
-            // TODO validation
-            // return View(project);
+            return View(project);
         }
 
-        _projectService.Update(project);
+        _projectService.UpdateWithoutUserId(project);
         return RedirectToAction("List");
     }
 

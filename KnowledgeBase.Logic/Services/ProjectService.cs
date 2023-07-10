@@ -72,7 +72,7 @@ public class ProjectService : IProjectService
         return projects.Select(p => p.ToProjectDto());
     }
 
-    public Guid Update(ProjectDto projectDto)
+    public Guid UpdateWithoutUserId(ProjectDto projectDto)
     {
         var id = projectDto.Id.ToGuid();
         if (id == Guid.Empty)

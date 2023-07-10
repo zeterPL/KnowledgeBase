@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Data.Data;
+using KnowledgeBase.Data.Models.Interfaces;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,15 @@ namespace KnowledgeBase.Data.Repositories
             _context = context;
         }
 
-        public void Add(T entity)
+        public Guid Add(T entity)
         {
             _context.Set<T>().Add(entity);
             _context.SaveChanges();
+
+            _context.Entry(entity).GetDatabaseValues();
+
+            var IdProperty = entity.GetType().GetProperty("Id").GetValue(entity, null);
+            return Guid.Parse(IdProperty.ToString());
         }
 
         public T Get(Guid id)

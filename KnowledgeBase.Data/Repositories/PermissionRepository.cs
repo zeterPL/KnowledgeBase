@@ -9,4 +9,10 @@ public class PermissionRepository : GenericRepository<Permission>, IPermissionRe
     public PermissionRepository(KnowledgeDbContext context) : base(context)
     {
     }
+
+    public void AddRange(List<Permission> permissions)
+    {
+        _context.AddRange(permissions);
+        _context.SaveChanges();
+    }
 }

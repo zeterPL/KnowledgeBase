@@ -65,13 +65,15 @@ namespace KnowledgeBase.Web.Controllers
         [HttpPost]
         public IActionResult Create(UserDto user)
         {
+            Guid newUserId;
             Guid roleId = Guid.Parse(Request.Form["Roles"]);
             user.RoleId = roleId;
-         
+            var role = _roleService.Get(roleId);
 
             if (ModelState.IsValid)
             {
-                _userService.AddUser(user);
+                newUserId = _userService.AddUser(user);
+                _userService.AssignPermissionBasedOnUserRole(role, newUserId);
                 return RedirectToAction("List");
             }
             var allErrors = ModelState.Values.SelectMany(v => v.Errors);

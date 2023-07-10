@@ -17,10 +17,14 @@ namespace KnowledgeBase.Logic.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IProjectRepository _projectRepository;
+        private readonly IPermissionRepository _permissionRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IProjectRepository projectRepository, IPermissionRepository permissionRepository)
         {
             _userRepository = userRepository;
+            _projectRepository = projectRepository;
+            _permissionRepository = permissionRepository;
         }
 
         public void AddPermissionsByUserIdAndRoleId(Guid userId, Guid roleId)
@@ -28,7 +32,7 @@ namespace KnowledgeBase.Logic.Services
             _userRepository.AddPermissionsByUserIdAndRoleId(userId, roleId);
         }
 
-        public void AddUser(UserDto userDto)
+        public Guid AddUser(UserDto userDto)
         {
             User user = new User
             {
@@ -48,9 +52,66 @@ namespace KnowledgeBase.Logic.Services
             var securityStamp = Guid.NewGuid().ToString("D").ToUpper();
             user.SecurityStamp = securityStamp;
 
-            _userRepository.Add(user);
+            return _userRepository.Add(user);
 
         }
+
+        public void AssignPermissionBasedOnUserRole(RoleDto role, Guid userId)
+        {
+            var allProjects = _projectRepository.GetAll();
+            foreach (var project in allProjects)
+            {
+                List<Permission> permissions = new List<Permission>();
+                if (role.Name == "SuperAdmin")
+                {
+                    
+                    Permission perm = new Permission
+                    {
+                        ProjectId = project.Id,
+                        UserId = userId,
+                        PermissionName = Data.Models.Enums.PermissionName.ReadProject
+                    };
+                    permissions.Add(perm);
+
+                    Permission perm1 = new Permission
+                    {
+                        ProjectId = project.Id,
+                        UserId = userId,
+                        PermissionName = Data.Models.Enums.PermissionName.EditProject
+                    };
+                    permissions.Add(perm1);
+
+                    Permission perm2 = new Permission
+                    {
+                        ProjectId = project.Id,
+                        UserId = userId,
+                        PermissionName = Data.Models.Enums.PermissionName.DeleteProject
+                    };
+                    permissions.Add(perm2);
+
+                }
+                else if(role.Name == "Admin")
+                {
+                    Permission perm = new Permission
+                    {
+                        ProjectId = project.Id,
+                        UserId = userId,
+                        PermissionName = Data.Models.Enums.PermissionName.ReadProject
+                    };
+                    permissions.Add(perm);
+
+                    Permission perm1 = new Permission
+                    {
+                        ProjectId = project.Id,
+                        UserId = userId,
+                        PermissionName = Data.Models.Enums.PermissionName.EditProject
+                    };
+                    permissions.Add(perm1);
+                }
+                _permissionRepository.AddRange(permissions);
+            }
+        }
+
 
         public bool Delete(UserDto userDto)
         {

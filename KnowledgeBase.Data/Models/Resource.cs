@@ -10,8 +10,9 @@ public class Resource : IDeletableEntity
     public string Name { get; set; }
     public string Description { get; set; }
     public virtual ResourceCategory Category { get; set; }
+	public bool IsDeleted { get; set; }
 
-    public Guid ProjectId { get; set; }
+	public Guid ProjectId { get; set; }
     public virtual Project? Project { get; set; }
 
     public Guid UserId { get; set; }

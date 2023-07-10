@@ -16,7 +16,7 @@ public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
     DbSet<Resource> Resources { get; set; }
     DbSet<User> Users { get; set; }
     DbSet<Role> Roles { get; set; }
-    DbSet<UserProject> UserProjects { get; set; }
+	DbSet<UserProject> UserProjects { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)

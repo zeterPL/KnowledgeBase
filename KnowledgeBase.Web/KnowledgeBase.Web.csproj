@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KnowledgeBase.Data\KnowledgeBase.Data.csproj" />
     <ProjectReference Include="..\KnowledgeBase.Logic\KnowledgeBase.Logic.csproj" />
   </ItemGroup>
 

@@ -25,6 +25,11 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddControllersWithViews();
 
+builder.Host.ConfigureLogging(builder =>
+{
+    builder.AddLog4Net("log4net.config");
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

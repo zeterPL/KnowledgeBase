@@ -1,0 +1,19 @@
+﻿@using KnowledgeBase.Logic.Dto;
+@using KnowledgeBase.Logic.ViewModels;
+
+@{
+    List<AddPermissionViewModel> permissions = Model;
+}
+
+@foreach(AddPermissionViewModel permission in permissions)
+{
+    <div> 
+        <label>@permission.ProjectName</label> 
+
+        @foreach(PermissionDto permissionDto in permission.Permissions)
+        {
+            <label> @permissionDto.PermissionName </label>
+        }
+
+    </div>
+}

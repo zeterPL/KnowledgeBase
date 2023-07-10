@@ -19,6 +19,11 @@ public class PermissionService : IPermissionService
         _permissionRepsitory = permissionRepository;
     }
 
+    public PermissionDto GetPermissionsbyProjectId(Guid projectId)
+    {
+        return _permissionRepsitory.Get(projectId).ToPermissionDto();
+    }
+
     public IList<PermissionDto> GetPermissionsbyUserId(Guid userId)
     {
        return _permissionRepsitory.GetAll().Where(p => p.UserId == userId)

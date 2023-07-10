@@ -1,4 +1,5 @@
 ﻿@model KnowledgeBase.Logic.Dto.UserDto;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @using (Html.BeginForm("Create", "User", FormMethod.Post))
 {
@@ -27,7 +28,7 @@
         @Html.DropDownList("Roles", ViewBag.RolesList as SelectList, "--Select Item--");
     </div>
    
-
+   
 
 
     <div>

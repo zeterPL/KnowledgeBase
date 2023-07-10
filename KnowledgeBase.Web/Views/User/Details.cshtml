@@ -14,6 +14,7 @@
     @ViewBag.Role.Name <br/>
 
     <label><b>Permissions</b></label>
+    <a asp-action="Permissions" asp-route-id="@Model.Id">Manage Permissions</a>
     @foreach(PermissionDto perm in ViewBag.Permissions)
     {
         <div>@perm.ProjectId @perm.PermissionName </div>

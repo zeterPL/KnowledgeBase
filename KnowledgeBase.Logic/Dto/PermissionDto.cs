@@ -12,6 +12,7 @@ namespace KnowledgeBase.Logic.Dto
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
+        public Guid UserId { get; set; }
         public PermissionName PermissionName { get; set; }
     }
 
@@ -23,6 +24,7 @@ namespace KnowledgeBase.Logic.Dto
             {
                 Id = perimission.Id,
                 ProjectId = perimission.ProjectId,
+                UserId = perimission.UserId,
                 PermissionName = perimission.PermissionName,
             };
         }

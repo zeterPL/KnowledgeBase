@@ -5,5 +5,6 @@ namespace KnowledgeBase.Data.Repositories.Interfaces;
 public interface IProjectRepository : IGenericRepository<Project>
 {
     public void SoftDelete(Project project);
-    public Project? GetProjectWithPermissions(Guid id);
+    public IEnumerable<Project> GetAllAssignedToUser(Guid userId);
+    public IEnumerable<Project> GetAllReadableByUser(Guid userId);
 }

@@ -8,5 +8,6 @@ public interface IProjectService
     public Guid Update(ProjectDto project);
     public void SoftDelete(ProjectDto project);
     public IEnumerable<ProjectDto> GetAll();
+    public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId);
     public ProjectDto? Get(Guid id);
 }

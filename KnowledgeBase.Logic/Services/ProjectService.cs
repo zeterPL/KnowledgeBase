@@ -109,4 +109,10 @@ public class ProjectService : IProjectService
 
         projectRepository.SoftDelete(project);
     }
+
+    public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId)
+    {
+        var projects = projectRepository.GetAllReadableByUser(userId);
+        return projects.Select(p => p.ToProjectDto());
+    }
 }

@@ -23,7 +23,7 @@ public class ProjectController : Controller
 
     public IActionResult List()
     {
-        IEnumerable<ProjectDto> projects = _projectService.GetAll();
+        IEnumerable<ProjectDto> projects = _projectService.GetAllReadableByUser(User.GetUserId());
         return View(projects.ToList());
     }
 

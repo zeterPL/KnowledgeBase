@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230707092725_user-project-permissions")]
-    partial class userprojectpermissions
+    [Migration("20230710092642_roleid")]
+    partial class roleid
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,17 +27,22 @@ namespace KnowledgeBase.Data.Migrations
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Permission", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("PermissionName")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PermissionName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("Id");
 
-                    b.HasKey("ProjectId", "UserId");
+                    b.HasIndex("ProjectId");
 
                     b.HasIndex("UserId");
 
@@ -135,7 +140,7 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("AssignedRole")
+                    b.Property<int>("AssignedRoleName")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -180,6 +185,9 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -199,6 +207,8 @@ namespace KnowledgeBase.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -359,6 +369,17 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
+                {
+                    b.HasOne("KnowledgeBase.Data.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserProject", b =>
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
@@ -436,6 +457,11 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("Resources");
 
                     b.Navigation("UsersPermissions");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>

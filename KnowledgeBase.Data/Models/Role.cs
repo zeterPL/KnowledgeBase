@@ -11,6 +11,7 @@ namespace KnowledgeBase.Data.Models
     {
         public string Description { get; set; }
   
-        public virtual ICollection<RolePermission> AssignedPermissions { get;}
+       
+        public virtual ICollection<User> Users { get; set; }
     }
 }

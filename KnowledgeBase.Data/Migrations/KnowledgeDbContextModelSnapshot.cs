@@ -128,21 +128,6 @@ namespace KnowledgeBase.Data.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.RolePermission", b =>
-                {
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PermissionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("RoleId", "PermissionId");
-
-                    b.HasIndex("PermissionId");
-
-                    b.ToTable("RolePermissions");
-                });
-
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -197,6 +182,9 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -216,6 +204,8 @@ namespace KnowledgeBase.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -376,21 +366,13 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.RolePermission", b =>
+            modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
-                    b.HasOne("KnowledgeBase.Data.Models.Permission", "Permission")
-                        .WithMany("AssignedRoles")
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("KnowledgeBase.Data.Models.Role", "Role")
-                        .WithMany("AssignedPermissions")
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Permission");
 
                     b.Navigation("Role");
                 });
@@ -465,11 +447,6 @@ namespace KnowledgeBase.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.Permission", b =>
-                {
-                    b.Navigation("AssignedRoles");
-                });
-
             modelBuilder.Entity("KnowledgeBase.Data.Models.Project", b =>
                 {
                     b.Navigation("AssignedUsers");
@@ -481,7 +458,7 @@ namespace KnowledgeBase.Data.Migrations
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
                 {
-                    b.Navigation("AssignedPermissions");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>

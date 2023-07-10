@@ -39,8 +39,8 @@ namespace KnowledgeBase.Logic.Services
                 UserName = userDto.Email,
                 EmailConfirmed = true,
                 NormalizedEmail = userDto.Email.ToUpper(),
-                NormalizedUserName = userDto.UserName.ToUpper(),
-                AssignedRoleName = Data.Models.Enums.UserRoles.Basic
+                NormalizedUserName = userDto.Email.ToUpper(),
+                RoleId = userDto.RoleId,
             };
             var hashedPass = new PasswordHasher<object>().HashPassword(null, userDto.Password);
             user.PasswordHash = hashedPass;
@@ -90,7 +90,7 @@ namespace KnowledgeBase.Logic.Services
 
             user.FirstName = userDto.FirstName;
             user.LastName = userDto.LastName;
-            user.UserName = userDto.UserName;
+      
             user.Email = userDto.Email;
             
             _userRepository.Update(user);

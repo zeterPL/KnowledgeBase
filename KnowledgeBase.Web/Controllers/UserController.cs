@@ -1,17 +1,21 @@
-﻿using KnowledgeBase.Logic.Dto;
+﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KnowledgeBase.Web.Controllers
 {
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IRoleService roleService)
         {
             _userService = userService;
+            _roleService = roleService;
         }
 
         public IActionResult Index()
@@ -30,6 +34,8 @@ namespace KnowledgeBase.Web.Controllers
         {
             UserDto user = new UserDto();
             user = _userService.GetById(id);
+            RoleDto role = _roleService.Get(user.RoleId);
+            ViewBag.Role = role;
             if(user is null)
             {
                 return NotFound();
@@ -41,18 +47,27 @@ namespace KnowledgeBase.Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var roles = _roleService.GetAll();
+            ViewBag.RolesList = new SelectList(roles, "Id", "Name");
             return View();
         }
 
         [HttpPost]
         public IActionResult Create(UserDto user)
         {
-            if(ModelState.IsValid)
+            Guid roleId = Guid.Parse(Request.Form["Roles"]);
+            user.RoleId = roleId;
+         
+
+            if (ModelState.IsValid)
             {
                 _userService.AddUser(user);
                 return RedirectToAction("List");
             }
+            var allErrors = ModelState.Values.SelectMany(v => v.Errors);
 
+            var roles = _roleService.GetAll();
+            ViewBag.RolesList = new SelectList(roles, "Id", "Name");
             return View(user);
         }
 
@@ -73,7 +88,7 @@ namespace KnowledgeBase.Web.Controllers
         {           
             if(ModelState.IsValid)
             {
-                user.UserName = user.Email;
+               
                 _userService.Update(user);
                 return RedirectToAction("List");
             }

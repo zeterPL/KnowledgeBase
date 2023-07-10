@@ -23,6 +23,10 @@
         @Html.EditorFor(user => user.Password, "password")
         @Html.ValidationMessageFor(user => user.Password)
     </div>
+    <div>
+        @Html.DropDownList("Roles", ViewBag.RolesList as SelectList, "--Select Item--");
+    </div>
+   
 
 
 

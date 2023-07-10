@@ -16,7 +16,7 @@ public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
     DbSet<User> Users { get; set; }
     DbSet<Role> Roles { get; set; }
     DbSet<UserProject> UserProjects { get; set; }
-    DbSet<RolePermission> RolePermissions { get; set; }
+    
   
 
 
@@ -25,11 +25,14 @@ public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
         base.OnModelCreating(builder);
 
         builder.Entity<UserProject>().HasKey(up => new { up.ProjectId, up.UserId});
-        builder.Entity<RolePermission>().HasKey(rp => new { rp.RoleId, rp.PermissionId });       
+           
    
         builder.Entity<User>().HasMany(e => e.Resources)
             .WithOne(e => e.User).HasForeignKey(e => e.UserId)
             .IsRequired(false);
+
+        builder.Entity<Role>().HasMany(e => e.Users)
+            .WithOne(e => e.Role).HasForeignKey(e => e.RoleId).OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Project>().HasMany(e => e.Resources)
             .WithOne(e => e.Project).HasForeignKey(e => e.ProjectId)

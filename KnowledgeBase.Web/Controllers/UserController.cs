@@ -116,8 +116,39 @@ namespace KnowledgeBase.Web.Controllers
             viewModel.ProjectId = projectId;
             viewModel.ProjectName = projectName;
             viewModel.Permissions = permissions.ToList();
+            ViewBag.UserId = userId;
 
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult AddPermission(Guid userId, Guid projectId)
+        {
+            var permissionOptions = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem {Text = "ReadProject", Value = "0"},
+                new SelectListItem {Text = "EditProject", Value = "1"},
+                new SelectListItem {Text = "DeleteProject", Value = "2"},
+            }, "Value", "Text");
+            ViewBag.PermList = permissionOptions;
+            ViewBag.UserId = userId;
+            ViewBag.ProjectId = projectId;
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult AddPermission(PermissionDto permission)
+        {
+            var selectedName = int.Parse(Request.Form["Permissions"]);
+            permission.PermissionName = (Data.Models.Enums.PermissionName)selectedName;
+
+            if (ModelState.IsValid)
+            {
+                _permissionService.Add(permission);
+                return RedirectToAction("ManagePermission", new {userId = permission.UserId, projectId = permission.ProjectId });
+            }
+            return View(permission);
         }
 
         [HttpGet]

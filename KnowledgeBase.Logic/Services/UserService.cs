@@ -47,7 +47,7 @@ namespace KnowledgeBase.Logic.Services
 
             var securityStamp = Guid.NewGuid().ToString("D").ToUpper();
             user.SecurityStamp = securityStamp;
-          
+
             _userRepository.Add(user);
 
         }
@@ -74,8 +74,8 @@ namespace KnowledgeBase.Logic.Services
         }
 
         public UserDto GetById(Guid id)
-        {                    
-            var user = _userRepository.Get(id).ToUserDto();          
+        {
+            var user = _userRepository.Get(id).ToUserDto();
             return user;
         }
 
@@ -90,15 +90,12 @@ namespace KnowledgeBase.Logic.Services
 
             user.FirstName = userDto.FirstName;
             user.LastName = userDto.LastName;
-      
+
             user.Email = userDto.Email;
-            
+
             _userRepository.Update(user);
             return user.ToUserDto();
-
-            
         }
 
-      
     }
 }

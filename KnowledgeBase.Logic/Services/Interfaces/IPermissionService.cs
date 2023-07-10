@@ -12,4 +12,5 @@ public interface IPermissionService
     public IList<PermissionDto> GetUserPermissionsByProjectIdAndUserId(Guid userId, Guid projectId);
     public PermissionDto GetById(Guid id);
     public void Delete(PermissionDto permission);
+    public void Add(PermissionDto permission);
 }

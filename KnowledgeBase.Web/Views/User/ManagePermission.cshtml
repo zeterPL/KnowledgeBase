@@ -6,7 +6,7 @@
 <h3>@permissionViewModel.ProjectName</h3>
 @if(permissionViewModel.Permissions.Count != 3)
 {
-    <a href="#" class="btn btn-primary">Add</a>
+    <a asp-action="AddPermission" asp-route-userId="@ViewBag.UserId" asp-route-projectId="@permissionViewModel.ProjectId" class="btn btn-primary">Add</a>
 }
 else
 {

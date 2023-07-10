@@ -19,6 +19,18 @@ public class PermissionService : IPermissionService
         _permissionRepsitory = permissionRepository;
     }
 
+    public void Add(PermissionDto permission)
+    {
+        Permission perm = new Permission
+        {
+            Id = permission.Id,
+            UserId = permission.UserId,
+            ProjectId = permission.ProjectId,
+            PermissionName = permission.PermissionName,
+        };
+        _permissionRepsitory.Add(perm);
+    }
+
     public void Delete(PermissionDto permission)
     {
         var perm = _permissionRepsitory.Get(permission.Id);

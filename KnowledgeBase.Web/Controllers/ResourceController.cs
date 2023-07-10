@@ -74,7 +74,7 @@ namespace KnowledgeBase.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult Delete(ResourceDto resourcedto)
 		{
-			_service.Deleted(resourcedto);
+			_service.Delete(resourcedto);
 			return RedirectToAction(actionName: "Index");
 		}
 	}

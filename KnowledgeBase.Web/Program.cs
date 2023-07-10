@@ -6,7 +6,6 @@ using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.AutoMapper;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -35,10 +35,10 @@ namespace KnowledgeBase.Logic.Services
 			_resourceRepository.Remove(resource);
         }
 
-        public void Deleted(ResourceDto resourcedto)
+        public void Delete(ResourceDto resourcedto)
         {
 			Resource resource = Get(_mapper.Map<Resource>(resourcedto).Id);
-			_resourceRepository.Deleted(resource);
+			_resourceRepository.Delete(resource);
         }
 
         public void Update(ResourceDto resourcedto)

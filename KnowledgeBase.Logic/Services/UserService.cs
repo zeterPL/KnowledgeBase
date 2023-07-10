@@ -23,6 +23,11 @@ namespace KnowledgeBase.Logic.Services
             _userRepository = userRepository;
         }
 
+        public void AddPermissionsByUserIdAndRoleId(Guid userId, Guid roleId)
+        {
+            _userRepository.AddPermissionsByUserIdAndRoleId(userId, roleId);
+        }
+
         public void AddUser(UserDto userDto)
         {
             User user = new User
@@ -35,7 +40,7 @@ namespace KnowledgeBase.Logic.Services
                 EmailConfirmed = true,
                 NormalizedEmail = userDto.Email.ToUpper(),
                 NormalizedUserName = userDto.UserName.ToUpper(),
-                AssignedRole = Data.Models.Enums.UserRoles.Basic
+                AssignedRoleName = Data.Models.Enums.UserRoles.Basic
             };
             var hashedPass = new PasswordHasher<object>().HashPassword(null, userDto.Password);
             user.PasswordHash = hashedPass;
@@ -54,6 +59,12 @@ namespace KnowledgeBase.Logic.Services
 
             _userRepository.Remove(user);
             return true;
+        }
+
+        public IList<PermissionDto> GetAllUserPermissions(Guid id)
+        {
+            var permissions = _userRepository.GetAllUserPermissionsByUserId(id);
+            return permissions.Select(perm => perm.ToPermissionDto()).ToList();
         }
 
         public IEnumerable<UserDto> GetAllUsers()

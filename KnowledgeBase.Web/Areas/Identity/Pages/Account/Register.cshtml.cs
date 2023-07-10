@@ -124,7 +124,7 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
                 // var roleResult = _userManager.AddToRoleAsync(currentUser, UserRoles.SuperAdmin.ToString());
                 //var roleResult = _roleManager.FindByNameAsync(UserRoles.Basic.ToString());
 
-                user.AssignedRole = UserRoles.Basic;
+                user.AssignedRoleName = UserRoles.Basic;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);

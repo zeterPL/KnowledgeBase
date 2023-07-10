@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Logic.Dto;
+﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Logic.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace KnowledgeBase.Logic.Services.Interfaces
         public UserDto Update(UserDto user);
         public bool Delete(UserDto user);
         public bool SoftDelete(UserDto user);
+        public IList<PermissionDto> GetAllUserPermissions(Guid id);
+        public void AddPermissionsByUserIdAndRoleId(Guid userId, Guid roleId);
     }
 }

@@ -25,7 +25,7 @@ public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
         base.OnModelCreating(builder);
 
         builder.Entity<UserProject>().HasKey(up => new { up.ProjectId, up.UserId});
-        builder.Entity<RolePermission>().HasKey(rp => new { rp.RoleId, rp.PermissionId });
+        builder.Entity<RolePermission>().HasKey(rp => new { rp.RoleId, rp.PermissionId });       
    
         builder.Entity<User>().HasMany(e => e.Resources)
             .WithOne(e => e.User).HasForeignKey(e => e.UserId)
@@ -34,5 +34,7 @@ public class KnowledgeDbContext : IdentityDbContext<User, Role, Guid>
         builder.Entity<Project>().HasMany(e => e.Resources)
             .WithOne(e => e.Project).HasForeignKey(e => e.ProjectId)
             .IsRequired(false);
+
+       
     }
 }

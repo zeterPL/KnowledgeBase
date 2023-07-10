@@ -49,7 +49,7 @@ namespace KnowledgeBase.Web.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				// return View(resource);
+				return View(resourcedto);
 			}
 			resourcedto.UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 			resourcedto.ProjectId = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b");

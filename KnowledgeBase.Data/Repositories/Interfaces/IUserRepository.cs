@@ -9,6 +9,6 @@ namespace KnowledgeBase.Data.Repositories.Interfaces
 {
     public interface IUserRepository : IGenericRepository<User>
     {
-
+        public IList<Permission>? GetAllUserPermissionsByUserId(Guid userId);
     }
 }

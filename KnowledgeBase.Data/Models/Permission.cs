@@ -11,4 +11,6 @@ public class Permission
     public virtual User User { get; set; }
     public Guid ProjectId { get; set; }
     public virtual Project Project { get; set; }
+
+    public virtual ICollection<RolePermission> AssignedRoles { get; set; }
 }

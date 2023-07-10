@@ -10,9 +10,9 @@ namespace KnowledgeBase.Logic.Services;
 public class ProjectService : IProjectService
 {
     private readonly IProjectRepository projectRepository;
-    private readonly IPermissionRepository permissionRepository;
+    private readonly IUserProjectPermissionRepository permissionRepository;
 
-    public ProjectService(IProjectRepository projectRepository, IPermissionRepository permissionRepository)
+    public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository)
     {
         this.projectRepository = projectRepository;
         this.permissionRepository = permissionRepository;

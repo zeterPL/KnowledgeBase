@@ -6,9 +6,9 @@ namespace KnowledgeBase.Logic.Services;
 
 public class PermissionService : IPermissionService
 {
-    private readonly IPermissionRepository _permissionRepository;
+    private readonly IUserProjectPermissionRepository _permissionRepository;
 
-    public PermissionService(IPermissionRepository permissionRepository)
+    public PermissionService(IUserProjectPermissionRepository permissionRepository)
     {
         _permissionRepository = permissionRepository;
     }

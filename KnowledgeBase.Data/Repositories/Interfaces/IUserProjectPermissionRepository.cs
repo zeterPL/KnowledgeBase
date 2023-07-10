@@ -3,7 +3,7 @@ using KnowledgeBase.Data.Models.Enums;
 
 namespace KnowledgeBase.Data.Repositories.Interfaces;
 
-public interface IPermissionRepository : IGenericRepository<UserProjectPermission>
+public interface IUserProjectPermissionRepository : IGenericRepository<UserProjectPermission>
 {
     public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission);
 }

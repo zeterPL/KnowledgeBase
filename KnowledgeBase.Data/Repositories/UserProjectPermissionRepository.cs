@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KnowledgeBase.Data.Repositories;
 
-public class PermissionRepository : GenericRepository<UserProjectPermission>, IPermissionRepository
+public class UserProjectPermissionRepository : GenericRepository<UserProjectPermission>, IUserProjectPermissionRepository
 {
 	private readonly DbSet<UserProjectPermission> permissions;
 
-    public PermissionRepository(KnowledgeDbContext context) : base(context)
+    public UserProjectPermissionRepository(KnowledgeDbContext context) : base(context)
     {
 		permissions = context.Set<UserProjectPermission>();
     }

@@ -43,15 +43,13 @@ public class ProjectController : Controller
             return Forbid();
         }
 
-        project.User = new UserDto
-        {
-            Id = userId,
-        };
+        project.UserId = userId;
 
+        ModelState.Clear();
+        TryValidateModel(project);
         if (!ModelState.IsValid)
         {
-            // TODO validation
-            // return View(project);
+            return View(project);
         }
 
         _projectService.Add(project);

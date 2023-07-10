@@ -48,7 +48,7 @@ public class ProjectService : IProjectService
         var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
         {
             PermissionName = p,
-            UserId = projectDto.User.Id,
+            UserId = projectDto.UserId.ToGuid(),
             ProjectId = newProject.Id,
         });
         SavePermissions(permissions);

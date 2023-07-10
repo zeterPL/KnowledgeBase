@@ -16,7 +16,7 @@ public class PermissionService : IPermissionService
         _projectRepository = projectRepository;
     }
 
-    public bool UserHadProjectPermission(Guid userId, Guid projectId, PermissionName permission)
+    public bool UserHasProjectPermission(Guid userId, Guid projectId, PermissionName permission)
     {
         User? user = _userRepository.Get(userId);
         if (user == null)

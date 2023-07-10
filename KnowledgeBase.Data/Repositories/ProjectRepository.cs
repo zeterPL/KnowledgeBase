@@ -1,5 +1,4 @@
-﻿using KnowledgeBase.Data.Data;
-using KnowledgeBase.Data.Models;
+﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +22,7 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
 
     public IEnumerable<Project> GetAllAssignedToUser(Guid userId)
     {
-        return _projects.Where(p => p.AssignedUsers.Any(u => u.UserId == userId));
+        return _projects.Where(p => p.AssignedUsers.Any(u => u.Id == userId));
     }
 
     public IEnumerable<Project> GetAllReadableByUser(Guid userId)

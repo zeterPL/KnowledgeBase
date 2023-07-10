@@ -1,5 +1,4 @@
-﻿using KnowledgeBase.Data.Data;
-using KnowledgeBase.Data.Models;
+﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;

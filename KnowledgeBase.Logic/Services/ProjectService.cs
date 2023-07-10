@@ -58,12 +58,8 @@ public class ProjectService : IProjectService
 
     public ProjectDto? Get(Guid id)
     {
-        Project project = projectRepository.Get(id);
-        if (project == null)
-        {
-            return null;
-        }
-        return project.ToProjectDto();
+        var project = projectRepository.Get(id);
+        return project?.ToProjectDto();
     }
 
     public IEnumerable<ProjectDto> GetAll()
@@ -80,7 +76,7 @@ public class ProjectService : IProjectService
             return Guid.Empty;
         }
 
-        Project project = projectRepository.Get(id);
+        var project = projectRepository.Get(id);
         if (project == null) // Project doesnt exist
         {
             return Guid.Empty;
@@ -101,7 +97,7 @@ public class ProjectService : IProjectService
             return;
         }
 
-        Project project = projectRepository.Get(id);
+        var project = projectRepository.Get(id);
         if (project == null) // Project doesnt exist
         {
             return;

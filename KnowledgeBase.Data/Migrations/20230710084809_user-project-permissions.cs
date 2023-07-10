@@ -12,24 +12,25 @@ namespace KnowledgeBase.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Permission",
+                name: "UserProjectPermission",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PermissionName = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PermissionName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permission", x => new { x.ProjectId, x.UserId });
+                    table.PrimaryKey("PK_UserProjectPermission", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Permission_AspNetUsers_UserId",
+                        name: "FK_UserProjectPermission_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Permission_Projects_ProjectId",
+                        name: "FK_UserProjectPermission_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
@@ -37,8 +38,13 @@ namespace KnowledgeBase.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permission_UserId",
-                table: "Permission",
+                name: "IX_UserProjectPermission_ProjectId",
+                table: "UserProjectPermission",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProjectPermission_UserId",
+                table: "UserProjectPermission",
                 column: "UserId");
         }
 
@@ -46,7 +52,7 @@ namespace KnowledgeBase.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Permission");
+                name: "UserProjectPermission");
         }
     }
 }

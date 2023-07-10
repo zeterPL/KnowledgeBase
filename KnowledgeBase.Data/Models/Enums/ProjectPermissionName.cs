@@ -1,6 +1,6 @@
 ﻿namespace KnowledgeBase.Data.Models.Enums;
 
-public enum PermissionName
+public enum ProjectPermissionName
 {
 	ReadProject,
 	EditProject,

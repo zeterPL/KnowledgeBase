@@ -18,7 +18,7 @@ public class ProjectService : IProjectService
         this.permissionRepository = permissionRepository;
     }
 
-    private void SavePermissions(IEnumerable<Permission> permissions)
+    private void SavePermissions(IEnumerable<UserProjectPermission> permissions)
     {
         foreach (var permission in permissions)
         {
@@ -26,13 +26,13 @@ public class ProjectService : IProjectService
         }
     }
 
-    private static ICollection<PermissionName> DefaultCreatePermissions
+    private static ICollection<ProjectPermissionName> DefaultCreatePermissions
     {
-        get => new List<PermissionName>
+        get => new List<ProjectPermissionName>
         {
-            PermissionName.ReadProject,
-            PermissionName.EditProject,
-            PermissionName.DeleteProject,
+            ProjectPermissionName.ReadProject,
+            ProjectPermissionName.EditProject,
+            ProjectPermissionName.DeleteProject,
         };
     }
 
@@ -45,7 +45,7 @@ public class ProjectService : IProjectService
         projectRepository.Add(newProject);
 
         // Default permissions
-        var permissions = DefaultCreatePermissions.Select(p => new Permission
+        var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
         {
             PermissionName = p,
             UserId = projectDto.User.Id,

@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Logic.Services;
+﻿using KnowledgeBase.Logic.AzureServices;
+using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 
 namespace KnowledgeBase.Web.Configuration;
@@ -10,7 +11,7 @@ public static class ServicesInjectionConfiguration
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IResourceService, ResourceService>();
         services.AddScoped<IPermissionService, PermissionService>();
-        services.AddScoped<AzureFileService>();
+        services.AddScoped<AzureStorageService>();
 
         return services;
     }

@@ -5,71 +5,82 @@ using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using System.Configuration;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<KnowledgeDbContext>(options =>
-	options.UseSqlServer(connectionString, optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-	.AddRoles<Role>()
-	.AddEntityFrameworkStores<KnowledgeDbContext>();
-
-
-// Dependency injection
-builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IProjectService, ProjectService>();
-
-builder.Services.AddControllersWithViews();
-
-builder.Host.ConfigureLogging(opt =>
+var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+try
 {
-	opt.ClearProviders();
-	opt.SetMinimumLevel(LogLevel.Trace);
-}).UseNLog();
+	var builder = WebApplication.CreateBuilder(args);
+
+	// Add services to the container.
+	var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+	builder.Services.AddDbContext<KnowledgeDbContext>(options =>
+		options.UseSqlServer(connectionString, optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
+	builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+	builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+		.AddRoles<Role>()
+		.AddEntityFrameworkStores<KnowledgeDbContext>();
+    LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("testingDbContext");
+
+    // Dependency injection
+    builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+	builder.Services.AddScoped<IProjectService, ProjectService>();
+
+	builder.Services.AddControllersWithViews();
+
+	builder.Logging.ClearProviders();
+	builder.Host.UseNLog();
+
+	var app = builder.Build();
+
+	using (var scope = app.Services.CreateScope())
+	{
+		var services = scope.ServiceProvider;
+
+		var context = services.GetRequiredService<KnowledgeDbContext>();
+		context.Database.EnsureCreated();
+		DbInitializer.Initialize(context);
+	}
 
 
-var app = builder.Build();
+	// Configure the HTTP request pipeline.
+	if (app.Environment.IsDevelopment())
+	{
+		app.UseMigrationsEndPoint();
+	}
+	else
+	{
+		app.UseExceptionHandler("/Error");
+		// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+		app.UseHsts();
+	}
 
-using (var scope = app.Services.CreateScope())
-{
-	var services = scope.ServiceProvider;
+	app.UseHttpsRedirection();
+	app.UseStaticFiles();
 
-	var context = services.GetRequiredService<KnowledgeDbContext>();
-	context.Database.EnsureCreated();
-	DbInitializer.Initialize(context);
+	app.UseRouting();
+
+	app.UseAuthentication();
+	app.UseAuthorization();
+
+	app.MapRazorPages();
+
+	app.MapControllerRoute(
+		name: "default",
+		pattern: "{controller}/{action=Index}/{id?}");
+
+	app.Run();
 }
-
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+catch(Exception ex)
 {
-	app.UseMigrationsEndPoint();
+	logger.Error(ex);
+	throw (ex);
 }
-else
+finally
 {
-	app.UseExceptionHandler("/Error");
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-	app.UseHsts();
+	NLog.LogManager.Shutdown();
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapRazorPages();
-
-app.MapControllerRoute(
-	name: "default",
-	pattern: "{controller}/{action=Index}/{id?}");
-
-app.Run();

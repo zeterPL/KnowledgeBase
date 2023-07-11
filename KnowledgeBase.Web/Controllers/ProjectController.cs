@@ -8,28 +8,19 @@ namespace KnowledgeBase.Web.Controllers;
 public class ProjectController : Controller
 {
 	private readonly IProjectService projectService;
-	public readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-	public ProjectController(IProjectService projectService)
+	public readonly ILogger<ProjectController> _logger;
+	public ProjectController(IProjectService projectService, ILogger<ProjectController> logger)
 	{
 		this.projectService = projectService;
+		_logger = logger;
 	}
 
 	public IActionResult Index()
 	{
-		try
-		{
-			Logger.Debug("Hi I am NLog Debug Level");
-			Logger.Info("Hi I am NLog Info Level");
-			Logger.Warn("Hi I am NLog Warn Level");
-			throw new NullReferenceException();
-			return View();
-		}
-		catch (Exception ex)
-		{
-			Logger.Error(ex, "Hi I am NLog Error Level");
-			Logger.Fatal(ex, "Hi I am NLog Fatal Level");
-			throw;
-		}
+		_logger.LogInformation("hello i got here 123 abc!");
+
+		throw new Exception("booooom exception");
+
 		return View();
 	}
 

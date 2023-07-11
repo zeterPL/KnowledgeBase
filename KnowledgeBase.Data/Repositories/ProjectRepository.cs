@@ -29,6 +29,7 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
             permission => permission.ProjectId,
             (project, permission) => project)
             .Where(project => project.IsDeleted == false);
+       
 
         return projects;
     }

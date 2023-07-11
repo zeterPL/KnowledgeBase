@@ -1,6 +1,5 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
-using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
@@ -19,7 +18,7 @@ public class ProjectService : IProjectService
         IUserRepository userRepository, IRoleRepository roleRepository)
     {
         this.projectRepository = projectRepository;
-        this.permissionRepository = permissionRepository;              
+        this.permissionRepository = permissionRepository;
         _userRepository = userRepository;
         _roleRepository = roleRepository;
     }
@@ -102,11 +101,11 @@ public class ProjectService : IProjectService
         var allUsers = _userRepository.GetAll();
         foreach (var user in allUsers)
         {
-           AddPermisionsToSpecificProject((Guid)projectId, userId);
+            AddPermisionsToSpecificProject((Guid)projectId, userId);
         }
     }
 
-    #endregion
+    #endregion private methods
 
     #region public methods
 
@@ -188,5 +187,5 @@ public class ProjectService : IProjectService
         return projects.Select(p => p.ToProjectDto());
     }
 
-    #endregion
+    #endregion public methods
 }

@@ -1,12 +1,13 @@
+using AutoMapper;
 using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
+using KnowledgeBase.Logic.AutoMapper;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Web.Configuration;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +22,14 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddRoles<Role>()
     .AddEntityFrameworkStores<KnowledgeDbContext>();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 #region Dependency injection
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+builder.Services.AddScoped<IResourceService, ResourceService>();
 
 builder.Services.AddScoped<IUserProjectPermissionRepository, UserProjectPermissionRepository>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();

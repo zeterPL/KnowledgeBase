@@ -1,5 +1,6 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
@@ -11,19 +12,19 @@ public class ProjectService : IProjectService
 {
     private readonly IProjectRepository projectRepository;
     private readonly IUserProjectPermissionRepository permissionRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
-    private readonly IPermissionService _permissionService;
-    private readonly IUserService _userService;
 
     public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository,
-        IRoleRepository roleRepository, IPermissionService permissionService, IUserService userService)
+        IUserRepository userRepository, IRoleRepository roleRepository)
     {
         this.projectRepository = projectRepository;
-        this.permissionRepository = permissionRepository;
+        this.permissionRepository = permissionRepository;              
+        _userRepository = userRepository;
         _roleRepository = roleRepository;
-        _permissionService = permissionService;
-        _userService = userService;
     }
+
+    #region private methods
 
     private void SavePermissions(IEnumerable<UserProjectPermission> permissions)
     {
@@ -43,14 +44,71 @@ public class ProjectService : IProjectService
         };
     }
 
+    private void AddPermisionsToSpecificProject(Guid projectId, Guid userId)
+    {
+        var user = _userRepository.Get(userId);
+        var role = _roleRepository.Get(user.RoleId);
+        var roleName = role.Name;
+        List<UserProjectPermission> permissions = new List<UserProjectPermission>();
+        if (roleName == UserRoles.SuperAdmin.ToString())
+        {
+            UserProjectPermission perm = new UserProjectPermission
+            {
+                UserId = userId,
+                ProjectId = projectId,
+                PermissionName = ProjectPermissionName.ReadProject
+            };
+            permissions.Add(perm);
+
+            UserProjectPermission perm1 = new UserProjectPermission
+            {
+                UserId = userId,
+                ProjectId = projectId,
+                PermissionName = ProjectPermissionName.EditProject
+            };
+            permissions.Add(perm1);
+
+            UserProjectPermission perm2 = new UserProjectPermission
+            {
+                UserId = userId,
+                ProjectId = projectId,
+                PermissionName = ProjectPermissionName.DeleteProject
+            };
+            permissions.Add(perm2);
+        }
+        if (roleName == UserRoles.Admin.ToString())
+        {
+            UserProjectPermission perm = new UserProjectPermission
+            {
+                UserId = userId,
+                ProjectId = projectId,
+                PermissionName = ProjectPermissionName.ReadProject
+            };
+            permissions.Add(perm);
+
+            UserProjectPermission perm1 = new UserProjectPermission
+            {
+                UserId = userId,
+                ProjectId = projectId,
+                PermissionName = ProjectPermissionName.EditProject
+            };
+            permissions.Add(perm1);
+        }
+        permissionRepository.AddRange(permissions);
+    }
+
     private void AssignPermissionsToSuperUsers(Guid? projectId, Guid userId)
     {
-        var allUsers = _userService.GetAllUsers();
+        var allUsers = _userRepository.GetAll();
         foreach (var user in allUsers)
         {
-            _userService.AddPermisionsToSpecificProject((Guid)projectId, userId);
+           AddPermisionsToSpecificProject((Guid)projectId, userId);
         }
     }
+
+    #endregion
+
+    #region public methods
 
     public Guid Add(ProjectDto projectDto)
     {
@@ -129,4 +187,6 @@ public class ProjectService : IProjectService
         var projects = projectRepository.GetAllReadableByUser(userId);
         return projects.Select(p => p.ToProjectDto());
     }
+
+    #endregion
 }

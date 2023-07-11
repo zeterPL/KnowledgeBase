@@ -5,6 +5,8 @@ using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using NLog.Extensions.Logging;
+using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +20,19 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 	.AddRoles<Role>()
 	.AddEntityFrameworkStores<KnowledgeDbContext>();
 
+
 // Dependency injection
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddControllersWithViews();
+
+builder.Host.ConfigureLogging(opt =>
+{
+	opt.ClearProviders();
+	opt.SetMinimumLevel(LogLevel.Trace);
+}).UseNLog();
+
 
 var app = builder.Build();
 
@@ -34,6 +44,7 @@ using (var scope = app.Services.CreateScope())
 	context.Database.EnsureCreated();
 	DbInitializer.Initialize(context);
 }
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

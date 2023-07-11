@@ -75,12 +75,7 @@ namespace KnowledgeBase.Logic.Services
             }
             _permissionRepository.AddRange(permissions);
         }
-
-        public void AddPermissionsByUserIdAndRoleId(Guid userId, Guid roleId)
-        {
-            _userRepository.AddPermissionsByUserIdAndRoleId(userId, roleId);
-        }
-
+    
         public Guid AddUser(UserDto userDto)
         {
             User user = new User

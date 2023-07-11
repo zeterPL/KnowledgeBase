@@ -9,10 +9,6 @@ namespace KnowledgeBase.Data.Repositories
         {
         }
 
-        public void AddPermissionsByUserIdAndRoleId(Guid userId, Guid roleId)
-        {
-        }
-
         public IList<UserProjectPermission>? GetAllUserPermissionsByUserId(Guid userId)
         {
             return _context.Set<UserProjectPermission>().Where(x => x.UserId == userId).ToList<UserProjectPermission>();

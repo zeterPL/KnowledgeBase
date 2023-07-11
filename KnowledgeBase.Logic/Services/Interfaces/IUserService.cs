@@ -18,8 +18,6 @@ namespace KnowledgeBase.Logic.Services.Interfaces
 
         public IList<PermissionDto> GetAllUserPermissions(Guid id);
 
-        public void AddPermissionsByUserIdAndRoleId(Guid userId, Guid roleId);
-
         public void AssignPermissionBasedOnUserRole(RoleDto role, Guid userId);
 
         public void AddPermisionsToSpecificProject(Guid projectId, Guid userId);

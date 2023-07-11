@@ -1,11 +1,12 @@
+using AutoMapper;
 using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
+using KnowledgeBase.Logic.AutoMapper;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +16,21 @@ builder.Services.AddDbContext<KnowledgeDbContext>(options =>
     options.UseSqlServer(connectionString, optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+
+
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<Role>()
     .AddEntityFrameworkStores<KnowledgeDbContext>();
 
+builder.Services.AddRazorPages();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Dependency injection
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+builder.Services.AddScoped<IResourceService, ResourceService>();
 
 builder.Services.AddControllersWithViews();
 

@@ -11,11 +11,18 @@ public class ProjectService : IProjectService
 {
     private readonly IProjectRepository projectRepository;
     private readonly IPermissionRepository permissionRepository;
+    private readonly IRoleRepository _roleRepository;
+    private readonly IPermissionService _permissionService;
+    private readonly IUserService _userService;
 
-    public ProjectService(IProjectRepository projectRepository, IPermissionRepository permissionRepository)
+    public ProjectService(IProjectRepository projectRepository, IPermissionRepository permissionRepository,
+        IRoleRepository roleRepository, IPermissionService permissionService, IUserService userService)
     {
         this.projectRepository = projectRepository;
         this.permissionRepository = permissionRepository;
+        _roleRepository = roleRepository;
+        _permissionService = permissionService;
+        _userService = userService;
     }
 
     private void SavePermissions(IEnumerable<Permission> permissions)
@@ -36,6 +43,15 @@ public class ProjectService : IProjectService
         };
     }
 
+    private void AssignPermissionsToSuperUsers(Guid? projectId, Guid userId)
+    {
+        var allUsers = _userService.GetAllUsers();
+        foreach(var user in allUsers) 
+        {
+            _userService.AddPermisionsToSpecificProject((Guid)projectId, userId);
+        }
+    }
+
     public Guid Add(ProjectDto projectDto)
     {
         Project newProject = new Project
@@ -52,6 +68,8 @@ public class ProjectService : IProjectService
             ProjectId = newProject.Id,
         });
         SavePermissions(permissions);
+
+        AssignPermissionsToSuperUsers(projectDto.Id, projectDto.User.Id);
 
         return newProject.Id;
     }

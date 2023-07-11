@@ -11,5 +11,6 @@ namespace KnowledgeBase.Data.Repositories.Interfaces
     {
         public IList<Permission>? GetAllUserPermissionsByUserId(Guid userId);
         public void AddPermissionsByUserIdAndRoleId(Guid userId, Guid roleId);
+        
     }
 }

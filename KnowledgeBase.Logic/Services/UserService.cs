@@ -9,8 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-
-
+using KnowledgeBase.Data.Models.Enums;
 
 namespace KnowledgeBase.Logic.Services
 {
@@ -19,12 +18,68 @@ namespace KnowledgeBase.Logic.Services
         private readonly IUserRepository _userRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly IPermissionRepository _permissionRepository;
+        private readonly IRoleRepository _roleRepository;
 
-        public UserService(IUserRepository userRepository, IProjectRepository projectRepository, IPermissionRepository permissionRepository)
+        public UserService(IUserRepository userRepository, IProjectRepository projectRepository, 
+            IPermissionRepository permissionRepository, IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
             _projectRepository = projectRepository;
             _permissionRepository = permissionRepository;
+            _roleRepository = roleRepository;
+        }
+
+        public void AddPermisionsToSpecificProject(Guid projectId, Guid userId)
+        {
+            var user = _userRepository.Get(userId);
+            var role = _roleRepository.Get(user.RoleId);
+            var roleName = role.Name;
+            List<Permission> permissions = new List<Permission>();
+            if (roleName == UserRoles.SuperAdmin.ToString())
+            {
+                Permission perm = new Permission
+                {
+                    UserId = userId,
+                    ProjectId = projectId,
+                    PermissionName = PermissionName.ReadProject
+                };
+                permissions.Add(perm);
+
+                Permission perm1 = new Permission
+                {
+                    UserId = userId,
+                    ProjectId = projectId,
+                    PermissionName = PermissionName.EditProject
+                };
+                permissions.Add(perm1);
+
+                Permission perm2 = new Permission
+                {
+                    UserId = userId,
+                    ProjectId = projectId,
+                    PermissionName = PermissionName.DeleteProject
+                };
+                permissions.Add(perm2);
+            }
+            if(roleName == UserRoles.Admin.ToString())
+            {
+                Permission perm = new Permission
+                {
+                    UserId = userId,
+                    ProjectId = projectId,
+                    PermissionName = PermissionName.ReadProject
+                };
+                permissions.Add(perm);
+
+                Permission perm1 = new Permission
+                {
+                    UserId = userId,
+                    ProjectId = projectId,
+                    PermissionName = PermissionName.EditProject
+                };
+                permissions.Add(perm1);
+            }
+            _permissionRepository.AddRange(permissions);
         }
 
         public void AddPermissionsByUserIdAndRoleId(Guid userId, Guid roleId)

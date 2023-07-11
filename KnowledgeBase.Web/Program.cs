@@ -6,18 +6,17 @@ using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<KnowledgeDbContext>(options =>
-    options.UseSqlServer(connectionString, optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
+	options.UseSqlServer(connectionString, optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<Role>()
-    .AddEntityFrameworkStores<KnowledgeDbContext>();
+	.AddRoles<Role>()
+	.AddEntityFrameworkStores<KnowledgeDbContext>();
 
 // Dependency injection
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
@@ -25,22 +24,16 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddControllersWithViews();
 
-builder.Host.ConfigureLogging(builder =>
-{
-    builder.AddLog4Net("log4net.config");
-});
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+	var services = scope.ServiceProvider;
 
-    var context = services.GetRequiredService<KnowledgeDbContext>();
-    context.Database.EnsureCreated();
-    DbInitializer.Initialize(context);
+	var context = services.GetRequiredService<KnowledgeDbContext>();
+	context.Database.EnsureCreated();
+	DbInitializer.Initialize(context);
 }
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

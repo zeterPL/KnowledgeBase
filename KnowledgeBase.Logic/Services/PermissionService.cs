@@ -35,7 +35,6 @@ public class PermissionService : IPermissionService
     {
         var perm = _permissionRepository.Get(permission.Id);
         if (perm == null) { return; }
-
         _permissionRepository.Remove(perm);
     }
 

@@ -70,11 +70,11 @@ namespace KnowledgeBase.Web.Controllers
             if (ModelState.IsValid)
             {
                 newUserId = _userService.AddUser(user);
-                _userService.AssignPermissionBasedOnUserRole(role, newUserId);
-                return RedirectToAction("List");
-            }
-            var allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                if (newUserId == Guid.Empty) return NotFound();
+                else _userService.AssignPermissionBasedOnUserRole(role, newUserId);
 
+                return RedirectToAction("List");
+            }          
             var roles = _roleService.GetAll();
             ViewBag.RolesList = new SelectList(roles, "Id", "Name");
             return View(user);

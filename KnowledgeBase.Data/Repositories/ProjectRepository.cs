@@ -35,7 +35,8 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
         var projects = _projects.Join(userProjectPermissions,
             project => project.Id,
             permission => permission.ProjectId,
-            (project, permission) => project);
+            (project, permission) => project)
+            .Where(project => project.IsDeleted == false);
 
         // Get all projects assigned to user
         var assignedToUserProjects = GetAllAssignedToUser(userId);

@@ -11,6 +11,4 @@ public class UserProjectPermission
     public virtual User User { get; set; }
     public Guid ProjectId { get; set; }
     public virtual Project Project { get; set; }
-
-    
 }

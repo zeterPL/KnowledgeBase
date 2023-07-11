@@ -44,8 +44,6 @@ public class PermissionService : IPermissionService
         return _permissionRepository.Get(id).ToPermissionDto();
     }
 
-
-
     public PermissionDto GetPermissionsbyProjectId(Guid projectId)
     {
         return _permissionRepository.Get(projectId).ToPermissionDto();
@@ -53,8 +51,8 @@ public class PermissionService : IPermissionService
 
     public IList<PermissionDto> GetPermissionsbyUserId(Guid userId)
     {
-       return _permissionRepository.GetAll().Where(p => p.UserId == userId)
-            .Select(p => p.ToPermissionDto()).ToList();
+        return _permissionRepository.GetAll().Where(p => p.UserId == userId)
+             .Select(p => p.ToPermissionDto()).ToList();
     }
 
     public IList<PermissionDto> GetUserPermissionsByProjectIdAndUserId(Guid userId, Guid projectId)
@@ -70,7 +68,7 @@ public class PermissionService : IPermissionService
     }
 
     public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
-    { 
+    {
         return _permissionRepository.UserHasProjectPermission(userId, projectId, permission);
     }
 }

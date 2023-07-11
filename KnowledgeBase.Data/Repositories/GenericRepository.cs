@@ -1,6 +1,4 @@
-﻿
-using KnowledgeBase.Data.Models.Interfaces;
-using KnowledgeBase.Data.Repositories.Interfaces;
+﻿using KnowledgeBase.Data.Repositories.Interfaces;
 
 namespace KnowledgeBase.Data.Repositories;
 
@@ -13,16 +11,16 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
     }
 
-        public Guid Add(T entity)
-        {
-            _context.Set<T>().Add(entity);
-            _context.SaveChanges();
+    public Guid Add(T entity)
+    {
+        _context.Set<T>().Add(entity);
+        _context.SaveChanges();
 
-            _context.Entry(entity).GetDatabaseValues();
+        _context.Entry(entity).GetDatabaseValues();
 
-            var IdProperty = entity.GetType().GetProperty("Id").GetValue(entity, null);
-            return Guid.Parse(IdProperty.ToString());
-        }
+        var IdProperty = entity.GetType().GetProperty("Id").GetValue(entity, null);
+        return Guid.Parse(IdProperty.ToString());
+    }
 
     public T? Get(Guid id)
     {

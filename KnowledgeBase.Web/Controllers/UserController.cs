@@ -1,7 +1,4 @@
-﻿using KnowledgeBase.Data.Models;
-using KnowledgeBase.Data.Repositories.Interfaces;
-using KnowledgeBase.Logic.Dto;
-using KnowledgeBase.Logic.Services;
+﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Logic.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +14,7 @@ namespace KnowledgeBase.Web.Controllers
         private readonly IPermissionService _permissionService;
         private readonly IProjectService _projectService;
 
-        public UserController(IUserService userService, IRoleService roleService, 
+        public UserController(IUserService userService, IRoleService roleService,
             IPermissionService permissionService, IProjectService projectService)
         {
             _userService = userService;
@@ -44,7 +41,7 @@ namespace KnowledgeBase.Web.Controllers
             user = _userService.GetById(id);
             RoleDto role = _roleService.Get(user.RoleId);
             ViewBag.Role = role;
-            if(user is null)
+            if (user is null)
             {
                 return NotFound();
             }
@@ -87,12 +84,11 @@ namespace KnowledgeBase.Web.Controllers
         public IActionResult Permissions(Guid id)
         {
             ViewBag.UserId = id;
-            var projects = _permissionService.GetPermissionsbyUserId(id).Select(p=>p.ProjectId).Distinct();
+            var projects = _permissionService.GetPermissionsbyUserId(id).Select(p => p.ProjectId).Distinct();
             var perms = _permissionService.GetPermissionsbyUserId(id);
             List<PermissionViewModel> viewModels = new List<PermissionViewModel>();
-            foreach(Guid project in projects)
+            foreach (Guid project in projects)
             {
-                
                 var projctName = _projectService.Get(project).Name;
                 var permsByProject = perms.Where(p => p.ProjectId == project).ToList();
 
@@ -105,7 +101,6 @@ namespace KnowledgeBase.Web.Controllers
 
             return View(viewModels);
         }
-
 
         [HttpGet]
         public IActionResult ManagePermission(
@@ -138,7 +133,6 @@ namespace KnowledgeBase.Web.Controllers
             return View();
         }
 
-
         [HttpPost]
         public IActionResult AddPermission(PermissionDto permission)
         {
@@ -148,7 +142,7 @@ namespace KnowledgeBase.Web.Controllers
             if (ModelState.IsValid)
             {
                 _permissionService.Add(permission);
-                return RedirectToAction("ManagePermission", new {userId = permission.UserId, projectId = permission.ProjectId });
+                return RedirectToAction("ManagePermission", new { userId = permission.UserId, projectId = permission.ProjectId });
             }
             return View(permission);
         }
@@ -156,42 +150,40 @@ namespace KnowledgeBase.Web.Controllers
         [HttpGet]
         public IActionResult DeletePermission(Guid id)
         {
-            
             var permission = _permissionService.GetById(id);
             var userId = permission.UserId;
             var projectId = permission.ProjectId;
 
-            if(permission is null)
+            if (permission is null)
             {
                 return NotFound();
             }
             _permissionService.Delete(permission);
 
-            return RedirectToAction("ManagePermission", new { userId = userId, projectId = projectId});
+            return RedirectToAction("ManagePermission", new { userId = userId, projectId = projectId });
         }
 
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
             var user = _userService.GetById(id);
-            if(user is null)
+            if (user is null)
             {
                 return NotFound();
             }
-         
+
             return View(user);
         }
 
         [HttpPost]
         public IActionResult Edit(UserDto user)
-        {           
-            if(ModelState.IsValid)
+        {
+            if (ModelState.IsValid)
             {
-               
                 _userService.Update(user);
                 return RedirectToAction("List");
             }
-                    
+
             return View(user);
         }
 
@@ -199,7 +191,7 @@ namespace KnowledgeBase.Web.Controllers
         public IActionResult Delete(Guid id)
         {
             var user = _userService.GetById(id);
-            if(user is null)
+            if (user is null)
             {
                 return NotFound();
             }

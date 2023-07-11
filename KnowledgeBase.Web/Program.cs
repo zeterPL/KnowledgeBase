@@ -1,9 +1,7 @@
-using AutoMapper;
 using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
-using KnowledgeBase.Logic.AutoMapper;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Web.Configuration;
@@ -22,7 +20,6 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddRoles<Role>()
     .AddEntityFrameworkStores<KnowledgeDbContext>();
 
-
 #region Dependency injection
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
@@ -39,7 +36,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
-#endregion
+#endregion Dependency injection
 
 builder.Services.AddPermissions();
 

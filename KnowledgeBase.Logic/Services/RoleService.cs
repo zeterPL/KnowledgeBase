@@ -1,11 +1,6 @@
 ﻿using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KnowledgeBase.Logic.Services
 {

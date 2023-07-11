@@ -46,7 +46,7 @@ public class ProjectService : IProjectService
     private void AssignPermissionsToSuperUsers(Guid? projectId, Guid userId)
     {
         var allUsers = _userService.GetAllUsers();
-        foreach(var user in allUsers) 
+        foreach (var user in allUsers)
         {
             _userService.AddPermisionsToSpecificProject((Guid)projectId, userId);
         }

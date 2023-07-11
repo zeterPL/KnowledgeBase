@@ -1,15 +1,9 @@
 ﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using KnowledgeBase.Data.Models.Enums;
 
 namespace KnowledgeBase.Logic.Services
 {
@@ -20,7 +14,7 @@ namespace KnowledgeBase.Logic.Services
         private readonly IUserProjectPermissionRepository _permissionRepository;
         private readonly IRoleRepository _roleRepository;
 
-        public UserService(IUserRepository userRepository, IProjectRepository projectRepository, 
+        public UserService(IUserRepository userRepository, IProjectRepository projectRepository,
             IUserProjectPermissionRepository permissionRepository, IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
@@ -61,7 +55,7 @@ namespace KnowledgeBase.Logic.Services
                 };
                 permissions.Add(perm2);
             }
-            if(roleName == UserRoles.Admin.ToString())
+            if (roleName == UserRoles.Admin.ToString())
             {
                 UserProjectPermission perm = new UserProjectPermission
                 {
@@ -108,7 +102,6 @@ namespace KnowledgeBase.Logic.Services
             user.SecurityStamp = securityStamp;
 
             return _userRepository.Add(user);
-
         }
 
         public void AssignPermissionBasedOnUserRole(RoleDto role, Guid userId)
@@ -119,7 +112,6 @@ namespace KnowledgeBase.Logic.Services
                 List<UserProjectPermission> permissions = new List<UserProjectPermission>();
                 if (role.Name == "SuperAdmin")
                 {
-                    
                     UserProjectPermission perm = new UserProjectPermission
                     {
                         ProjectId = project.Id,
@@ -143,9 +135,8 @@ namespace KnowledgeBase.Logic.Services
                         PermissionName = Data.Models.Enums.ProjectPermissionName.DeleteProject
                     };
                     permissions.Add(perm2);
-
                 }
-                else if(role.Name == "Admin")
+                else if (role.Name == "Admin")
                 {
                     UserProjectPermission perm = new UserProjectPermission
                     {
@@ -166,7 +157,6 @@ namespace KnowledgeBase.Logic.Services
                 _permissionRepository.AddRange(permissions);
             }
         }
-
 
         public bool Delete(UserDto userDto)
         {
@@ -212,6 +202,5 @@ namespace KnowledgeBase.Logic.Services
             _userRepository.Update(user);
             return user.ToUserDto();
         }
-
     }
 }

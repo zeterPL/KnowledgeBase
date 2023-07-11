@@ -6,7 +6,5 @@ public interface IProjectRepository : IGenericRepository<Project>
 {
     public void SoftDelete(Project project);
 
-    public IEnumerable<Project> GetAllAssignedToUser(Guid userId);
-
     public IEnumerable<Project> GetAllReadableByUser(Guid userId);
 }

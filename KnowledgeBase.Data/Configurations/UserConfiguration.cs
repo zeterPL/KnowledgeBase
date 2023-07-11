@@ -21,9 +21,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasMany(u => u.Resources)
             .WithOne(r => r.User);
-
-        builder.HasMany(u => u.AssignedProjects)
-            .WithMany(p => p.AssignedUsers)
-            .UsingEntity<UserProject>();
     }
 }

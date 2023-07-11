@@ -14,14 +14,9 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddRoles<Role>()
     .AddEntityFrameworkStores<KnowledgeDbContext>();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-#region Dependency injection
-
 builder.Services.AddServices();
 builder.Services.AddRepositories();
-
-#endregion
+builder.Services.AddAutoMapper();
 
 builder.Services.AddPermissions();
 

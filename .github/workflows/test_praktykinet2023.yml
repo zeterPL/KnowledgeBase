@@ -12,7 +12,7 @@ on:
       - test
 
 jobs:
-  build:
+  testbuild:
     runs-on: windows-latest
 
     steps:

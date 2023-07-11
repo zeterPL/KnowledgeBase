@@ -2,15 +2,14 @@
 
 namespace KnowledgeBase.Logic.Dto;
 
-public class UploadFileDto
+public class UploadResourceFileDto : ResourceFileDto
 {
-    public string Name { get; init; }
-
     public IFormFile File { get; init; }
 
-    public UploadFileDto(string name, IFormFile file)
+    public UploadResourceFileDto(string name, string projectName, IFormFile file)
     {
         Name = name;
+        ProjectName = projectName;
         File = file;
     }
 }

@@ -10,12 +10,12 @@ namespace KnowledgeBase.Logic.Services;
 public class ProjectService : IProjectService
 {
     private readonly IProjectRepository projectRepository;
-    private readonly IPermissionRepository permissionRepository;
+    private readonly IUserProjectPermissionRepository permissionRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly IPermissionService _permissionService;
     private readonly IUserService _userService;
 
-    public ProjectService(IProjectRepository projectRepository, IPermissionRepository permissionRepository,
+    public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository,
         IRoleRepository roleRepository, IPermissionService permissionService, IUserService userService)
     {
         this.projectRepository = projectRepository;
@@ -25,7 +25,7 @@ public class ProjectService : IProjectService
         _userService = userService;
     }
 
-    private void SavePermissions(IEnumerable<Permission> permissions)
+    private void SavePermissions(IEnumerable<UserProjectPermission> permissions)
     {
         foreach (var permission in permissions)
         {
@@ -33,13 +33,13 @@ public class ProjectService : IProjectService
         }
     }
 
-    private static ICollection<PermissionName> DefaultCreatePermissions
+    private static ICollection<ProjectPermissionName> DefaultCreatePermissions
     {
-        get => new List<PermissionName>
+        get => new List<ProjectPermissionName>
         {
-            PermissionName.ReadProject,
-            PermissionName.EditProject,
-            PermissionName.DeleteProject,
+            ProjectPermissionName.ReadProject,
+            ProjectPermissionName.EditProject,
+            ProjectPermissionName.DeleteProject,
         };
     }
 
@@ -61,10 +61,10 @@ public class ProjectService : IProjectService
         projectRepository.Add(newProject);
 
         // Default permissions
-        var permissions = DefaultCreatePermissions.Select(p => new Permission
+        var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
         {
             PermissionName = p,
-            UserId = projectDto.User.Id,
+            UserId = projectDto.UserId.ToGuid(),
             ProjectId = newProject.Id,
         });
         SavePermissions(permissions);
@@ -86,7 +86,7 @@ public class ProjectService : IProjectService
         return projects.Select(p => p.ToProjectDto());
     }
 
-    public Guid Update(ProjectDto projectDto)
+    public Guid UpdateWithoutUserId(ProjectDto projectDto)
     {
         var id = projectDto.Id.ToGuid();
         if (id == Guid.Empty)
@@ -122,5 +122,11 @@ public class ProjectService : IProjectService
         }
 
         projectRepository.SoftDelete(project);
+    }
+
+    public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId)
+    {
+        var projects = projectRepository.GetAllReadableByUser(userId);
+        return projects.Select(p => p.ToProjectDto());
     }
 }

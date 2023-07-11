@@ -1,15 +1,12 @@
 using AutoMapper;
 using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
-using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.AutoMapper;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
-using KnowledgeBase.Web.Policies.Handlers;
-using KnowledgeBase.Web.Policies.Requirements;
-using Microsoft.AspNetCore.Authorization;
+using KnowledgeBase.Web.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +30,7 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
 
-builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<IUserProjectPermissionRepository, UserProjectPermissionRepository>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -44,21 +41,7 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 
 #endregion
 
-# region Authorization
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("canEditProject", policy =>
-        policy.Requirements.Add(new ProjectPermissionRequirement(PermissionName.EditProject)));
-    options.AddPolicy("canReadProject", policy =>
-        policy.Requirements.Add(new ProjectPermissionRequirement(PermissionName.ReadProject)));
-    options.AddPolicy("canDeleteProject", policy =>
-        policy.Requirements.Add(new ProjectPermissionRequirement(PermissionName.DeleteProject)));
-});
-
-builder.Services.AddScoped<IAuthorizationHandler, ProjectPermissionHandler>();
-
-#endregion
+builder.Services.AddPermissions();
 
 builder.Services.AddControllersWithViews();
 

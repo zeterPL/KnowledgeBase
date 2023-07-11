@@ -1,5 +1,4 @@
-﻿using KnowledgeBase.Data.Models;
-using KnowledgeBase.Data.Models.Enums;
+﻿using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
@@ -10,9 +9,9 @@ public class PermissionService : IPermissionService
 {
     private readonly IUserRepository _userRepository;
     private readonly IProjectRepository _projectRepository;
-    private readonly IPermissionRepository _permissionRepsitory;
+    private readonly IUserProjectPermissionRepository _permissionRepsitory;
 
-    public PermissionService(IUserRepository userRepository, IProjectRepository projectRepository, IPermissionRepository permissionRepository)
+    public PermissionService(IUserRepository userRepository, IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository)
     {
         _userRepository = userRepository;
         _projectRepository = projectRepository;
@@ -64,21 +63,8 @@ public class PermissionService : IPermissionService
         return userProjectPermissions;
     }
 
-    public bool UserHadProjectPermission(Guid userId, Guid projectId, PermissionName permission)
-    {
-        User? user = _userRepository.Get(userId);
-        if (user == null)
-        {
-            return false;
-        }
-
-        Project? project = _projectRepository.GetProjectWithPermissions(projectId);
-        if (project == null)
-        {
-            return false;
-        }
-
-        var permissions = project.UsersPermissions.Where(p => p.UserId == userId);
-        return permissions.Any(p => p.PermissionName == permission);
+    public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
+    { 
+        return _permissionRepository.UserHasProjectPermission(userId, projectId, permission);
     }
 }

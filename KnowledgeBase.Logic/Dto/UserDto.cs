@@ -17,7 +17,7 @@ namespace KnowledgeBase.Logic.Dto
 		//public string UserName { get; set; }
         public string? Password { get; set; }    
 		public Guid RoleId { get; set; }
-		public ICollection<PermissionName>? permissions { get; set; }
+		public ICollection<ProjectPermissionName>? permissions { get; set; }
 	}
 
 	public static class UserExtensions

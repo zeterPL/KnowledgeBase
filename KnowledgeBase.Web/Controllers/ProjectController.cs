@@ -1,6 +1,7 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,7 @@ public class ProjectController : Controller
 
     public IActionResult List()
     {
-        IEnumerable<ProjectDto> projects = _projectService.GetAll();
+        IEnumerable<ProjectDto> projects = _projectService.GetAllReadableByUser(User.GetUserId());
         return View(projects.ToList());
     }
 
@@ -42,15 +43,13 @@ public class ProjectController : Controller
             return Forbid();
         }
 
-        project.User = new UserDto
-        {
-            Id = userId,
-        };
+        project.UserId = userId;
 
+        ModelState.Clear();
+        TryValidateModel(project);
         if (!ModelState.IsValid)
         {
-            // TODO validation
-            // return View(project);
+            return View(project);
         }
 
         _projectService.Add(project);
@@ -58,7 +57,7 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
-    [Authorize(Policy = "canEditProject")]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult Edit(Guid id)
     {
         ProjectDto? project = _projectService.Get(id);
@@ -73,21 +72,23 @@ public class ProjectController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Policy = "canEditProject")]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult Edit(ProjectDto project)
     {
+        project.UserId = Guid.NewGuid();
+        ModelState.Clear();
+        TryValidateModel(project);
         if (!ModelState.IsValid)
         {
-            // TODO validation
-            // return View(project);
+            return View(project);
         }
 
-        _projectService.Update(project);
+        _projectService.UpdateWithoutUserId(project);
         return RedirectToAction("List");
     }
 
     [HttpGet]
-    [Authorize(Policy = "canDeleteProject")]
+    [Authorize(Policy = ProjectPermission.CanDeleteProject)]
     public IActionResult Delete(Guid id)
     {
         _projectService.SoftDelete(new ProjectDto { Id = id });
@@ -95,7 +96,7 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
-    [Authorize(Policy = "canReadProject")]
+    [Authorize(Policy = ProjectPermission.CanReadProject)]
     public IActionResult Details(Guid id)
     {
         ProjectDto? project = _projectService.Get(id);

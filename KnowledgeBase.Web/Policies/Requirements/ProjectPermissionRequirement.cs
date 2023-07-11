@@ -5,9 +5,9 @@ namespace KnowledgeBase.Web.Policies.Requirements;
 
 public class ProjectPermissionRequirement : IAuthorizationRequirement
 {
-    public PermissionName PermissionName { get; }
+    public ProjectPermissionName PermissionName { get; }
 
-    public ProjectPermissionRequirement(PermissionName permissionName)
+    public ProjectPermissionRequirement(ProjectPermissionName permissionName)
     {
         PermissionName = permissionName;
     }

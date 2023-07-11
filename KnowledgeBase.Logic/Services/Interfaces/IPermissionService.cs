@@ -13,4 +13,5 @@ public interface IPermissionService
     public PermissionDto GetById(Guid id);
     public void Delete(PermissionDto permission);
     public void Add(PermissionDto permission);
+    public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission);
 }

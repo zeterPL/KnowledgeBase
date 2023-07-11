@@ -13,6 +13,9 @@ public class User : IdentityUser<Guid>
     public UserRoles AssignedRoleName { get; set; }
     
     public virtual ICollection<Resource> Resources { get; set; }
-    public virtual ICollection<UserProject> AssignedProjects { get; set; }
-    public virtual ICollection<Permission> ProjectsPermissions { get; set; }
+    
+
+}
+    public virtual ICollection<Project> AssignedProjects { get; set; }
+    public virtual ICollection<UserProjectPermission> ProjectsPermissions { get; set; }
 }

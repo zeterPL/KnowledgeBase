@@ -30,7 +30,7 @@ public class ProjectPermissionHandler : AuthorizationHandler<ProjectPermissionRe
             return Task.CompletedTask;
         }
 
-        if (_permissionService.UserHadProjectPermission(userId, projectId, requirement.PermissionName))
+        if (_permissionService.UserHasProjectPermission(userId, projectId, requirement.PermissionName))
         {
             context.Succeed(requirement);
         }

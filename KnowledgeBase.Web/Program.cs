@@ -6,6 +6,7 @@ using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.AutoMapper;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Web.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,24 +14,29 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<KnowledgeDbContext>(options =>
-    options.UseSqlServer(connectionString, optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
+    options.UseSqlServer(connectionString,
+        optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<Role>()
     .AddEntityFrameworkStores<KnowledgeDbContext>();
 
-builder.Services.AddRazorPages();
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// Dependency injection
+#region Dependency injection
+
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
+
+builder.Services.AddScoped<IUserProjectPermissionRepository, UserProjectPermissionRepository>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+
+#endregion
+
+builder.Services.AddPermissions();
 
 builder.Services.AddControllersWithViews();
 
@@ -47,13 +53,13 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseMigrationsEndPoint();
+    app.UseMigrationsEndPoint();
 }
 else
 {
-	app.UseExceptionHandler("/Error");
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-	app.UseHsts();
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -67,7 +73,7 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.MapControllerRoute(
-	name: "default",
-	pattern: "{controller}/{action=Index}/{id?}");
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
 
 app.Run();

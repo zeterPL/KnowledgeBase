@@ -1,4 +1,4 @@
-﻿using KnowledgeBase.Data.Data;
+﻿using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
 

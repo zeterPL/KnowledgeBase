@@ -1,44 +1,55 @@
-﻿using AutoMapper;
-using KnowledgeBase.Data.Models;
-using KnowledgeBase.Logic.Services.Interfaces;
+﻿using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using KnowledgeBase.Logic.Dto;
-using KnowledgeBase.Logic.AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using KnowledgeBase.Logic.AzureServices;
+using KnowledgeBase.Logic.AzureServices.File;
+using KnowledgeBase.Shared;
 
 namespace KnowledgeBase.Web.Controllers
 {
 	public class ResourceController : Controller
 	{
 		private readonly IResourceService _service;
-		private readonly UserManager<User> _userManager;
-		public ResourceController(IResourceService service, UserManager<User> userManager)
+		private readonly AzureStorageService _azureStorageService;
+		private readonly IProjectService _projectService;
+
+		public ResourceController(IResourceService service, AzureStorageService azureStorageService, IProjectService projectService)
 		{
 			_service = service;
-			_userManager = userManager;
+			_azureStorageService = azureStorageService;
+			_projectService = projectService;
 		}
-
 
 		public IActionResult Index()
 		{
 			return View(_service.GetAll().ToList());
 		}
 
-
 		public IActionResult Create()
 		{
 			return View();
 		}
 
-
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult Create(ResourceDto resourcedto)
+		public async Task<IActionResult> Create(ResourceDto resourceDto)
 		{
-			resourcedto.UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-			resourcedto.ProjectId = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b");
-			_service.Add(resourcedto);
+			resourceDto.UserId = User.GetUserId();
+			resourceDto.ProjectId = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b");
+			var projectName = _projectService.Get(resourceDto.ProjectId)?.Name;
+			if (projectName == null)
+			{
+				return BadRequest();
+			}
+			
+			var uploadFile = new UploadAzureResourceFile(resourceDto.Name, projectName, resourceDto.File);
+			var azureResourceFile = await _azureStorageService.UploadFileAsync(uploadFile);
+
+			resourceDto.AzureStorageAbsolutePath = azureResourceFile.AzureStoragePath;
+			resourceDto.AzureFileName = azureResourceFile.AzureFileName;
+			_service.Add(resourceDto);
+
 			return RedirectToAction(actionName: "Index");
 		}
 
@@ -76,6 +87,19 @@ namespace KnowledgeBase.Web.Controllers
 		{
 			_service.Delete(resourcedto);
 			return RedirectToAction(actionName: "Index");
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Download(Guid id)
+		{
+			var resource = _service.Get(id);
+			var fileDto = new AzureResourceFile
+			{
+				AzureStoragePath = resource.AzureStorageAbsolutePath,
+			};
+			
+			var file = await _azureStorageService.DownloadFileAsync(fileDto);
+			return File(file.Stream, file.ContentType, resource.AzureFileName);
 		}
 	}
 }

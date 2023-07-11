@@ -10,8 +10,8 @@ namespace KnowledgeBase.Logic.Services;
 
 public class ProjectService : IProjectService
 {
-	private readonly IMapper mapper;
-	private readonly IProjectRepository projectRepository;
+    private readonly IMapper mapper;
+    private readonly IProjectRepository projectRepository;
     private readonly IUserProjectPermissionRepository permissionRepository;
 
     public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository, IMapper mapper)

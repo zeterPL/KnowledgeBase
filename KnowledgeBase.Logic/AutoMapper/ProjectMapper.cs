@@ -10,5 +10,5 @@ public class ProjectMapper : Profile
     {
         CreateMap<ProjectDto, Project>();
         CreateMap<Project, ProjectDto>();
-	}
+    }
 }

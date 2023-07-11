@@ -30,8 +30,6 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IUserProjectPermissionRepository, UserProjectPermissionRepository>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 #endregion
 
 builder.Services.AddPermissions();

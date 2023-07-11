@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace KnowledgeBase.Data.Repositories;
 
@@ -29,6 +30,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     }
 
     public IEnumerable<T> GetAll()
+    {
+        return _context.Set<T>();
+    }
+
+    protected DbSet<T> GetSet()
     {
         return _context.Set<T>();
     }

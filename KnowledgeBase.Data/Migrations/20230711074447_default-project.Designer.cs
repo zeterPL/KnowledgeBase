@@ -4,6 +4,7 @@ using KnowledgeBase.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    partial class KnowledgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230711074447_default-project")]
+    partial class defaultproject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,22 +125,22 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("20c54f30-178b-4cdd-889a-db758199b1b7"),
-                            ConcurrencyStamp = "12c6085b-37d2-4a54-88e3-f564e9b4cfbb",
+                            Id = new Guid("d447125f-b29a-4cd6-b1db-969223021451"),
+                            ConcurrencyStamp = "9b2036b4-7d0c-4506-be54-0c5057b4c446",
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("5e792e1d-c74c-43e3-9eb2-a31738907169"),
-                            ConcurrencyStamp = "66a11273-cb54-4cbf-b4bc-1a5f6f35131c",
+                            Id = new Guid("2e33ab6c-efea-4f62-bdf2-e55e741389c9"),
+                            ConcurrencyStamp = "4259e199-be62-459a-8d5c-6415ebc74fb1",
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("3aa9fa0b-57e3-4c99-9ef0-765b5262b00a"),
-                            ConcurrencyStamp = "728348ab-fe6d-41fa-9652-77adeb06ba27",
+                            Id = new Guid("7a625259-e4e7-4409-9930-7bb58ee22eaf"),
+                            ConcurrencyStamp = "c2d27718-4921-4a5e-8599-0eebf393753c",
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -200,9 +203,6 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -223,9 +223,22 @@ namespace KnowledgeBase.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.UserProject", b =>
+                {
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProjectId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserProject");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserProjectPermission", b =>
@@ -377,17 +390,6 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
-                {
-                    b.HasOne("KnowledgeBase.Data.Models.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserProject", b =>
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Project", null)
@@ -480,24 +482,9 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("UsersPermissions");
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
-                {
-                    b.Navigation("Users");
-                });
-
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
-
-                    b.Navigation("AssignedProjects");
-
                     b.Navigation("ProjectsPermissions");
-
-
-
-
-                    b.Navigation("ProjectsPermissions");
-
-
 
                     b.Navigation("Resources");
                 });

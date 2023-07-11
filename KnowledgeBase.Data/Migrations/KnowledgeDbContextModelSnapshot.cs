@@ -494,18 +494,18 @@ namespace KnowledgeBase.Data.Migrations
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
-<<<<<<<<< Temporary merge branch 1
+
                     b.Navigation("AssignedProjects");
 
                     b.Navigation("ProjectsPermissions");
 
-=========
->>>>>>>>> Temporary merge branch 2
+
+
 
                     b.Navigation("ProjectsPermissions");
 
-=========
->>>>>>>>> Temporary merge branch 2
+
+
                     b.Navigation("Resources");
                 });
 #pragma warning restore 612, 618

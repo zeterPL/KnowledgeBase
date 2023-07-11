@@ -14,7 +14,13 @@ public class UserProjectPermissionRepository : GenericRepository<UserProjectPerm
 		permissions = context.Set<UserProjectPermission>();
     }
 
-	public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
+    public void AddRange(List<UserProjectPermission> permissions)
+    {
+        _context.AddRange(permissions);
+        _context.SaveChanges();
+    }
+
+    public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
 	{
 		var hasPermission = permissions.Any(p => p.UserId == userId && p.ProjectId == projectId && p.PermissionName == permission);
 		return hasPermission;

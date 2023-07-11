@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Data.Models.Enums;
+﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
@@ -9,50 +10,50 @@ public class PermissionService : IPermissionService
 {
     private readonly IUserRepository _userRepository;
     private readonly IProjectRepository _projectRepository;
-    private readonly IUserProjectPermissionRepository _permissionRepsitory;
+    private readonly IUserProjectPermissionRepository _permissionRepository;
 
     public PermissionService(IUserRepository userRepository, IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository)
     {
         _userRepository = userRepository;
         _projectRepository = projectRepository;
-        _permissionRepsitory = permissionRepository;
+        _permissionRepository = permissionRepository;
     }
 
     public void Add(PermissionDto permission)
     {
-        Permission perm = new Permission
+        UserProjectPermission perm = new UserProjectPermission
         {
             Id = permission.Id,
             UserId = permission.UserId,
             ProjectId = permission.ProjectId,
             PermissionName = permission.PermissionName,
         };
-        _permissionRepsitory.Add(perm);
+        _permissionRepository.Add(perm);
     }
 
     public void Delete(PermissionDto permission)
     {
-        var perm = _permissionRepsitory.Get(permission.Id);
+        var perm = _permissionRepository.Get(permission.Id);
         if (perm == null) { return; }
 
-        _permissionRepsitory.Remove(perm);
+        _permissionRepository.Remove(perm);
     }
 
     public PermissionDto GetById(Guid id)
     {
-        return _permissionRepsitory.Get(id).ToPermissionDto();
+        return _permissionRepository.Get(id).ToPermissionDto();
     }
 
 
 
     public PermissionDto GetPermissionsbyProjectId(Guid projectId)
     {
-        return _permissionRepsitory.Get(projectId).ToPermissionDto();
+        return _permissionRepository.Get(projectId).ToPermissionDto();
     }
 
     public IList<PermissionDto> GetPermissionsbyUserId(Guid userId)
     {
-       return _permissionRepsitory.GetAll().Where(p => p.UserId == userId)
+       return _permissionRepository.GetAll().Where(p => p.UserId == userId)
             .Select(p => p.ToPermissionDto()).ToList();
     }
 
@@ -61,6 +62,11 @@ public class PermissionService : IPermissionService
         var userPermissions = GetPermissionsbyUserId(userId);
         var userProjectPermissions = userPermissions.Where(p => p.ProjectId == projectId).ToList();
         return userProjectPermissions;
+    }
+
+    public bool UserHadProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
+    {
+        throw new NotImplementedException();
     }
 
     public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)

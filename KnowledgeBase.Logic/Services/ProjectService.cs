@@ -69,7 +69,7 @@ public class ProjectService : IProjectService
         });
         SavePermissions(permissions);
 
-        AssignPermissionsToSuperUsers(projectDto.Id, projectDto.User.Id);
+        AssignPermissionsToSuperUsers(projectDto.Id, projectDto.UserId.ToGuid());
 
         return newProject.Id;
     }

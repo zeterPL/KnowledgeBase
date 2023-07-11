@@ -143,7 +143,7 @@ namespace KnowledgeBase.Web.Controllers
         public IActionResult AddPermission(PermissionDto permission)
         {
             var selectedName = int.Parse(Request.Form["Permissions"]);
-            permission.PermissionName = (Data.Models.Enums.PermissionName)selectedName;
+            permission.PermissionName = (Data.Models.Enums.ProjectPermissionName)selectedName;
 
             if (ModelState.IsValid)
             {

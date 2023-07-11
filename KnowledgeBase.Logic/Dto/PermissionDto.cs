@@ -13,12 +13,12 @@ namespace KnowledgeBase.Logic.Dto
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
         public Guid UserId { get; set; }
-        public PermissionName PermissionName { get; set; }
+        public ProjectPermissionName PermissionName { get; set; }
     }
 
-    public static class PermissionExtensions
+    public static class UserProjectPermissionExtensions
     {
-        public static PermissionDto ToPermissionDto(this Permission perimission)
+        public static PermissionDto ToPermissionDto(this UserProjectPermission perimission)
         {
             return new PermissionDto
             {

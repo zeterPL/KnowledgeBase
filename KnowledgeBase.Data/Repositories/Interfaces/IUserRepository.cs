@@ -9,7 +9,7 @@ namespace KnowledgeBase.Data.Repositories.Interfaces
 {
     public interface IUserRepository : IGenericRepository<User>
     {
-        public IList<Permission>? GetAllUserPermissionsByUserId(Guid userId);
+        public IList<UserProjectPermission>? GetAllUserPermissionsByUserId(Guid userId);
         public void AddPermissionsByUserIdAndRoleId(Guid userId, Guid roleId);
         
     }

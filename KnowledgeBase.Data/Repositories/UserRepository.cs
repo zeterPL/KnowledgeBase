@@ -17,9 +17,9 @@ namespace KnowledgeBase.Data.Repositories
            
         }
 
-        public IList<Permission>? GetAllUserPermissionsByUserId(Guid userId)
+        public IList<UserProjectPermission>? GetAllUserPermissionsByUserId(Guid userId)
         {
-            return _context.Set<Permission>().Where(x => x.UserId == userId).ToList<Permission>();
+            return _context.Set<UserProjectPermission>().Where(x => x.UserId == userId).ToList<UserProjectPermission>();
         }
     }
 }

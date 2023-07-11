@@ -17,11 +17,11 @@ namespace KnowledgeBase.Logic.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IProjectRepository _projectRepository;
-        private readonly IPermissionRepository _permissionRepository;
+        private readonly IUserProjectPermissionRepository _permissionRepository;
         private readonly IRoleRepository _roleRepository;
 
         public UserService(IUserRepository userRepository, IProjectRepository projectRepository, 
-            IPermissionRepository permissionRepository, IRoleRepository roleRepository)
+            IUserProjectPermissionRepository permissionRepository, IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
             _projectRepository = projectRepository;
@@ -34,48 +34,48 @@ namespace KnowledgeBase.Logic.Services
             var user = _userRepository.Get(userId);
             var role = _roleRepository.Get(user.RoleId);
             var roleName = role.Name;
-            List<Permission> permissions = new List<Permission>();
+            List<UserProjectPermission> permissions = new List<UserProjectPermission>();
             if (roleName == UserRoles.SuperAdmin.ToString())
             {
-                Permission perm = new Permission
+                UserProjectPermission perm = new UserProjectPermission
                 {
                     UserId = userId,
                     ProjectId = projectId,
-                    PermissionName = PermissionName.ReadProject
+                    PermissionName = ProjectPermissionName.ReadProject
                 };
                 permissions.Add(perm);
 
-                Permission perm1 = new Permission
+                UserProjectPermission perm1 = new UserProjectPermission
                 {
                     UserId = userId,
                     ProjectId = projectId,
-                    PermissionName = PermissionName.EditProject
+                    PermissionName = ProjectPermissionName.EditProject
                 };
                 permissions.Add(perm1);
 
-                Permission perm2 = new Permission
+                UserProjectPermission perm2 = new UserProjectPermission
                 {
                     UserId = userId,
                     ProjectId = projectId,
-                    PermissionName = PermissionName.DeleteProject
+                    PermissionName = ProjectPermissionName.DeleteProject
                 };
                 permissions.Add(perm2);
             }
             if(roleName == UserRoles.Admin.ToString())
             {
-                Permission perm = new Permission
+                UserProjectPermission perm = new UserProjectPermission
                 {
                     UserId = userId,
                     ProjectId = projectId,
-                    PermissionName = PermissionName.ReadProject
+                    PermissionName = ProjectPermissionName.ReadProject
                 };
                 permissions.Add(perm);
 
-                Permission perm1 = new Permission
+                UserProjectPermission perm1 = new UserProjectPermission
                 {
                     UserId = userId,
                     ProjectId = projectId,
-                    PermissionName = PermissionName.EditProject
+                    PermissionName = ProjectPermissionName.EditProject
                 };
                 permissions.Add(perm1);
             }
@@ -116,50 +116,50 @@ namespace KnowledgeBase.Logic.Services
             var allProjects = _projectRepository.GetAll();
             foreach (var project in allProjects)
             {
-                List<Permission> permissions = new List<Permission>();
+                List<UserProjectPermission> permissions = new List<UserProjectPermission>();
                 if (role.Name == "SuperAdmin")
                 {
                     
-                    Permission perm = new Permission
+                    UserProjectPermission perm = new UserProjectPermission
                     {
                         ProjectId = project.Id,
                         UserId = userId,
-                        PermissionName = Data.Models.Enums.PermissionName.ReadProject
+                        PermissionName = Data.Models.Enums.ProjectPermissionName.ReadProject
                     };
                     permissions.Add(perm);
 
-                    Permission perm1 = new Permission
+                    UserProjectPermission perm1 = new UserProjectPermission
                     {
                         ProjectId = project.Id,
                         UserId = userId,
-                        PermissionName = Data.Models.Enums.PermissionName.EditProject
+                        PermissionName = Data.Models.Enums.ProjectPermissionName.EditProject
                     };
                     permissions.Add(perm1);
 
-                    Permission perm2 = new Permission
+                    UserProjectPermission perm2 = new UserProjectPermission
                     {
                         ProjectId = project.Id,
                         UserId = userId,
-                        PermissionName = Data.Models.Enums.PermissionName.DeleteProject
+                        PermissionName = Data.Models.Enums.ProjectPermissionName.DeleteProject
                     };
                     permissions.Add(perm2);
 
                 }
                 else if(role.Name == "Admin")
                 {
-                    Permission perm = new Permission
+                    UserProjectPermission perm = new UserProjectPermission
                     {
                         ProjectId = project.Id,
                         UserId = userId,
-                        PermissionName = Data.Models.Enums.PermissionName.ReadProject
+                        PermissionName = Data.Models.Enums.ProjectPermissionName.ReadProject
                     };
                     permissions.Add(perm);
 
-                    Permission perm1 = new Permission
+                    UserProjectPermission perm1 = new UserProjectPermission
                     {
                         ProjectId = project.Id,
                         UserId = userId,
-                        PermissionName = Data.Models.Enums.PermissionName.EditProject
+                        PermissionName = Data.Models.Enums.ProjectPermissionName.EditProject
                     };
                     permissions.Add(perm1);
                 }

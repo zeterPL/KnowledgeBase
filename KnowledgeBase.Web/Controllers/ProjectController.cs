@@ -113,6 +113,7 @@ public class ProjectController : Controller
     [Authorize(Policy = ProjectPermission.CanReadProject)]
     public IActionResult ManageTags(Guid id)
     {
-        return View();
+        var tags = _projectService.GetAllTagsByProjectId(id);
+        return View(tags);
     }
 }

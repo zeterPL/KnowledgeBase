@@ -41,6 +41,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ITagService, TagService>();
 
+builder.Services.AddScoped<IProjectTagRepository, ProjectTagRepository>();
+
+
 #endregion
 
 builder.Services.AddPermissions();

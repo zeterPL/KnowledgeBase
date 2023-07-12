@@ -13,13 +13,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 		builder.Property(u => u.FirstName)
 			.HasMaxLength(50);
 
-		builder.Property(u => u.LastName)
-			.HasMaxLength(50);
-
-		builder.Property(u => u.AssignedRole)
-			.HasConversion<string>();
-
-		builder.HasMany(u => u.Resources)
-			.WithOne(r => r.User);
-	}
+        builder.Property(u => u.LastName)
+            .HasMaxLength(50);
+        
+        builder.HasMany(u => u.Resources)
+            .WithOne(r => r.User);
+    }
 }

@@ -2,6 +2,6 @@
 
 public enum ResourceCategory
 {
-	Documents,
-	Documentation,
+    Documents,
+    Documentation,
 }

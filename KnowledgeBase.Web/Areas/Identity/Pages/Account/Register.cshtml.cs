@@ -4,6 +4,7 @@
 
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -16,32 +17,35 @@ using System.Text.Encodings.Web;
 
 namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
 {
-	public class RegisterModel : PageModel
-	{
-		private readonly SignInManager<User> _signInManager;
-		private readonly UserManager<User> _userManager;
-		private readonly IUserStore<User> _userStore;
-		private readonly IUserEmailStore<User> _emailStore;
-		private readonly ILogger<RegisterModel> _logger;
-		private readonly IEmailSender _emailSender;
-		private readonly RoleManager<Role> _roleManager;
+    public class RegisterModel : PageModel
+    {
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly IUserStore<User> _userStore;
+        private readonly IUserEmailStore<User> _emailStore;
+        private readonly ILogger<RegisterModel> _logger;
+        private readonly IEmailSender _emailSender;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly IRoleService _roleService;
 
-		public RegisterModel(
-			UserManager<User> userManager,
-			IUserStore<User> userStore,
-			SignInManager<User> signInManager,
-			ILogger<RegisterModel> logger,
-			IEmailSender emailSender,
-			RoleManager<Role> roleManager)
-		{
-			_userManager = userManager;
-			_userStore = userStore;
-			_emailStore = GetEmailStore();
-			_signInManager = signInManager;
-			_logger = logger;
-			_emailSender = emailSender;
-			_roleManager = roleManager;
-		}
+        public RegisterModel(
+            UserManager<User> userManager,
+            IUserStore<User> userStore,
+            SignInManager<User> signInManager,
+            ILogger<RegisterModel> logger,
+            IEmailSender emailSender,
+            RoleManager<Role> roleManager,
+            IRoleService roleService)
+        {
+            _userManager = userManager;
+            _userStore = userStore;
+            _emailStore = GetEmailStore();
+            _signInManager = signInManager;
+            _logger = logger;
+            _emailSender = emailSender;
+            _roleManager = roleManager;
+            _roleService = roleService;
+        }
 
 		/// <summary>
 		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -97,29 +101,28 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
 			public string ConfirmPassword { get; set; }
 		}
 
-		public async Task OnGetAsync(string returnUrl = null)
-		{
-			ReturnUrl = returnUrl;
-			ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-		}
+        public async Task OnGetAsync(string returnUrl = null)
+        {
+            ReturnUrl = returnUrl;
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        }
 
-		public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-		{
-			returnUrl ??= Url.Content("~/");
-			ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-			if (ModelState.IsValid)
-			{
-				var user = CreateUser();
-				user.FirstName = "Test";
-				user.LastName = "Test";
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            if (ModelState.IsValid)
+            {
+                var role = _roleService.GetAll().First(r => r.Name == "Basic");
+                var user = CreateUser();
 
-				// var roleResult = _userManager.AddToRoleAsync(currentUser, UserRoles.SuperAdmin.ToString());
-				//var roleResult = _roleManager.FindByNameAsync(UserRoles.Basic.ToString());
-
-				user.AssignedRole = UserRoles.Basic;
-				await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-				await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-				var result = await _userManager.CreateAsync(user, Input.Password);
+                user.FirstName = "Test";
+                user.LastName = "Test";               
+                user.RoleId = role.Id;  
+                
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                var result = await _userManager.CreateAsync(user, Input.Password);
 
 				if (result.Succeeded)
 				{
@@ -173,13 +176,13 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
 			}
 		}
 
-		private IUserEmailStore<User> GetEmailStore()
-		{
-			if (!_userManager.SupportsUserEmail)
-			{
-				throw new NotSupportedException("The default UI requires a user store with email support.");
-			}
-			return (IUserEmailStore<User>)_userStore;
-		}
-	}
+        private IUserEmailStore<User> GetEmailStore()
+        {
+            if (!_userManager.SupportsUserEmail)
+            {
+                throw new NotSupportedException("The default UI requires a user store with email support.");
+            }
+            return (IUserEmailStore<User>)_userStore;
+        }
+    }
 }

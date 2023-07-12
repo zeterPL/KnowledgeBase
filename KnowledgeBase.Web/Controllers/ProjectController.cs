@@ -101,9 +101,9 @@ public class ProjectController : Controller
 			return View(project);
 		}
 
-		_projectService.UpdateWithoutUserId(project);
-		return RedirectToAction("List");
-	}
+        _projectService.UpdateWithoutUserId(project);
+        return RedirectToAction("List");
+    }
 
 	[HttpGet]
 	[Authorize(Policy = ProjectPermission.CanDeleteProject)]

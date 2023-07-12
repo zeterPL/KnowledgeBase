@@ -9,9 +9,9 @@ public class ResourceRepository : GenericRepository<Resource>, IGenericRepositor
 	{
 	}
 
-	public void Delete(Resource resource)
-	{
-		resource.IsDeleted = true;
-		Update(resource);
-	}
+    public void Delete(Resource resource)
+    {
+        resource.IsDeleted = true;
+        Update(resource);
+    }
 }

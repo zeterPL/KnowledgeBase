@@ -2,5 +2,5 @@
 
 public interface IDeletableEntity
 {
-	public bool IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 }

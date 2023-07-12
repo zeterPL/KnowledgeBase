@@ -7,16 +7,22 @@ namespace KnowledgeBase.Data.Repositories;
 
 public class UserProjectPermissionRepository : GenericRepository<UserProjectPermission>, IUserProjectPermissionRepository
 {
-	private readonly DbSet<UserProjectPermission> permissions;
+    private readonly DbSet<UserProjectPermission> permissions;
 
-	public UserProjectPermissionRepository(KnowledgeDbContext context) : base(context)
-	{
-		permissions = context.Set<UserProjectPermission>();
-	}
+    public UserProjectPermissionRepository(KnowledgeDbContext context) : base(context)
+    {
+        permissions = context.Set<UserProjectPermission>();
+    }
 
-	public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
-	{
-		var hasPermission = permissions.Any(p => p.UserId == userId && p.ProjectId == projectId && p.PermissionName == permission);
-		return hasPermission;
-	}
+    public void AddRange(List<UserProjectPermission> permissions)
+    {
+        _context.AddRange(permissions);
+        _context.SaveChanges();
+    }
+
+    public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
+    {
+        var hasPermission = permissions.Any(p => p.UserId == userId && p.ProjectId == projectId && p.PermissionName == permission);
+        return hasPermission;
+    }
 }

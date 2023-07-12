@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230710110121_UserProjectPermissions")]
-    partial class UserProjectPermissions
+    [Migration("20230712074412_as-user-roles")]
+    partial class asuserroles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,6 +42,14 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Project");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"),
+                            IsDeleted = false,
+                            Name = "Deafult project"
+                        });
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
@@ -58,6 +66,9 @@ namespace KnowledgeBase.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -114,22 +125,22 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b28e1435-ea3e-467a-8a02-a1e60a2a25de"),
-                            ConcurrencyStamp = "416ba37a-ad33-4e00-a833-897024026f7d",
+                            Id = new Guid("868773a4-1051-44ae-9744-97bae50614c8"),
+                            ConcurrencyStamp = "273eb104-9c38-4ce4-96bc-08c40b0bbe6f",
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("7f98b34e-865c-42fe-8947-1316c1d94d62"),
-                            ConcurrencyStamp = "00c274da-002b-4642-9be6-1d7f91d148ea",
+                            Id = new Guid("2e4aad75-a51e-4fb7-8061-f4b98f7c61fc"),
+                            ConcurrencyStamp = "be689ce3-4fd7-4531-888f-6458ae8a8662",
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("3e5260c4-d258-401d-b5e8-9d876d84c88e"),
-                            ConcurrencyStamp = "0fbda9a8-6537-4fc2-adef-6168e9c5a749",
+                            Id = new Guid("565a5e47-d75c-4e8d-a8a1-b75e21a60c0d"),
+                            ConcurrencyStamp = "373000eb-1cfa-48a6-85df-32ae0939956b",
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -143,10 +154,6 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("AssignedRole")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -192,6 +199,9 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -212,22 +222,9 @@ namespace KnowledgeBase.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.UserProject", b =>
-                {
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ProjectId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserProject");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserProjectPermission", b =>
@@ -236,8 +233,9 @@ namespace KnowledgeBase.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("PermissionName")
-                        .HasColumnType("int");
+                    b.Property<string>("PermissionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
@@ -378,19 +376,15 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.UserProject", b =>
+            modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
-                    b.HasOne("KnowledgeBase.Data.Models.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
+                    b.HasOne("KnowledgeBase.Data.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("KnowledgeBase.Data.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserProjectPermission", b =>
@@ -468,6 +462,11 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("Resources");
 
                     b.Navigation("UsersPermissions");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>

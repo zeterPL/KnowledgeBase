@@ -115,7 +115,7 @@ public class ProjectService : IProjectService
         {
             Name = projectDto.Name,
         };
-        projectRepository.Add(newProject);
+        var newProjectId = projectRepository.Add(newProject);
 
         // Default permissions
         var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
@@ -126,7 +126,7 @@ public class ProjectService : IProjectService
         });
         SavePermissions(permissions);
 
-        AssignPermissionsToSuperUsers(projectDto.Id, projectDto.UserId.ToGuid());
+        AssignPermissionsToSuperUsers(newProjectId, projectDto.UserId.ToGuid());
 
         return newProject.Id;
     }

@@ -4,6 +4,7 @@
 
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -25,6 +26,7 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<Role> _roleManager;
+        private readonly IRoleService _roleService;
 
         public RegisterModel(
             UserManager<User> userManager,
@@ -32,7 +34,8 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<Role> roleManager)
+            RoleManager<Role> roleManager,
+            IRoleService roleService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -41,6 +44,7 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _roleService = roleService;
         }
 
         /// <summary>
@@ -109,14 +113,13 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                var role = _roleService.GetAll().First(r => r.Name == "Basic");
                 var user = CreateUser();
+
                 user.FirstName = "Test";
-                user.LastName = "Test";
-
-                // var roleResult = _userManager.AddToRoleAsync(currentUser, UserRoles.SuperAdmin.ToString());
-                //var roleResult = _roleManager.FindByNameAsync(UserRoles.Basic.ToString());
-
-                user.AssignedRoleName = UserRoles.Basic;
+                user.LastName = "Test";               
+                user.RoleId = role.Id;  
+                
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);

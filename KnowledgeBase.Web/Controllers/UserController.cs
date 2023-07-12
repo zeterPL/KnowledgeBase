@@ -31,7 +31,7 @@ namespace KnowledgeBase.Web.Controllers
         public IActionResult List()
         {
             var users = _userService.GetAllUsers();
-            return View(users.ToList());
+            return View(users);
         }
 
         [HttpGet]

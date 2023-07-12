@@ -55,9 +55,9 @@ public class ResourceService : IResourceService
             throw new ArgumentException("Project assigned to resource doesn't exist");
         }
 
-        resourceDto = await UploadFile(resourceDto, projectName);
+        var createdResourceDto = await UploadFile(resourceDto, projectName);
 
-        Resource resource = _mapper.Map<Resource>(resourceDto);
+        Resource resource = _mapper.Map<Resource>(createdResourceDto);
         _resourceRepository.Add(resource);
     }
 
@@ -93,6 +93,7 @@ public class ResourceService : IResourceService
         }
 
         var newResource = _mapper.Map<Resource>(resourceDto);
+        newResource.ProjectId = resource.ProjectId;
         foreach (var propertyInfo in resource.GetType().GetProperties())
         {
             if (propertyInfo.GetValue(newResource) != null)
@@ -117,8 +118,8 @@ public class ResourceService : IResourceService
 
     public IEnumerable<ResourceDto> GetAll()
     {
-        IEnumerable<Resource> resourceList = _resourceRepository.GetAll();
-        return resourceList.Select(r => _mapper.Map<ResourceDto>(r)).ToList();
+        IEnumerable<Resource> resourceList = _resourceRepository.GetAll().Where(r => !r.IsDeleted);
+        return resourceList.Select(r => _mapper.Map<ResourceDto>(r));
     }
 
     public async Task<DownloadResourceDto?> DownloadAsync(Guid id)

@@ -33,4 +33,9 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
 
         return projects;
     }
+
+    public bool ProjectExists(Guid id)
+    {
+        return GetSet().Any(p => p.Id == id && !p.IsDeleted);
+    }
 }

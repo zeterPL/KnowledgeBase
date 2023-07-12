@@ -9,10 +9,10 @@ public class UserProjectPermissionRepository : GenericRepository<UserProjectPerm
 {
 	private readonly DbSet<UserProjectPermission> permissions;
 
-    public UserProjectPermissionRepository(KnowledgeDbContext context) : base(context)
-    {
+	public UserProjectPermissionRepository(KnowledgeDbContext context) : base(context)
+	{
 		permissions = context.Set<UserProjectPermission>();
-    }
+	}
 
 	public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
 	{

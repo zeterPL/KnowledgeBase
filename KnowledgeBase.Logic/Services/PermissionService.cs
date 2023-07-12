@@ -6,15 +6,15 @@ namespace KnowledgeBase.Logic.Services;
 
 public class PermissionService : IPermissionService
 {
-    private readonly IUserProjectPermissionRepository _permissionRepository;
+	private readonly IUserProjectPermissionRepository _permissionRepository;
 
-    public PermissionService(IUserProjectPermissionRepository permissionRepository)
-    {
-        _permissionRepository = permissionRepository;
-    }
+	public PermissionService(IUserProjectPermissionRepository permissionRepository)
+	{
+		_permissionRepository = permissionRepository;
+	}
 
-    public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
-    { 
-        return _permissionRepository.UserHasProjectPermission(userId, projectId, permission);
-    }
+	public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)
+	{
+		return _permissionRepository.UserHasProjectPermission(userId, projectId, permission);
+	}
 }

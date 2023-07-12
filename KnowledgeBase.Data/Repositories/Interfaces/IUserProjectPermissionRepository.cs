@@ -5,5 +5,5 @@ namespace KnowledgeBase.Data.Repositories.Interfaces;
 
 public interface IUserProjectPermissionRepository : IGenericRepository<UserProjectPermission>
 {
-    public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission);
+	public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission);
 }

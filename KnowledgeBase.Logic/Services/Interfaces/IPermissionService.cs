@@ -4,5 +4,5 @@ namespace KnowledgeBase.Logic.Services.Interfaces;
 
 public interface IPermissionService
 {
-    public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission);
+	public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission);
 }

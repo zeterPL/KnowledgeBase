@@ -10,22 +10,22 @@ namespace KnowledgeBase.Logic.Services;
 
 public class ProjectService : IProjectService
 {
-    private readonly IMapper mapper;
-    private readonly IProjectRepository projectRepository;
-    private readonly IUserProjectPermissionRepository permissionRepository;
+	private readonly IMapper _mapper;
+	private readonly IProjectRepository _projectRepository;
+	private readonly IUserProjectPermissionRepository _permissionRepository;
 
-    public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository, IMapper mapper)
+	public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository, IMapper mapper)
     {
-        this.projectRepository = projectRepository;
-        this.permissionRepository = permissionRepository;
-        this.mapper = mapper;
+        this._projectRepository = projectRepository;
+        this._permissionRepository = permissionRepository;
+        this._mapper = mapper;
     }
 
 	private void SavePermissions(IEnumerable<UserProjectPermission> permissions)
 	{
 		foreach (var permission in permissions)
 		{
-			permissionRepository.Add(permission);
+			_permissionRepository.Add(permission);
 		}
 	}
 
@@ -39,10 +39,28 @@ public class ProjectService : IProjectService
 		};
 	}
 
-    public Guid Add(ProjectDto projectDto)
+	public Guid UpdateWithoutUserId(ProjectDto projectDto)
+	{
+		var id = projectDto.Id.ToGuid();
+		if (id == Guid.Empty)
+		{
+			return Guid.Empty;
+		}
+
+		if (!_projectRepository.ProjectExists(id))
+		{
+			return Guid.Empty;
+		}
+
+		var newProject = _mapper.Map<Project>(projectDto);
+
+		_projectRepository.Update(newProject);
+		return id;
+	}
+	public Guid Add(ProjectDto projectDto)
     {
-        var newProject = mapper.Map<Project>(projectDto);
-        projectRepository.Add(newProject);
+        var newProject = _mapper.Map<Project>(projectDto);
+		_projectRepository.Add(newProject);
 
 		// Default permissions
 		var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
@@ -58,14 +76,14 @@ public class ProjectService : IProjectService
 
     public ProjectDto? Get(Guid id)
     {
-        var project = projectRepository.Get(id);
-        return mapper.Map<ProjectDto>(project);
+        var project = _projectRepository.Get(id);
+        return _mapper.Map<ProjectDto>(project);
     }
 
     public IEnumerable<ProjectDto> GetAll()
     {
-        var projects = projectRepository.GetAll().Where(p => !p.IsDeleted);
-        return projects.Select(p => mapper.Map<ProjectDto>(p));
+        var projects = _projectRepository.GetAll().Where(p => !p.IsDeleted);
+        return projects.Select(p => _mapper.Map<ProjectDto>(p));
     }
 
     public Guid Update(ProjectDto projectDto)
@@ -76,14 +94,14 @@ public class ProjectService : IProjectService
             return Guid.Empty;
         }
 
-        if (!projectRepository.ProjectExists(id))
+        if (!_projectRepository.ProjectExists(id))
         {
             return Guid.Empty;
         }
 
-        var newProject = mapper.Map<Project>(projectDto);
+        var newProject = _mapper.Map<Project>(projectDto);
 
-        projectRepository.Update(newProject);
+		_projectRepository.Update(newProject);
         return id;
     }
 
@@ -95,18 +113,18 @@ public class ProjectService : IProjectService
 			return;
 		}
 
-		var project = projectRepository.Get(id);
+		var project = _projectRepository.Get(id);
 		if (project == null) // Project doesnt exist
 		{
 			return;
 		}
 
-		projectRepository.SoftDelete(project);
+		_projectRepository.SoftDelete(project);
 	}
 
     public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId)
     {
-        var projects = projectRepository.GetAllReadableByUser(userId);
-        return projects.Select(p => mapper.Map<ProjectDto>(p));
+        var projects = _projectRepository.GetAllReadableByUser(userId);
+        return projects.Select(p => _mapper.Map<ProjectDto>(p));
     }
 }

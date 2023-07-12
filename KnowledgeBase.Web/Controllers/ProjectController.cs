@@ -1,31 +1,33 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Shared;
+using KnowledgeBase.Web.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KnowledgeBase.Web.Controllers;
 
 public class ProjectController : Controller
 {
-	private readonly IProjectService projectService;
+	private readonly IProjectService _projectService;
 	public readonly ILogger<ProjectController> _logger;
-
 	public ProjectController(IProjectService projectService, ILogger<ProjectController> logger)
 	{
-		this.projectService = projectService;
+		_projectService = projectService;
 		_logger = logger;
 	}
 
-	public IActionResult Index()
-	{
-		return View();
-	}
+    public IActionResult Index()
+    {
+        return View();
+    }
 
 	public IActionResult List()
 	{
 		try
 		{
 			_logger.LogInformation("getting all projects");
-			IEnumerable<ProjectDto> projects = projectService.GetAll();
+			IEnumerable<ProjectDto> projects = _projectService.GetAllReadableByUser(User.GetUserId());
 			return View(projects.ToList());
 		}
 		catch (Exception ex)
@@ -35,94 +37,84 @@ public class ProjectController : Controller
 		}
 	}
 
-	[HttpGet]
-	public IActionResult Create()
-	{
-		return View();
-	}
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
 
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public IActionResult Create(ProjectDto project)
-	{
-		try
-		{
-			_logger.LogInformation("creating project");
-			if (!ModelState.IsValid)
-			{
-				return View(project);
-			}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(ProjectDto project)
+    {
+        var userId = User.GetUserId();
+        if (userId == Guid.Empty)
+        {
+            return Forbid();
+        }
 
-			projectService.Add(project);
-			return RedirectToAction("List");
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex.Message);
-			return BadRequest("Create internal server error");
-		}
-	}
+        project.UserId = userId;
 
-	[HttpGet]
-	public IActionResult Edit(Guid id)
-	{
-		try
-		{
-			_logger.LogInformation("Editin project");
-			ProjectDto? project = projectService.Get(id);
-			return View(project);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex.Message);
-			return NotFound("Can't find project");
-		}
+        ModelState.Clear();
+        TryValidateModel(project);
+        if (!ModelState.IsValid)
+        {
+            return View(project);
+        }
 
-	}
+        _projectService.Add(project);
+        return RedirectToAction("List");
+    }
 
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public IActionResult Edit(ProjectDto project)
-	{
-		if (!ModelState.IsValid)
-		{
-			return View(project);
-		}
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
+    public IActionResult Edit(Guid id)
+    {
+        ProjectDto? project = _projectService.Get(id);
 
-		projectService.Update(project);
-		return RedirectToAction("List");
-	}
+        if (project == null)
+        {
+            return NotFound();
+        }
 
-	[HttpGet]
-	public IActionResult Delete(Guid id)
-	{
-		try
-		{
-			_logger.LogInformation("Delete project");
-			projectService.SoftDelete(new ProjectDto { Id = id });
-			return RedirectToAction("List");
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex.Message);
-			return NotFound("Can't delete project");
-		}
+        return View(project);
+    }
 
-	}
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
+    public IActionResult Edit(ProjectDto project)
+    {
+        project.UserId = Guid.NewGuid();
+        ModelState.Clear();
+        TryValidateModel(project);
+        if (!ModelState.IsValid)
+        {
+            return View(project);
+        }
 
-	[HttpGet]
-	public IActionResult Details(Guid id)
-	{
-		try
-		{
-			_logger.LogInformation("Detailing project");
-			ProjectDto? project = projectService.Get(id);
-			return View(project);
-		}
-		catch(Exception ex)
-		{
-			_logger.LogError(ex.Message);
-			return NotFound("Project is null");
-		}
-	}
+        _projectService.UpdateWithoutUserId(project);
+        return RedirectToAction("List");
+    }
+
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanDeleteProject)]
+    public IActionResult Delete(Guid id)
+    {
+        _projectService.SoftDelete(new ProjectDto { Id = id });
+        return RedirectToAction("List");
+    }
+
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanReadProject)]
+    public IActionResult Details(Guid id)
+    {
+        ProjectDto? project = _projectService.Get(id);
+        if (project == null)
+        {
+            return NotFound();
+        }
+
+        return View(project);
+    }
 }

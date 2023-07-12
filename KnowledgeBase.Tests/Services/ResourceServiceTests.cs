@@ -114,14 +114,53 @@ public class ResourceServiceTests
             Id = resourceId,
         };
         var resource = new Resource();
-        
+
         _resourceRepository.Setup(r => r.Get(resourceId)).Returns(resource);
-        
+
         // act
         _resourceService.SoftDelete(resourceDto);
 
         // assert
         _resourceRepository.Verify(r => r.Get(resourceId), Times.Once);
         _resourceRepository.Verify(r => r.SoftDelete(resource), Times.Once);
+    }
+
+    [Fact]
+    public async Task AddAsync_ProjectDoesntExistInDatabase_ThrowsArgumentException()
+    {
+        // arrange
+        var projectId = Guid.NewGuid();
+        var resourceDto = new ResourceDto
+        {
+            ProjectId = projectId,
+        };
+
+        _projectRepository.Setup(r => r.Get(projectId)).Returns((Project?)null);
+
+        // act assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _resourceService.AddAsync(resourceDto));
+        _projectRepository.Verify(r => r.Get(projectId), Times.Once);
+    }
+
+    [Fact]
+    public async Task AddAsync_FileIsNull_ThrowsArgumentException()
+    {
+        // arrange
+        var projectId = Guid.NewGuid();
+        var project = new Project
+        {
+            Id = projectId,
+            Name = "Project",
+        };
+        var resourceDto = new ResourceDto
+        {
+            ProjectId = projectId,
+        };
+
+        _projectRepository.Setup(r => r.Get(projectId)).Returns(project);
+
+        // act assert
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _resourceService.AddAsync(resourceDto));
+        _projectRepository.Verify(r => r.Get(projectId), Times.Once);
     }
 }

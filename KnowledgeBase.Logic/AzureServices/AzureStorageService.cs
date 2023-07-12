@@ -1,5 +1,4 @@
-﻿using Azure;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using KnowledgeBase.Logic.AzureServices.File;
 using Microsoft.Extensions.Configuration;
 
@@ -27,17 +26,10 @@ public class AzureStorageService
         await uploadAzureResourceFile.File.CopyToAsync(stream);
         stream.Position = 0;
 
-        try
-        {
-            var response = await _blobContainerClient.UploadBlobAsync(absolutePath, stream, default);
-            uploadAzureResourceFile.AzureStoragePath = absolutePath;
-            uploadAzureResourceFile.AzureFileName = $"{uploadAzureResourceFile.ResourceName}{extension}";
-            return uploadAzureResourceFile;
-        }
-        catch (RequestFailedException ex)
-        {
-            throw ex;
-        }
+        var response = await _blobContainerClient.UploadBlobAsync(absolutePath, stream, default);
+        uploadAzureResourceFile.AzureStoragePath = absolutePath;
+        uploadAzureResourceFile.AzureFileName = $"{uploadAzureResourceFile.ResourceName}{extension}";
+        return uploadAzureResourceFile;
     }
 
     public async Task<DownloadAzureResourceFile> DownloadFileAsync(AzureResourceFile azureResourceFile)
@@ -49,15 +41,8 @@ public class AzureStorageService
             throw new FileNotFoundException("File with given path was not found on azure storage");
         }
 
-        try
-        {
-            var downloaded = await blob.DownloadStreamingAsync();
-            var fileResponse = new DownloadAzureResourceFile(downloaded.Value.Content, downloaded.Value.Details.ContentType);
-            return fileResponse;
-        }
-        catch (RequestFailedException ex)
-        {
-            throw ex;
-        }
+        var downloaded = await blob.DownloadStreamingAsync();
+        var fileResponse = new DownloadAzureResourceFile(downloaded.Value.Content, downloaded.Value.Details.ContentType);
+        return fileResponse;
     }
 }

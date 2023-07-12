@@ -83,7 +83,7 @@ public class ProjectController : Controller
             return View(project);
         }
 
-        _projectService.Update(project);
+        _projectService.UpdateWithoutUserId(project);
         return RedirectToAction("List");
     }
 

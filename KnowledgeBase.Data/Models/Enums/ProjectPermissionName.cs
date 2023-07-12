@@ -2,7 +2,7 @@
 
 public enum ProjectPermissionName
 {
-	ReadProject,
-	EditProject,
-	DeleteProject,
+    ReadProject,
+    EditProject,
+    DeleteProject,
 }

@@ -122,22 +122,22 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("20c54f30-178b-4cdd-889a-db758199b1b7"),
-                            ConcurrencyStamp = "12c6085b-37d2-4a54-88e3-f564e9b4cfbb",
+                            Id = new Guid("868773a4-1051-44ae-9744-97bae50614c8"),
+                            ConcurrencyStamp = "273eb104-9c38-4ce4-96bc-08c40b0bbe6f",
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("5e792e1d-c74c-43e3-9eb2-a31738907169"),
-                            ConcurrencyStamp = "66a11273-cb54-4cbf-b4bc-1a5f6f35131c",
+                            Id = new Guid("2e4aad75-a51e-4fb7-8061-f4b98f7c61fc"),
+                            ConcurrencyStamp = "be689ce3-4fd7-4531-888f-6458ae8a8662",
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("3aa9fa0b-57e3-4c99-9ef0-765b5262b00a"),
-                            ConcurrencyStamp = "728348ab-fe6d-41fa-9652-77adeb06ba27",
+                            Id = new Guid("565a5e47-d75c-4e8d-a8a1-b75e21a60c0d"),
+                            ConcurrencyStamp = "373000eb-1cfa-48a6-85df-32ae0939956b",
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -151,10 +151,6 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("AssignedRole")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -200,6 +196,9 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -219,6 +218,8 @@ namespace KnowledgeBase.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -372,6 +373,17 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
+                {
+                    b.HasOne("KnowledgeBase.Data.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserProjectPermission", b =>
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
@@ -447,6 +459,11 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("Resources");
 
                     b.Navigation("UsersPermissions");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>

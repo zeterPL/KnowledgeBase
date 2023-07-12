@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230712070636_Resource-azure-storage")]
+    [Migration("20230712095952_Resource-azure-storage")]
     partial class Resourceazurestorage
     {
         /// <inheritdoc />
@@ -65,8 +65,8 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.Property<string>("AzureStorageAbsolutePath")
                         .IsRequired()
-                        .HasMaxLength(205)
-                        .HasColumnType("nvarchar(205)");
+                        .HasMaxLength(225)
+                        .HasColumnType("nvarchar(225)");
 
                     b.Property<string>("Category")
                         .IsRequired()
@@ -135,22 +135,22 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8ae473a5-1a54-4259-ae85-ca91ad630fde"),
-                            ConcurrencyStamp = "8a0960b1-c406-42f0-a413-ae823bc48fe8",
+                            Id = new Guid("088b414b-944e-484a-81f5-6a675c4c714b"),
+                            ConcurrencyStamp = "3be5c6dc-797e-4c3f-9210-92c9c503767c",
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("8277823a-f7fa-4b6b-b0fa-9359d612413c"),
-                            ConcurrencyStamp = "c546af7a-189a-460d-864d-1889b0d0216f",
+                            Id = new Guid("7852369e-e5ae-4e96-ab56-053669030d9e"),
+                            ConcurrencyStamp = "39883c7c-cb34-458a-a924-f4e84b9d0e6e",
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("9f0ae49d-9084-48ea-9b51-473f5d116849"),
-                            ConcurrencyStamp = "f2d7b9a6-b6ee-4a93-aece-61d05237e161",
+                            Id = new Guid("746537a6-88da-4784-8c5e-690d99ebad1a"),
+                            ConcurrencyStamp = "c19ebd04-b457-4c8d-8e72-75d0845e3b97",
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });

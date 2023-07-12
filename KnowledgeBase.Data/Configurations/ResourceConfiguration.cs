@@ -17,7 +17,7 @@ public class ResourceConfiguration : IEntityTypeConfiguration<Resource>
             .HasMaxLength(104);
 
         builder.Property(r => r.AzureStorageAbsolutePath)
-            .HasMaxLength(205);
+            .HasMaxLength(225);
 
         builder.Property(r => r.Description)
             .HasMaxLength(500);

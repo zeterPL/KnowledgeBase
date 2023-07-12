@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace KnowledgeBase.Logic.AzureServices;
 
-public class AzureStorageService
+public class AzureStorageService : IAzureStorageService
 {
     private readonly BlobContainerClient _blobContainerClient;
 

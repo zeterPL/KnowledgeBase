@@ -15,10 +15,10 @@ public class ResourceService : IResourceService
     private readonly IResourceRepository _resourceRepository;
     private readonly IProjectRepository _projectRepository;
     private readonly IMapper _mapper;
-    private readonly AzureStorageService _azureStorageService;
+    private readonly IAzureStorageService _azureStorageService;
 
     public ResourceService(IResourceRepository resourceRepository, IMapper mapper,
-        AzureStorageService azureStorageService, IProjectRepository projectRepository)
+        IAzureStorageService azureStorageService, IProjectRepository projectRepository)
     {
         _resourceRepository = resourceRepository;
         _mapper = mapper;

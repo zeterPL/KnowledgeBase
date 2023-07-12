@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Data.Models;
+﻿using AutoMapper;
+using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
@@ -9,13 +10,15 @@ namespace KnowledgeBase.Logic.Services;
 
 public class ProjectService : IProjectService
 {
+    private readonly IMapper mapper;
     private readonly IProjectRepository projectRepository;
     private readonly IUserProjectPermissionRepository permissionRepository;
 
-    public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository)
+    public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository, IMapper mapper)
     {
         this.projectRepository = projectRepository;
         this.permissionRepository = permissionRepository;
+        this.mapper = mapper;
     }
 
     private void SavePermissions(IEnumerable<UserProjectPermission> permissions)
@@ -38,10 +41,7 @@ public class ProjectService : IProjectService
 
     public Guid Add(ProjectDto projectDto)
     {
-        Project newProject = new Project
-        {
-            Name = projectDto.Name,
-        };
+        var newProject = mapper.Map<Project>(projectDto);
         projectRepository.Add(newProject);
 
         // Default permissions
@@ -59,16 +59,16 @@ public class ProjectService : IProjectService
     public ProjectDto? Get(Guid id)
     {
         var project = projectRepository.Get(id);
-        return project?.ToProjectDto();
+        return mapper.Map<ProjectDto>(project);
     }
 
     public IEnumerable<ProjectDto> GetAll()
     {
         var projects = projectRepository.GetAll().Where(p => !p.IsDeleted);
-        return projects.Select(p => p.ToProjectDto());
+        return projects.Select(p => mapper.Map<ProjectDto>(p));
     }
 
-    public Guid UpdateWithoutUserId(ProjectDto projectDto)
+    public Guid Update(ProjectDto projectDto)
     {
         var id = projectDto.Id.ToGuid();
         if (id == Guid.Empty)
@@ -76,17 +76,15 @@ public class ProjectService : IProjectService
             return Guid.Empty;
         }
 
-        var project = projectRepository.Get(id);
-        if (project == null) // Project doesnt exist
+        if (!projectRepository.ProjectExists(id))
         {
             return Guid.Empty;
         }
 
-        // Update project prop using projectDto props
-        project.Name = projectDto.Name;
+        var newProject = mapper.Map<Project>(projectDto);
 
-        projectRepository.Update(project);
-        return project.Id;
+        projectRepository.Update(newProject);
+        return id;
     }
 
     public void SoftDelete(ProjectDto projectDto)
@@ -109,6 +107,6 @@ public class ProjectService : IProjectService
     public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId)
     {
         var projects = projectRepository.GetAllReadableByUser(userId);
-        return projects.Select(p => p.ToProjectDto());
+        return projects.Select(p => mapper.Map<ProjectDto>(p));
     }
 }

@@ -6,4 +6,5 @@ public interface IProjectRepository : IGenericRepository<Project>
 {
     public void SoftDelete(Project project);
     public IEnumerable<Project> GetAllReadableByUser(Guid userId);
+    public bool ProjectExists(Guid id);
 }

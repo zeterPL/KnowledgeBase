@@ -20,7 +20,7 @@ public class AzureStorageService
     public async Task<AzureResourceFile> UploadFileAsync(UploadAzureResourceFile uploadAzureResourceFile)
     {
         var extension = Path.GetExtension(uploadAzureResourceFile.File.FileName);
-        var timestamp = Convert.ToBase64String(BitConverter.GetBytes(DateTime.Now.Ticks));
+        var timestamp = DateTime.Now.Ticks.ToString("x");
         var absolutePath = $"{uploadAzureResourceFile.ProjectName}/{uploadAzureResourceFile.ResourceName}-{timestamp}{extension}";
 
         using var stream = new MemoryStream();

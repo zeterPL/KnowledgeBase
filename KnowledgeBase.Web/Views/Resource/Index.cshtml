@@ -1,47 +1,48 @@
 ﻿@model IEnumerable<KnowledgeBase.Logic.Dto.ResourceDto>
- 
 @{
-    ViewData["Title"] = "Index";
+    var resources = Model;
 }
-
-
 <a asp-action="Create">Create</a>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(r => r.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(r => r.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(r => r.Category)
+        </th>
+        <th>
+            @Html.DisplayNameFor(r => r.ProjectId)
+        </th>
+        <th>Action</th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            if(!item.IsDeleted){
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id">delete</a>
-                    <a asp-action="Download" asp-route-id="@item.Id">download</a>
-                </td>
-            </tr>
-        }
-        }
+    @foreach (var resource in resources)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => resource.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => resource.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => resource.Category)
+            </td>
+            <td>
+                <a asp-action="Details" asp-controller="Project" asp-route-id="@resource.ProjectId">@resource.ProjectId</a>
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@resource.Id">edit</a>
+                <a asp-action="Delete" asp-route-id="@resource.Id">delete</a>
+                <a asp-action="Download" asp-route-id="@resource.Id">download</a>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>

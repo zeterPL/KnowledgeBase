@@ -2,6 +2,7 @@
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KnowledgeBase.Web.Controllers
@@ -9,10 +10,12 @@ namespace KnowledgeBase.Web.Controllers
     public class ResourceController : Controller
     {
         private readonly IResourceService _resourceService;
+        private readonly IProjectService _projectService;
 
-        public ResourceController(IResourceService resourceService)
+        public ResourceController(IResourceService resourceService, IProjectService projectService)
         {
             _resourceService = resourceService;
+            _projectService = projectService;
         }
 
         public IActionResult Index()
@@ -20,20 +23,34 @@ namespace KnowledgeBase.Web.Controllers
             return View(_resourceService.GetAll().ToList());
         }
 
+        private CreateResourceDto SetUpAssignableProjects(CreateResourceDto dto)
+        {
+            var projects = _projectService.GetAllReadableByUser(dto.UserId);
+            dto.AssignableProjects = projects;
+            return dto;
+        }
+
+        [Authorize]
         public IActionResult Create()
         {
-            return View();
+            var resourceDto = SetUpAssignableProjects(new CreateResourceDto { UserId = User.GetUserId() });
+            return View(resourceDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ResourceDto resourceDto)
+        public async Task<IActionResult> Create(CreateResourceDto resourceDto)
         {
             resourceDto.UserId = User.GetUserId();
-            resourceDto.ProjectId = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b");
+
+            if (!ModelState.IsValid)
+            {
+                return View(SetUpAssignableProjects(resourceDto));
+            }
 
             try
             {
+                resourceDto.File = resourceDto.NewFile;
                 await _resourceService.AddAsync(resourceDto);
             }
             catch (ArgumentException)
@@ -58,7 +75,6 @@ namespace KnowledgeBase.Web.Controllers
             }
 
             resourceDto.UserId = User.GetUserId();
-            resourceDto.ProjectId = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b");
 
             try
             {

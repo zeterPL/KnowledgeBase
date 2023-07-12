@@ -1,5 +1,4 @@
 ﻿using KnowledgeBase.Data.Models;
-using KnowledgeBase.Data.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,6 +12,12 @@ public class ResourceConfiguration : IEntityTypeConfiguration<Resource>
 
         builder.Property(r => r.Name)
             .HasMaxLength(100);
+
+        builder.Property(r=>r.AzureFileName)
+            .HasMaxLength(104);
+
+        builder.Property(r => r.AzureStorageAbsolutePath)
+            .HasMaxLength(205);
 
         builder.Property(r => r.Description)
             .HasMaxLength(500);

@@ -31,14 +31,16 @@ namespace KnowledgeBase.Data.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "AzureFileName",
                 table: "Resource",
-                type: "nvarchar(max)",
+                type: "nvarchar(104)",
+                maxLength: 104,
                 nullable: false,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
                 name: "AzureStorageAbsolutePath",
                 table: "Resource",
-                type: "nvarchar(max)",
+                type: "nvarchar(205)",
+                maxLength: 205,
                 nullable: false,
                 defaultValue: "");
 
@@ -47,9 +49,9 @@ namespace KnowledgeBase.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("7fe21f18-00e3-44f4-86e2-fc9c9a0fcf6c"), "6f68b8ea-8caf-4a12-94a6-89727246b7cf", "Admin user role", "Admin", null },
-                    { new Guid("94daf613-8a90-4b83-8caa-8cb20679d639"), "cb6708d9-28cb-4a23-b43c-54ab0d0c78e7", "Basic user role", "Basic", null },
-                    { new Guid("d116202b-5004-4a0b-97a0-591f490bd408"), "a75d4e34-8304-45a6-9eb3-c59a76b0b27d", "SuperAdmin user role", "SuperAdmin", null }
+                    { new Guid("8277823a-f7fa-4b6b-b0fa-9359d612413c"), "c546af7a-189a-460d-864d-1889b0d0216f", "Admin user role", "Admin", null },
+                    { new Guid("8ae473a5-1a54-4259-ae85-ca91ad630fde"), "8a0960b1-c406-42f0-a413-ae823bc48fe8", "Basic user role", "Basic", null },
+                    { new Guid("9f0ae49d-9084-48ea-9b51-473f5d116849"), "f2d7b9a6-b6ee-4a93-aece-61d05237e161", "SuperAdmin user role", "SuperAdmin", null }
                 });
         }
 
@@ -59,17 +61,17 @@ namespace KnowledgeBase.Data.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: new Guid("7fe21f18-00e3-44f4-86e2-fc9c9a0fcf6c"));
+                keyValue: new Guid("8277823a-f7fa-4b6b-b0fa-9359d612413c"));
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: new Guid("94daf613-8a90-4b83-8caa-8cb20679d639"));
+                keyValue: new Guid("8ae473a5-1a54-4259-ae85-ca91ad630fde"));
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: new Guid("d116202b-5004-4a0b-97a0-591f490bd408"));
+                keyValue: new Guid("9f0ae49d-9084-48ea-9b51-473f5d116849"));
 
             migrationBuilder.DropColumn(
                 name: "AzureFileName",

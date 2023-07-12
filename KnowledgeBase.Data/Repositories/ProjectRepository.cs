@@ -30,6 +30,11 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
 			(project, permission) => project)
 			.Where(project => project.IsDeleted == false);
 
-		return projects;
-	}
+        return projects;
+    }
+
+    public bool ProjectExists(Guid id)
+    {
+        return GetSet().Any(p => p.Id == id && !p.IsDeleted);
+    }
 }

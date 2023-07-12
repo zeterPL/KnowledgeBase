@@ -11,15 +11,3 @@ public class ProjectDto
 	[Required]
 	public Guid? UserId { get; set; }
 }
-
-public static class ProjectExtensions
-{
-	public static ProjectDto ToProjectDto(this Project project)
-	{
-		return new ProjectDto
-		{
-			Id = project.Id,
-			Name = project.Name,
-		};
-	}
-}

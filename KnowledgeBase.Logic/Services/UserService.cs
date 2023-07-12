@@ -75,18 +75,6 @@ namespace KnowledgeBase.Logic.Services
             }
             _permissionRepository.AddRange(permissions);
         }
-    
-        private UserRoles getRoleName(Role role)
-        {
-            var roleStringName = role.Name;
-            if(roleStringName == UserRoles.SuperAdmin.ToString())
-                return UserRoles.SuperAdmin;
-            if (roleStringName == UserRoles.Admin.ToString())
-                return UserRoles.Admin;
-            if (roleStringName == UserRoles.Basic.ToString())
-                return UserRoles.Basic;
-            return UserRoles.Basic;            
-        }
 
         public Guid AddUser(UserDto userDto)
         {
@@ -101,8 +89,7 @@ namespace KnowledgeBase.Logic.Services
                 EmailConfirmed = true,
                 NormalizedEmail = userDto.Email.ToUpper(),
                 NormalizedUserName = userDto.Email.ToUpper(),
-                RoleId = userDto.RoleId,
-                //AssignedRoleName = userRole == null ? UserRoles.Basic : getRoleName(userRole)
+                RoleId = userDto.RoleId,              
             };
             var hashedPass = new PasswordHasher<object>().HashPassword(null, userDto.Password);
             user.PasswordHash = hashedPass;

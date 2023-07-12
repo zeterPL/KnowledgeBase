@@ -5,6 +5,7 @@ using System.Security.Claims;
 using KnowledgeBase.Logic.AzureServices;
 using KnowledgeBase.Logic.AzureServices.File;
 using KnowledgeBase.Shared;
+using Azure;
 
 namespace KnowledgeBase.Web.Controllers
 {
@@ -42,13 +43,20 @@ namespace KnowledgeBase.Web.Controllers
 			{
 				return BadRequest();
 			}
-			
-			var uploadFile = new UploadAzureResourceFile(resourceDto.Name, projectName, resourceDto.File);
-			var azureResourceFile = await _azureStorageService.UploadFileAsync(uploadFile);
 
-			resourceDto.AzureStorageAbsolutePath = azureResourceFile.AzureStoragePath;
-			resourceDto.AzureFileName = azureResourceFile.AzureFileName;
-			_service.Add(resourceDto);
+			try
+			{
+				var uploadFile = new UploadAzureResourceFile(resourceDto.Name, projectName, resourceDto.File);
+				var azureResourceFile = await _azureStorageService.UploadFileAsync(uploadFile);
+
+				resourceDto.AzureStorageAbsolutePath = azureResourceFile.AzureStoragePath;
+				resourceDto.AzureFileName = azureResourceFile.AzureFileName;
+				_service.Add(resourceDto);
+			}
+			catch (RequestFailedException ex)
+			{
+				return StatusCode(ex.Status);
+			}
 
 			return RedirectToAction(actionName: "Index");
 		}
@@ -97,9 +105,20 @@ namespace KnowledgeBase.Web.Controllers
 			{
 				AzureStoragePath = resource.AzureStorageAbsolutePath,
 			};
-			
-			var file = await _azureStorageService.DownloadFileAsync(fileDto);
-			return File(file.Stream, file.ContentType, resource.AzureFileName);
+
+			try
+			{
+				var file = await _azureStorageService.DownloadFileAsync(fileDto);
+				return File(file.Stream, file.ContentType, resource.AzureFileName);
+			}
+			catch(FileNotFoundException)
+			{
+				return NotFound();
+			}
+			catch (RequestFailedException ex)
+			{
+				return StatusCode(ex.Status);
+			}
 		}
 	}
 }

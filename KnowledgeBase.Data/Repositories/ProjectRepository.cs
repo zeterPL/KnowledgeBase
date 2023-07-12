@@ -6,13 +6,13 @@ namespace KnowledgeBase.Data.Repositories;
 
 public class ProjectRepository : GenericRepository<Project>, IGenericRepository<Project>, IProjectRepository
 {
-    public ProjectRepository(KnowledgeDbContext context) : base(context)
-    {
-    }
+	public ProjectRepository(KnowledgeDbContext context) : base(context)
+	{
+	}
 
-    public void SoftDelete(Project project)
-    {
-        project.IsDeleted = true;
-        Update(project);
-    }
+	public void SoftDelete(Project project)
+	{
+		project.IsDeleted = true;
+		Update(project);
+	}
 }

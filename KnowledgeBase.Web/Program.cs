@@ -6,9 +6,7 @@ using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using NLog;
-using NLog.Extensions.Logging;
 using NLog.Web;
-using System.Configuration;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 try
@@ -24,10 +22,10 @@ try
 	builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
 		.AddRoles<Role>()
 		.AddEntityFrameworkStores<KnowledgeDbContext>();
-    LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("testingDbContext");
+	LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("DefaultConnection");
 
-    // Dependency injection
-    builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+	// Dependency injection
+	builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 	builder.Services.AddScoped<IProjectService, ProjectService>();
 
 	builder.Services.AddControllersWithViews();
@@ -45,7 +43,6 @@ try
 		context.Database.EnsureCreated();
 		DbInitializer.Initialize(context);
 	}
-
 
 	// Configure the HTTP request pipeline.
 	if (app.Environment.IsDevelopment())
@@ -75,7 +72,7 @@ try
 
 	app.Run();
 }
-catch(Exception ex)
+catch (Exception ex)
 {
 	logger.Error(ex);
 	throw (ex);

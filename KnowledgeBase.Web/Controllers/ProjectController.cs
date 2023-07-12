@@ -1,7 +1,6 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using NLog;
 
 namespace KnowledgeBase.Web.Controllers;
 
@@ -9,6 +8,7 @@ public class ProjectController : Controller
 {
 	private readonly IProjectService projectService;
 	public readonly ILogger<ProjectController> _logger;
+
 	public ProjectController(IProjectService projectService, ILogger<ProjectController> logger)
 	{
 		this.projectService = projectService;
@@ -17,10 +17,6 @@ public class ProjectController : Controller
 
 	public IActionResult Index()
 	{
-		_logger.LogInformation("hello i got here 123 abc!");
-
-		throw new Exception("booooom exception");
-
 		return View();
 	}
 
@@ -78,7 +74,7 @@ public class ProjectController : Controller
 	[HttpGet]
 	public IActionResult Delete(Guid id)
 	{
-		projectService.SoftDelete(new ProjectDto{Id = id});
+		projectService.SoftDelete(new ProjectDto { Id = id });
 		return RedirectToAction("List");
 	}
 
@@ -86,7 +82,7 @@ public class ProjectController : Controller
 	public IActionResult Details(Guid id)
 	{
 		ProjectDto? project = projectService.Get(id);
-		if(project == null)
+		if (project == null)
 		{
 			return NotFound();
 		}

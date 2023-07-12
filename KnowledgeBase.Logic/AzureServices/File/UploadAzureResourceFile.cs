@@ -4,9 +4,9 @@ namespace KnowledgeBase.Logic.AzureServices.File;
 
 public class UploadAzureResourceFile : AzureResourceFile
 {
-    public string ResourceName { get; set; }
-    public string ProjectName { get; set; }
-    public IFormFile File { get; init; }
+    public string ResourceName { get; }
+    public string ProjectName { get; }
+    public IFormFile File { get; }
 
     public UploadAzureResourceFile(string resourceName, string projectName, IFormFile file)
     {

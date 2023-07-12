@@ -1,29 +1,28 @@
-﻿@model KnowledgeBase.Data.Models.Resource
-@{
-	ViewData["Title"] = "Edit";
-}
+﻿@using KnowledgeBase.Data.Models.Enums;
+@model KnowledgeBase.Logic.Dto.ResourceDto
 
-<h2>creator</h2>
-
-@using (Html.BeginForm("Edit", "Resource", FormMethod.Post))
+@using (Html.BeginForm("Create", "Resource", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-	@Html.AntiForgeryToken()
-	<div>
-		@Html.LabelFor(resource=>resource.Name)
-		@Html.EditorFor(resource=>resource.Name)
-		@Html.ValidationMessageFor(resource=>resource.Name)
-	</div>
-	<div>
-		@Html.LabelFor(resource=>resource.Description)
-		@Html.EditorFor(resource=>resource.Description)
-		@Html.ValidationMessageFor(resource=>resource.Description)
-	</div>
-	<div>
-		@Html.LabelFor(resource=>resource.Category)
-		@Html.EditorFor(resource=>resource.Category)
-		@Html.ValidationMessageFor(resource=>resource.Category)
-	</div>
-	<div>
-		<input type="submit" value="Save" />
-	</div>
+    @Html.AntiForgeryToken()
+    <div>
+        @Html.LabelFor(resource => resource.Name)
+        @Html.EditorFor(resource => resource.Name)
+        @Html.ValidationMessageFor(resource => resource.Name)
+    </div>
+    <div>
+        @Html.LabelFor(resource => resource.Description)
+        @Html.EditorFor(resource => resource.Description)
+        @Html.ValidationMessageFor(resource => resource.Description)
+    </div>
+    <div>
+        @Html.LabelFor(resource => resource.Category)
+        @Html.DropDownListFor(resource => resource.Category, Html.GetEnumSelectList<ResourceCategory>())
+        @Html.ValidationMessageFor(resource => resource.Category)
+    </div>
+    <div>
+        @Html.TextBox("file", "", new { type = "file" })
+    </div>
+    <div>
+        <input type="submit" value="Save" />
+    </div>
 }

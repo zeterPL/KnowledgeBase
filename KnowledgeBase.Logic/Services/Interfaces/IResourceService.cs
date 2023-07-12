@@ -1,15 +1,13 @@
-﻿using KnowledgeBase.Data.Models;
-using KnowledgeBase.Logic.Dto;
+﻿using KnowledgeBase.Logic.Dto;
 
-namespace KnowledgeBase.Logic.Services.Interfaces
+namespace KnowledgeBase.Logic.Services.Interfaces;
+
+public interface IResourceService
 {
-    public interface IResourceService
-    {
-        public void Add(ResourceDto entity);
-        public Resource Get(Guid id);
-        public void Remove(ResourceDto entity);
-        public void Delete(ResourceDto entity);
-        public void Update(ResourceDto entity);
-        public IEnumerable<Resource> GetAll();
-    }
+    public void Add(ResourceDto resource);
+    public ResourceDto? Get(Guid id);
+    public void Remove(ResourceDto resource);
+    public void Delete(ResourceDto resource);
+    public void Update(ResourceDto resource);
+    public IEnumerable<ResourceDto> GetAll();
 }

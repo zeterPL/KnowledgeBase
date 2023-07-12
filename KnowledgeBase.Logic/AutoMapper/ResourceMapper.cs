@@ -8,7 +8,7 @@ namespace KnowledgeBase.Logic.AutoMapper
 	{
 		public ResourceMapper()
 		{
-			CreateMap<ResourceDto, Resource>();
+			CreateMap<ResourceDto, Resource>().ReverseMap();
 		}
 	}
 }

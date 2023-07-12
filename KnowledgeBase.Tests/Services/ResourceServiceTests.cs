@@ -66,4 +66,62 @@ public class ResourceServiceTests
         _mapper.Verify(m => m.Map<ResourceDto>(null), Times.Once);
         result.Should().BeNull();
     }
+
+    [Fact]
+    public void SoftDelete_InvalidGuid_Returns()
+    {
+        // arrange
+        var resourceDto = new ResourceDto
+        {
+            Id = null,
+        };
+
+        // act
+        _resourceService.SoftDelete(resourceDto);
+
+        // assert
+        _resourceRepository.Verify(r => r.Get(It.IsAny<Guid>()), Times.Never);
+        _resourceRepository.Verify(r => r.SoftDelete(It.IsAny<Resource>()), Times.Never);
+    }
+
+    [Fact]
+    public void SoftDelete_ResourceDoesntExistInDatabase_Returns()
+    {
+        // arrange
+        var resourceId = Guid.NewGuid();
+        var resourceDto = new ResourceDto
+        {
+            Id = resourceId,
+        };
+
+        _resourceRepository.Setup(r => r.Get(resourceId)).Returns((Resource?)null);
+
+        // act
+        _resourceService.SoftDelete(resourceDto);
+
+        // assert
+        _resourceRepository.Verify(r => r.Get(resourceId), Times.Once);
+        _resourceRepository.Verify(r => r.SoftDelete(It.IsAny<Resource>()), Times.Never);
+    }
+
+    [Fact]
+    public void SoftDelete_ResourceExistsInDatabase_CallsRepositorySoftDelete()
+    {
+        // arrange
+        var resourceId = Guid.NewGuid();
+        var resourceDto = new ResourceDto
+        {
+            Id = resourceId,
+        };
+        var resource = new Resource();
+        
+        _resourceRepository.Setup(r => r.Get(resourceId)).Returns(resource);
+        
+        // act
+        _resourceService.SoftDelete(resourceDto);
+
+        // assert
+        _resourceRepository.Verify(r => r.Get(resourceId), Times.Once);
+        _resourceRepository.Verify(r => r.SoftDelete(resource), Times.Once);
+    }
 }

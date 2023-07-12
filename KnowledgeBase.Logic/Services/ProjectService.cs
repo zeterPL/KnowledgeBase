@@ -15,10 +15,8 @@ public class ProjectService : IProjectService
     private readonly IUserProjectPermissionRepository permissionRepository;
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
-
-    public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository, IMapper mapper)
     public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository,
-        IUserRepository userRepository, IRoleRepository roleRepository)
+        IUserRepository userRepository, IRoleRepository roleRepository, IMapper mapper)
     {
         this.projectRepository = projectRepository;
         this.permissionRepository = permissionRepository;
@@ -117,10 +115,7 @@ public class ProjectService : IProjectService
     {
         var newProject = mapper.Map<Project>(projectDto);
         projectRepository.Add(newProject);
-        Project newProject = new Project
-        {
-            Name = projectDto.Name,
-        };
+        
         var newProjectId = projectRepository.Add(newProject);
 
         // Default permissions
@@ -149,7 +144,7 @@ public class ProjectService : IProjectService
         return projects.Select(p => mapper.Map<ProjectDto>(p));
     }
 
-    public Guid Update(ProjectDto projectDto)
+    public Guid UpdateWithoutUserId(ProjectDto projectDto)
     {
         var id = projectDto.Id.ToGuid();
         if (id == Guid.Empty)

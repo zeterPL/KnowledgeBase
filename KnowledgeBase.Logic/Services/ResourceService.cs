@@ -53,10 +53,25 @@ public class ResourceService : IResourceService
         _resourceRepository.Delete(resource);
     }
 
-    public void Update(ResourceDto resourcedto)
+    public void Update(ResourceDto resourceDto)
     {
-        Resource resource = _mapper.Map<Resource>(resourcedto);
-        _resourceRepository.Update(resource);
+        var id = resourceDto.Id.ToGuid();
+        if (id == Guid.Empty)
+        {
+            return;
+        }
+
+        var oldResource = _resourceRepository.Get(id);
+        if (oldResource == null) // Project doesnt exist
+        {
+            return;
+        }
+
+        var updatedResource = _mapper.Map<Resource>(resourceDto);
+        updatedResource.AzureFileName = oldResource.AzureFileName;
+        updatedResource.AzureStorageAbsolutePath = oldResource.AzureStorageAbsolutePath;
+
+        _resourceRepository.Update(updatedResource);
     }
 
     public IEnumerable<ResourceDto> GetAll()

@@ -6,8 +6,7 @@ public interface IResourceService
 {
     public void Add(ResourceDto resource);
     public ResourceDto? Get(Guid id);
-    public void Remove(ResourceDto resource);
-    public void Delete(ResourceDto resource);
+    public void SoftDelete(ResourceDto resource);
     public void Update(ResourceDto resource);
     public IEnumerable<ResourceDto> GetAll();
 }

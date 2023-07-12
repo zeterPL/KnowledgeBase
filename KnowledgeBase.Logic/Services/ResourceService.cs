@@ -36,7 +36,7 @@ public class ResourceService : IResourceService
         _resourceRepository.Remove(resource);
     }
 
-    public void Delete(ResourceDto resourceDto)
+    public void SoftDelete(ResourceDto resourceDto)
     {
         var id = resourceDto.Id.ToGuid();
         if (id == Guid.Empty)

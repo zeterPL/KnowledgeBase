@@ -140,7 +140,7 @@ namespace KnowledgeBase.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(ResourceDto resourcedto)
         {
-            _service.Delete(resourcedto);
+            _service.SoftDelete(resourcedto);
             return RedirectToAction(actionName: "Index");
         }
 

@@ -1,11 +1,11 @@
 ﻿@model KnowledgeBase.Logic.Dto.ResourceDto
 @{
-	ViewData["Title"] = "Delete";
+	ViewData["Title"] = "SoftDelete";
 }
 
 <h2>creator</h2>
 
-@using (Html.BeginForm("Delete", "Resource", FormMethod.Post))
+@using (Html.BeginForm("SoftDelete", "Resource", FormMethod.Post))
 {
 	@Html.AntiForgeryToken()
 	<div>

@@ -19,7 +19,7 @@ public class ProjectService : IProjectService
     private readonly IProjectTagRepository _projectTagRepository;
 
     public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository,
-        IUserRepository userRepository, IRoleRepository roleRepository, IMapper mapper, ITagRepository tagRepository
+        IUserRepository userRepository, IRoleRepository roleRepository, IMapper mapper, ITagRepository tagRepository,
         IProjectTagRepository projectTagsRepository)
     {
         _projectRepository = projectRepository;

@@ -47,7 +47,7 @@ namespace KnowledgeBase.Logic.Services
 
         public TagDto GetById(Guid id)
         {
-            return _tagRepository.Get(id);
+            return _tagRepository.Get(id).ToTagDto();
         }
     }
 }

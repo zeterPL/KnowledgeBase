@@ -30,12 +30,6 @@ public class ResourceService : IResourceService
         _resourceRepository.Add(resource);
     }
 
-    public void Remove(ResourceDto resourcedto)
-    {
-        Resource resource = _mapper.Map<Resource>(resourcedto);
-        _resourceRepository.Remove(resource);
-    }
-
     public void SoftDelete(ResourceDto resourceDto)
     {
         var id = resourceDto.Id.ToGuid();
@@ -45,7 +39,7 @@ public class ResourceService : IResourceService
         }
 
         var resource = _resourceRepository.Get(id);
-        if (resource == null) // Project doesnt exist
+        if (resource == null)
         {
             return;
         }
@@ -62,7 +56,7 @@ public class ResourceService : IResourceService
         }
 
         var resource = _resourceRepository.Get(id);
-        if (resource == null) // Project doesnt exist
+        if (resource == null)
         {
             return;
         }

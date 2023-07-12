@@ -30,4 +30,12 @@
     <ProjectReference Include="..\KnowledgeBase.Logic\KnowledgeBase.Logic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Project\ManageTags.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Project\ManageTags.cshtml" />
+  </ItemGroup>
+
 </Project>

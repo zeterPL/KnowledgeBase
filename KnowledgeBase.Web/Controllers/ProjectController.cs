@@ -107,4 +107,12 @@ public class ProjectController : Controller
 
         return View(project);
     }
+
+
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanReadProject)]
+    public IActionResult ManageTags(Guid id)
+    {
+        return View();
+    }
 }

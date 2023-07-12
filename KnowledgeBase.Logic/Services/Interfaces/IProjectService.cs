@@ -15,4 +15,10 @@ public interface IProjectService
     public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId);
 
     public ProjectDto? Get(Guid id);
+
+    public IList<TagDto> GetAllTagsByProjectId(Guid projectId);
+
+    public void AddTagToProject(TagDto tagDto, Guid projectId);
+
+    public void RemoveTagFromProject(TagDto tagDto, Guid projectId);
 }

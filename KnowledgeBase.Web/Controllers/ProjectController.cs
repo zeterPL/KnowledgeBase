@@ -22,8 +22,17 @@ public class ProjectController : Controller
 
 	public IActionResult List()
 	{
-		IEnumerable<ProjectDto> projects = projectService.GetAll();
-		return View(projects.ToList());
+		try
+		{
+			_logger.LogInformation("getting all projects");
+			IEnumerable<ProjectDto> projects = projectService.GetAll();
+			return View(projects.ToList());
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex.Message);
+			return BadRequest("internal server error");
+		}
 	}
 
 	[HttpGet]
@@ -36,26 +45,39 @@ public class ProjectController : Controller
 	[ValidateAntiForgeryToken]
 	public IActionResult Create(ProjectDto project)
 	{
-		if (!ModelState.IsValid)
+		try
 		{
-			return View(project);
-		}
+			_logger.LogInformation("creating project");
+			if (!ModelState.IsValid)
+			{
+				return View(project);
+			}
 
-		projectService.Add(project);
-		return RedirectToAction("List");
+			projectService.Add(project);
+			return RedirectToAction("List");
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex.Message);
+			return BadRequest("Create internal server error");
+		}
 	}
 
 	[HttpGet]
 	public IActionResult Edit(Guid id)
 	{
-		ProjectDto? project = projectService.Get(id);
-
-		if (project == null)
+		try
 		{
-			return NotFound();
+			_logger.LogInformation("Editin project");
+			ProjectDto? project = projectService.Get(id);
+			return View(project);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex.Message);
+			return NotFound("Can't find project");
 		}
 
-		return View(project);
 	}
 
 	[HttpPost]
@@ -74,19 +96,33 @@ public class ProjectController : Controller
 	[HttpGet]
 	public IActionResult Delete(Guid id)
 	{
-		projectService.SoftDelete(new ProjectDto { Id = id });
-		return RedirectToAction("List");
+		try
+		{
+			_logger.LogInformation("Delete project");
+			projectService.SoftDelete(new ProjectDto { Id = id });
+			return RedirectToAction("List");
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex.Message);
+			return NotFound("Can't delete project");
+		}
+
 	}
 
 	[HttpGet]
 	public IActionResult Details(Guid id)
 	{
-		ProjectDto? project = projectService.Get(id);
-		if (project == null)
+		try
 		{
-			return NotFound();
+			_logger.LogInformation("Detailing project");
+			ProjectDto? project = projectService.Get(id);
+			return View(project);
 		}
-
-		return View(project);
+		catch(Exception ex)
+		{
+			_logger.LogError(ex.Message);
+			return NotFound("Project is null");
+		}
 	}
 }

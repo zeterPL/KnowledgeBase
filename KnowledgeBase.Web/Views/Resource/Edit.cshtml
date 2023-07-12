@@ -1,7 +1,7 @@
 ﻿@using KnowledgeBase.Data.Models.Enums;
 @model KnowledgeBase.Logic.Dto.ResourceDto
 
-@using (Html.BeginForm("Create", "Resource", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Edit", "Resource", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <div>

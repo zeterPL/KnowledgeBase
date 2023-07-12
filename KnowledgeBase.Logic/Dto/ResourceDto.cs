@@ -15,6 +15,6 @@ namespace KnowledgeBase.Logic.Dto
 
         public string? AzureStorageAbsolutePath { get; set; }
         public string? AzureFileName { get; set; }
-        public IFormFile File { get; set; }
+        public IFormFile? File { get; set; }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Azure;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
+using KnowledgeBase.Logic.AzureServices;
+using KnowledgeBase.Logic.AzureServices.File;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
@@ -10,12 +13,17 @@ namespace KnowledgeBase.Logic.Services;
 public class ResourceService : IResourceService
 {
     private readonly IResourceRepository _resourceRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IMapper _mapper;
+    private readonly AzureStorageService _azureStorageService;
 
-    public ResourceService(IResourceRepository resourceService, IMapper mapper)
+    public ResourceService(IResourceRepository resourceRepository, IMapper mapper,
+        AzureStorageService azureStorageService, IProjectRepository projectRepository)
     {
-        _resourceRepository = resourceService;
+        _resourceRepository = resourceRepository;
         _mapper = mapper;
+        _azureStorageService = azureStorageService;
+        _projectRepository = projectRepository;
     }
 
     public ResourceDto? Get(Guid id)
@@ -24,10 +32,30 @@ public class ResourceService : IResourceService
         return _mapper.Map<ResourceDto>(resource);
     }
 
-    public void Add(ResourceDto resourceDto)
+    private async Task<ResourceDto> UploadFile(ResourceDto resourceDto, string projectName)
     {
-        if (resourceDto.AzureStorageAbsolutePath == null || resourceDto.AzureFileName == null)
-            throw new ArgumentException("Azure paths can't be null");
+        if (resourceDto.File == null)
+        {
+            throw new ArgumentException("File cant be null");
+        }
+
+        var uploadFile = new UploadAzureResourceFile(resourceDto.Name, projectName, resourceDto.File);
+        var azureResourceFile = await _azureStorageService.UploadFileAsync(uploadFile);
+
+        resourceDto.AzureStorageAbsolutePath = azureResourceFile.AzureStoragePath;
+        resourceDto.AzureFileName = azureResourceFile.AzureFileName;
+        return resourceDto;
+    }
+
+    public async Task AddAsync(ResourceDto resourceDto)
+    {
+        var projectName = _projectRepository.Get(resourceDto.ProjectId)?.Name;
+        if (projectName == null)
+        {
+            throw new ArgumentException("Project assigned to resource doesn't exist");
+        }
+
+        resourceDto = await UploadFile(resourceDto, projectName);
 
         Resource resource = _mapper.Map<Resource>(resourceDto);
         _resourceRepository.Add(resource);
@@ -47,10 +75,10 @@ public class ResourceService : IResourceService
             return;
         }
 
-        _resourceRepository.Delete(resource);
+        _resourceRepository.SoftDelete(resource);
     }
 
-    public void Update(ResourceDto resourceDto)
+    public async Task UpdateAsync(ResourceDto resourceDto)
     {
         var id = resourceDto.Id.ToGuid();
         if (id == Guid.Empty)
@@ -58,14 +86,13 @@ public class ResourceService : IResourceService
             return;
         }
 
-        var resource = _resourceRepository.Get(id);
+        var resource = await _resourceRepository.GetResourceWithProjectAsync(id);
         if (resource == null)
         {
             return;
         }
 
         var newResource = _mapper.Map<Resource>(resourceDto);
-
         foreach (var propertyInfo in resource.GetType().GetProperties())
         {
             if (propertyInfo.GetValue(newResource) != null)
@@ -74,6 +101,17 @@ public class ResourceService : IResourceService
             }
         }
 
+        if (resourceDto.File == null)
+        {
+            _resourceRepository.Update(resource);
+            return;
+        }
+
+        var uploadedResource = await UploadFile(resourceDto, resource.Project!.Name);
+
+        resource.AzureFileName = uploadedResource.AzureFileName!;
+        resource.AzureStorageAbsolutePath = uploadedResource.AzureStorageAbsolutePath!;
+
         _resourceRepository.Update(resource);
     }
 
@@ -81,5 +119,37 @@ public class ResourceService : IResourceService
     {
         IEnumerable<Resource> resourceList = _resourceRepository.GetAll();
         return resourceList.Select(r => _mapper.Map<ResourceDto>(r)).ToList();
+    }
+
+    public async Task<DownloadResourceDto?> DownloadAsync(Guid id)
+    {
+        var resource = Get(id);
+        if (resource == null)
+        {
+            return null;
+        }
+
+        var fileDto = new AzureResourceFile
+        {
+            AzureStoragePath = resource.AzureStorageAbsolutePath,
+        };
+
+        try
+        {
+            var file = await _azureStorageService.DownloadFileAsync(fileDto);
+
+            return new DownloadResourceDto(file.Stream, file.ContentType)
+            {
+                AzureFileName = resource.AzureFileName,
+            };
+        }
+        catch (FileNotFoundException)
+        {
+            return null;
+        }
+        catch (RequestFailedException)
+        {
+            return null;
+        }
     }
 }

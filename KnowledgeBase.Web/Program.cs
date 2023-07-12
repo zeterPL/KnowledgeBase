@@ -28,6 +28,7 @@ try
 
 	builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+
 	#region Dependency injection
 
 	builder.Services.AddScoped<IProjectRepository, ProjectRepository>();

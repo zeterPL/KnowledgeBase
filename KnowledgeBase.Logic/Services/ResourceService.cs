@@ -24,9 +24,12 @@ public class ResourceService : IResourceService
         return _mapper.Map<ResourceDto>(resource);
     }
 
-    public void Add(ResourceDto resourcedto)
+    public void Add(ResourceDto resourceDto)
     {
-        Resource resource = _mapper.Map<Resource>(resourcedto);
+        if (resourceDto.AzureStorageAbsolutePath == null || resourceDto.AzureFileName == null)
+            throw new ArgumentException("Azure paths can't be null");
+
+        Resource resource = _mapper.Map<Resource>(resourceDto);
         _resourceRepository.Add(resource);
     }
 

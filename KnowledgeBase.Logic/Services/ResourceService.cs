@@ -61,17 +61,23 @@ public class ResourceService : IResourceService
             return;
         }
 
-        var oldResource = _resourceRepository.Get(id);
-        if (oldResource == null) // Project doesnt exist
+        var resource = _resourceRepository.Get(id);
+        if (resource == null) // Project doesnt exist
         {
             return;
         }
 
-        var updatedResource = _mapper.Map<Resource>(resourceDto);
-        updatedResource.AzureFileName = oldResource.AzureFileName;
-        updatedResource.AzureStorageAbsolutePath = oldResource.AzureStorageAbsolutePath;
+        var newResource = _mapper.Map<Resource>(resourceDto);
 
-        _resourceRepository.Update(updatedResource);
+        foreach (var propertyInfo in resource.GetType().GetProperties())
+        {
+            if (propertyInfo.GetValue(newResource) != null)
+            {
+                propertyInfo.SetValue(resource, propertyInfo.GetValue(newResource));
+            }
+        }
+
+        _resourceRepository.Update(resource);
     }
 
     public IEnumerable<ResourceDto> GetAll()

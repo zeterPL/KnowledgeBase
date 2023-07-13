@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KnowledgeBase.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class userbugs : Migration
+    public partial class InitialMigrationxd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,6 @@ namespace KnowledgeBase.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -39,6 +38,19 @@ namespace KnowledgeBase.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Project", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Role",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Role", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,9 +101,9 @@ namespace KnowledgeBase.Data.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_AspNetRoles_RoleId",
+                        name: "FK_AspNetUsers_Role_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
+                        principalTable: "Role",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -236,19 +248,19 @@ namespace KnowledgeBase.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { new Guid("aed7d311-f04f-4103-8cc9-8d92f16907fe"), "e1376204-a7a5-489f-8f8a-83d5ec88c1a7", "Admin user role", "Admin", null },
-                    { new Guid("d53274a1-ad9a-45e8-9022-d8b8e67a13df"), "6b2b5cb5-52ac-4808-abbd-191d73b940b9", "SuperAdmin user role", "SuperAdmin", null },
-                    { new Guid("fdb4de25-6bb7-4118-a1b2-ec2882457109"), "cf98d0c2-d3b6-4049-a93b-3103d4b37b8f", "Basic user role", "Basic", null }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "IsDeleted", "Name" },
                 values: new object[] { new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"), false, "Deafult project" });
+
+            migrationBuilder.InsertData(
+                table: "Role",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("0a69952f-c9a6-4077-8a36-1ec3cac5aa25"), "SuperAdmin user role", "SuperAdmin" },
+                    { new Guid("18954c46-a9c9-4506-a67d-dc1037fe5236"), "Basic user role", "Basic" },
+                    { new Guid("6c3b9869-f57c-40bb-adb1-cba576254e44"), "Admin user role", "Admin" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -340,13 +352,16 @@ namespace KnowledgeBase.Data.Migrations
                 name: "UserProjectPermission");
 
             migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Project");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Role");
         }
     }
 }

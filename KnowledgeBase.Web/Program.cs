@@ -5,6 +5,7 @@ using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Web.Configuration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
@@ -22,7 +23,6 @@ try
 	builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 	builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-		.AddRoles<Role>()
 		.AddEntityFrameworkStores<KnowledgeDbContext>();
 	LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("DefaultConnection");
 

@@ -25,7 +25,6 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly RoleManager<Role> _roleManager;
         private readonly IRoleService _roleService;
 
         public RegisterModel(
@@ -34,7 +33,6 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<Role> roleManager,
             IRoleService roleService)
         {
             _userManager = userManager;
@@ -43,7 +41,6 @@ namespace KnowledgeBase.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _roleManager = roleManager;
             _roleService = roleService;
         }
 

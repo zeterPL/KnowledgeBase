@@ -19,15 +19,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
         _context.Entry(entity).GetDatabaseValues();
 
-        try
+        var IdProperty = entity.GetType().GetProperty("Id");
+        if (IdProperty is null) return Guid.Empty;
+        else
         {
-            var IdProperty = entity.GetType().GetProperty("Id").GetValue(entity, null);
-            return Guid.Parse(IdProperty.ToString());
+            var Id = IdProperty.GetValue(entity, null);
+            return Guid.Parse(Id.ToString());
         }
-        catch(NullReferenceException ex) 
-        {
-            return Guid.Empty;
-        }              
     }
 
     public T? Get(Guid id)

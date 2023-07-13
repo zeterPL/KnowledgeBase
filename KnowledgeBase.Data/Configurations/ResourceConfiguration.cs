@@ -6,27 +6,27 @@ namespace KnowledgeBase.Data.Configurations;
 
 public class ResourceConfiguration : IEntityTypeConfiguration<Resource>
 {
-    public void Configure(EntityTypeBuilder<Resource> builder)
-    {
-        builder.HasKey(r => r.Id);
+	public void Configure(EntityTypeBuilder<Resource> builder)
+	{
+		builder.HasKey(r => r.Id);
 
-        builder.Property(r => r.Name)
-            .HasMaxLength(100);
+		builder.Property(r => r.Name)
+			.HasMaxLength(100);
 
-        builder.Property(r => r.Description)
-            .HasMaxLength(500);
+		builder.Property(r => r.Description)
+			.HasMaxLength(500);
 
-        builder.HasOne(r => r.Project)
-            .WithMany(p => p.Resources)
-            .HasForeignKey(r => r.ProjectId)
-            .IsRequired(false);
+		builder.HasOne(r => r.Project)
+			.WithMany(p => p.Resources)
+			.HasForeignKey(r => r.ProjectId)
+			.IsRequired(false);
 
-        builder.HasOne(r => r.User)
-            .WithMany(u => u.Resources)
-            .HasForeignKey(r => r.UserId)
-            .IsRequired();
+		builder.HasOne(r => r.User)
+			.WithMany(u => u.Resources)
+			.HasForeignKey(r => r.UserId)
+			.IsRequired();
 
-        builder.Property(r => r.Category)
-            .HasConversion<string>();
-    }
+		builder.Property(r => r.Category)
+			.HasConversion<string>();
+	}
 }

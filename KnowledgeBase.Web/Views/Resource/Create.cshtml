@@ -1,30 +1,39 @@
-﻿@model KnowledgeBase.Data.Models.Resource
+﻿@using KnowledgeBase.Data.Models.Enums
+@model KnowledgeBase.Logic.Dto.CreateResourceDto
 
 @{
-	ViewData["Title"] = "Create";
+    var projectSelectList = Model.AssignableProjects!.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
 }
 
-<h2>creator</h2>
-
-@using (Html.BeginForm("Create", "Resource", FormMethod.Post))
+@using (Html.BeginForm("Create", "Resource", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-	@Html.AntiForgeryToken()
-	<div>
-		@Html.LabelFor(resource=>resource.Name)
-		@Html.EditorFor(resource=>resource.Name)
-		@Html.ValidationMessageFor(resource=>resource.Name)
-	</div>
-	<div>
-		@Html.LabelFor(resource=>resource.Description)
-		@Html.EditorFor(resource=>resource.Description)
-		@Html.ValidationMessageFor(resource=>resource.Description)
-	</div>
-	<div>
-		@Html.LabelFor(resource=>resource.Category)
-		@Html.EditorFor(resource=>resource.Category)
-		@Html.ValidationMessageFor(resource=>resource.Category)
-	</div>
-	<div>
-		<input type="submit" value="Save" />
-	</div>
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        @Html.LabelFor(resource => resource.Name, new { @class = "form-label" })
+        @Html.TextBoxFor(resource => resource.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(resource => resource.Name, string.Empty, new { @class = "form-text text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(resource => resource.Description, new { @class = "form-label" })
+        @Html.TextBoxFor(resource => resource.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(resource => resource.Description, string.Empty, new { @class = "form-text text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(resource => resource.Category, new { @class = "form-label" })
+        @Html.DropDownListFor(resource => resource.Category, Html.GetEnumSelectList<ResourceCategory>(), new { @class = "form-control" })
+        @Html.ValidationMessageFor(resource => resource.Category, string.Empty, new { @class = "form-text text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(resource => resource.ProjectId, new { @class = "form-label" })
+        @Html.DropDownListFor(resource => resource.ProjectId, projectSelectList, new { @class = "form-control" })
+        @Html.ValidationMessageFor(resource => resource.ProjectId, string.Empty, new { @class = "form-text text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(resource => resource.NewFile, new { @class = "form-label" })
+        @Html.TextBox("NewFile", "", new { type = "file", @class = "form-control", @id = "NewFile" })
+        @Html.ValidationMessageFor(resource => resource.NewFile, string.Empty, new { @class = "form-text text-danger" })
+    </div>
+    <div>
+        <input class="btn btn-primary" type="submit" value="Save"/>
+    </div>
 }

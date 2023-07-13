@@ -13,8 +13,14 @@ public class ResourceConfiguration : IEntityTypeConfiguration<Resource>
 		builder.Property(r => r.Name)
 			.HasMaxLength(100);
 
-		builder.Property(r => r.Description)
-			.HasMaxLength(500);
+        builder.Property(r=>r.AzureFileName)
+            .HasMaxLength(104);
+
+        builder.Property(r => r.AzureStorageAbsolutePath)
+            .HasMaxLength(225);
+
+        builder.Property(r => r.Description)
+            .HasMaxLength(500);
 
 		builder.HasOne(r => r.Project)
 			.WithMany(p => p.Resources)

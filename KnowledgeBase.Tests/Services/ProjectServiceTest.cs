@@ -69,8 +69,6 @@ namespace KnowledgeBase.Tests.Services
 		public void UpdaingWithoutUserId_ReturnsIdOfProjectDto()
 		{
 			var projectDTO = new ProjectDto() { Id=Guid.NewGuid(), UserId=null};
-			
-
 			var result = _projectService.UpdateWithoutUserId(projectDTO);
 
 			result.Equals(projectDTO.Id);

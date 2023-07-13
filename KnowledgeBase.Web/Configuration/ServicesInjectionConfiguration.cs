@@ -14,6 +14,7 @@ public static class ServicesInjectionConfiguration
         services.AddScoped<IAzureStorageService, AzureStorageService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ITagService, TagService>();
 
         return services;
     }

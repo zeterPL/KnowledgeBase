@@ -66,12 +66,52 @@ namespace KnowledgeBase.Tests.Services
 		}
 
 		[Fact]
-		public void UpdaingWithoutUserId_ReturnsIdOfProjectDto()
+		public void UpdaingWithoutUserId_ReturnIdOfProjectDto()
 		{
-			var projectDTO = new ProjectDto() { Id=Guid.NewGuid(), UserId=null};
+
+            // arrange
+            
+            var projectDTO = new ProjectDto() { Id=Guid.NewGuid()};
+
+
+            // act
+
+            var result = _projectService.UpdateWithoutUserId(projectDTO);
+
+
+            // assert
+            result.Equals(projectDTO.Id);
+		}
+
+        [Fact]
+        public void UpdaingWithoutUserId_ReturnEmptyProjectGuid()
+		{
+			//arrange
+
+			var projectDTO = new ProjectDto() { Id= Guid.Empty };
+
+			//act
+
 			var result = _projectService.UpdateWithoutUserId(projectDTO);
 
-			result.Equals(projectDTO.Id);
+			//assert
+
+			result.Equals(Guid.Empty);
 		}
-	}
+
+		[Fact]
+        public void UpdaingWithoutUserId_ReturnEmptyGuidIfProjectWasDeleted()
+        {
+            //arrange
+
+			Project project= new Project() { Id = Guid.NewGuid(), IsDeleted = true};
+            //act
+
+			_projectRepository.Setup(p => p.ProjectExists(project.Id)).Returns(false);
+
+			//assert
+
+			_projectRepository.Verify(p => p.Get(project.Id), Times.Never);
+        }
+    }
 }

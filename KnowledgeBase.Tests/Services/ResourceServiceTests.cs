@@ -3,9 +3,11 @@ using FluentAssertions;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.AzureServices;
+using KnowledgeBase.Logic.AzureServices.File;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Moq;
 
 namespace KnowledgeBase.Tests.Services;
@@ -155,6 +157,7 @@ public class ResourceServiceTests
         var resourceDto = new ResourceDto
         {
             ProjectId = projectId,
+            File = null,
         };
 
         _projectRepository.Setup(r => r.Get(projectId)).Returns(project);
@@ -162,5 +165,37 @@ public class ResourceServiceTests
         // act assert
         await Assert.ThrowsAsync<ArgumentException>(async () => await _resourceService.AddAsync(resourceDto));
         _projectRepository.Verify(r => r.Get(projectId), Times.Once);
+    }
+
+    [Fact]
+    public async Task AddAsync_ValidResource_CallsAzureServiceUploadFile()
+    {
+        // arrange
+        var file = new Mock<IFormFile>();
+        var projectId = Guid.NewGuid();
+        var project = new Project
+        {
+            Id = projectId,
+            Name = "Project",
+        };
+        var resourceDto = new ResourceDto
+        {
+            ProjectId = projectId,
+            File = file.Object,
+        };
+
+        var azureResource = new AzureResourceFile { AzureFileName = "FileName", AzureStoragePath = "AzurePath" };
+
+        _projectRepository.Setup(r => r.Get(projectId)).Returns(project);
+        _azureStorageService.Setup
+            (s => s.UploadFileAsync(It.IsAny<UploadAzureResourceFile>()))
+            .Returns(Task.Run(() => azureResource));
+
+        // act
+        await _resourceService.AddAsync(resourceDto);
+
+        // assert
+        _azureStorageService.Verify(s=>s.UploadFileAsync(It.IsAny<UploadAzureResourceFile>()), Times.Once);
+        _resourceRepository.Verify(s => s.Add(It.IsAny<Resource>()), Times.Once);
     }
 }

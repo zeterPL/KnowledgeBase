@@ -141,18 +141,7 @@ public class ProjectController : Controller
 			return NotFound("Project is null");
 		}
 	}
-    [HttpGet]
-    [Authorize(Policy = ProjectPermission.CanReadProject)]
-    public IActionResult Details(Guid id)
-    {
-        ProjectDto? project = _projectService.Get(id);
-        if (project == null)
-        {
-            return NotFound();
-        }
-
-        return View(project);
-    }
+    
 
     [HttpGet]
     [Authorize(Policy = ProjectPermission.CanReadProject)]

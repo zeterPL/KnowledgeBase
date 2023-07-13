@@ -15,19 +15,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 
         builder.HasMany(p => p.Resources)
             .WithOne(r => r.Project)
-            .HasForeignKey(r => r.ProjectId);
-       
-        var defaultProject = new Project
-        {
-            Id = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"),
-            Name = "Deafult project",
-            IsDeleted = false,
-        };
-        builder.HasData(defaultProject);
-    }
-		builder.HasMany(p => p.Resources)
-			.WithOne(r => r.Project)
-			.HasForeignKey(r => r.ProjectId);
+            .HasForeignKey(r => r.ProjectId);     
 
 		var defaultProject = new Project
 		{

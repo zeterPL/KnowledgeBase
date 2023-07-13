@@ -59,7 +59,8 @@ namespace KnowledgeBase.Tests.Services
 
 			// act
 			var result = _projectService.Get(projectId);
-
+			_mapper.Verify(m => m.Map<ProjectDto>(project), Times.Once());
+			_projectRepository.Verify(m => m.Get(projectId), Times.Once());
 
 			// assert
 			result.Equals(projectDto);
@@ -72,15 +73,16 @@ namespace KnowledgeBase.Tests.Services
             // arrange
             
             var projectDTO = new ProjectDto() { Id=Guid.NewGuid()};
+			var project = new Project() { };
 
-
-            // act
-
+			// act
+			
             var result = _projectService.UpdateWithoutUserId(projectDTO);
 
 
             // assert
-            result.Equals(projectDTO.Id);
+
+            result.Equals(project.Id);
 		}
 
         [Fact]

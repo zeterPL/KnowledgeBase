@@ -110,7 +110,6 @@ public class ProjectController : Controller
         return View(project);
     }
 
-
     [HttpGet]
     [Authorize(Policy = ProjectPermission.CanReadProject)]
     public IActionResult ManageTags(Guid id)
@@ -121,20 +120,20 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
-   // [Authorize(Policy = ProjectPermission.CanEditProject)]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult AddTags(Guid id)
-    {      
+    {
         ViewBag.ProjectId = id;
         return View();
     }
 
     [HttpPost]
-    //[Authorize(Policy = ProjectPermission.CanEditProject)]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult AddTags(AddTagDto addTagDto, Guid id)
     {
         addTagDto.ProjectId = id;
         //addTagDto.ProjectId = ViewBag.ProjectId;
-        if(ModelState.IsValid)
+        if (ModelState.IsValid)
         {
             string[] tagsNames = addTagDto.Tags.Split(',');
 
@@ -142,19 +141,25 @@ public class ProjectController : Controller
             {
                 TagDto tag = _tagService.GetTagByName(tagName.Trim()) ?? new TagDto { Name = tagName.Trim() };
 
-                if(tag.Id == Guid.Empty)
+                if (tag.Id == Guid.Empty)
                 {
                     var NewId = _tagService.Add(tag);
                     tag.Id = NewId;
                 }
                 _projectService.AddTagToProject(tag, addTagDto.ProjectId);
-
             }
             return RedirectToAction("ManageTags", new { id = addTagDto.ProjectId });
-            
         }
 
         return View(addTagDto);
     }
 
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
+    public IActionResult DeleteTag(Guid TagId, Guid ProjectId)
+    {
+        TagDto tag = new TagDto { Id = TagId };
+        _projectService.RemoveTagFromProject(tag, ProjectId);
+        return RedirectToAction("ManageTags", new { id = ProjectId });
+    }
 }

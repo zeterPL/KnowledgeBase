@@ -10,6 +10,6 @@
 
     @foreach (TagDto tag in tags)
     {
-        <div>@tag.Name</div>
+        <div>@tag.Name <a asp-action="DeleteTag" asp-route-TagId="@tag.Id" asp-route-ProjectId="@ViewBag.ProjectId" class="btn btn-danger">Delete</a> </div>
     }
 </div>

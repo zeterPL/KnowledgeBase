@@ -1,130 +1,131 @@
-﻿using KnowledgeBase.Data.Models;
+using Azure;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
+using KnowledgeBase.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace KnowledgeBase.Web.Controllers
 {
-	public class ResourceController : Controller
-	{
-		private readonly IResourceService _service;
-		private readonly UserManager<User> _userManager;
-		public readonly ILogger<ProjectController> _logger;
+    public class ResourceController : Controller
+    {
+        private readonly IResourceService _resourceService;
+        private readonly IProjectService _projectService;
 
-		public ResourceController(IResourceService service, UserManager<User> userManager, ILogger<ProjectController> logger)
-		{
-			_service = service;
-			_userManager = userManager;
-			_logger = logger;
-		}
+        public ResourceController(IResourceService resourceService, IProjectService projectService)
+        {
+            _resourceService = resourceService;
+            _projectService = projectService;
+        }
 
-		public IActionResult Index()
-		{
-			try
-			{
-				_logger.LogInformation("getting all resources");
-				return View(_service.GetAll().ToList());
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex.Message);
-				return BadRequest("internal server error");
-			}
-		}
+        public IActionResult Index()
+        {
+            return View(_resourceService.GetAll().ToList());
+        }
 
-		public IActionResult Create()
-		{
-			return View();
-		}
+        private CreateResourceDto SetUpAssignableProjects(CreateResourceDto dto)
+        {
+            var projects = _projectService.GetAllReadableByUser(dto.UserId);
+            dto.AssignableProjects = projects;
+            return dto;
+        }
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public IActionResult Create(ResourceDto resourcedto)
-		{
-			try
-			{
-				_logger.LogInformation("creating resource");
+        [Authorize]
+        public IActionResult Create()
+        {
+            var resourceDto = SetUpAssignableProjects(new CreateResourceDto { UserId = User.GetUserId() });
+            return View(resourceDto);
+        }
 
-				resourcedto.UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-				resourcedto.ProjectId = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b");
-				_service.Add(resourcedto);
-				return RedirectToAction(actionName: "Index");
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex.Message);
-				return BadRequest("Create internal server error");
-			}
-		}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateResourceDto resourceDto)
+        {
+            resourceDto.UserId = User.GetUserId();
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public IActionResult Edit(ResourceDto resourcedto)
-		{
-			try
-			{
-				_logger.LogInformation("editing resource");
+            if (!ModelState.IsValid)
+            {
+                return View(SetUpAssignableProjects(resourceDto));
+            }
 
-				resourcedto.UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-				resourcedto.ProjectId = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b");
-				_service.Update(resourcedto);
-				return RedirectToAction(actionName: "Index");
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex.Message);
-				return NotFound("Can't find project");
-			}
-		}
+            try
+            {
+                resourceDto.File = resourceDto.NewFile;
+                await _resourceService.AddAsync(resourceDto);
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest();
+            }
+            catch (RequestFailedException ex)
+            {
+                return StatusCode(ex.Status);
+            }
 
-		public IActionResult Edit(Guid id)
-		{
-			try
-			{
-				_logger.LogInformation("editing resource");
+            return RedirectToAction(actionName: "Index");
+        }
 
-				return View(_service.Get(id));
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex.Message);
-				return NotFound("Can't find project");
-			}
-		}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(ResourceDto resourceDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(resourceDto);
+            }
 
-		public IActionResult Delete(Guid id)
-		{
-			try
-			{
-				_logger.LogInformation("deleting resource");
+            resourceDto.UserId = User.GetUserId();
 
-				return View(_service.Get(id));
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex.Message);
-				return NotFound("Can't delete project");
-			}
-		}
+            try
+            {
+                await _resourceService.UpdateAsync(resourceDto);
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest();
+            }
+            catch (RequestFailedException ex)
+            {
+                return StatusCode(ex.Status);
+            }
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public IActionResult Delete(ResourceDto resourcedto)
-		{
-			try
-			{
-				_logger.LogInformation("deleting resource");
+            return RedirectToAction(actionName: "Index");
+        }
 
-				_service.Delete(resourcedto);
-				return RedirectToAction(actionName: "Index");
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex.Message);
-				return NotFound("Project is null");
-			}
-		}
-	}
+        public IActionResult Edit(Guid id)
+        {
+            var resource = _resourceService.Get(id);
+            if (resource == null)
+            {
+                return NotFound();
+            }
+
+            return View(resource);
+        }
+
+        public IActionResult Delete(Guid id)
+        {
+            return View(_resourceService.Get(id));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(ResourceDto resourceDto)
+        {
+            _resourceService.SoftDelete(resourceDto);
+            return RedirectToAction(actionName: "Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Download(Guid id)
+        {
+            var resource = await _resourceService.DownloadAsync(id);
+            if (resource == null)
+            {
+                return NotFound();
+            }
+
+            return File(resource.Content, resource.ContentType, resource.AzureFileName);
+        }
+    }
 }

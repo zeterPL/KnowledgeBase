@@ -4,6 +4,7 @@ using KnowledgeBase.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    partial class KnowledgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230713081536_Resource-azure-storage")]
+    partial class Resourceazurestorage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,21 +50,6 @@ namespace KnowledgeBase.Data.Migrations
                             IsDeleted = false,
                             Name = "Deafult project"
                         });
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
-                {
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ProjectId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("ProjectTag");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
@@ -150,21 +138,6 @@ namespace KnowledgeBase.Data.Migrations
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.Tag", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
@@ -408,25 +381,6 @@ namespace KnowledgeBase.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
-                {
-                    b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
-                        .WithMany("ProjectTags")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KnowledgeBase.Data.Models.Tag", "Tag")
-                        .WithMany("Projects")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-
-                    b.Navigation("Tag");
-                });
-
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
@@ -527,8 +481,6 @@ namespace KnowledgeBase.Data.Migrations
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Project", b =>
                 {
-                    b.Navigation("ProjectTags");
-
                     b.Navigation("Resources");
 
                     b.Navigation("UsersPermissions");
@@ -537,11 +489,6 @@ namespace KnowledgeBase.Data.Migrations
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.Tag", b =>
-                {
-                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>

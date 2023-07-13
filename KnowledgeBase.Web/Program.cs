@@ -1,9 +1,5 @@
 using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
-using KnowledgeBase.Data.Repositories;
-using KnowledgeBase.Data.Repositories.Interfaces;
-using KnowledgeBase.Logic.Services;
-using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Web.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,42 +11,18 @@ try
 {
 	var builder = WebApplication.CreateBuilder(args);
 
-	// Add services to the container.
-	var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-	builder.Services.AddDbContext<KnowledgeDbContext>(options =>
-		options.UseSqlServer(connectionString,
-			optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
-	builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+// Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<KnowledgeDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 	builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
 		.AddEntityFrameworkStores<KnowledgeDbContext>();
 	LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("DefaultConnection");
 
-	builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
-	#region Dependency injection
-
-	builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-	builder.Services.AddScoped<IProjectService, ProjectService>();
-	builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
-	builder.Services.AddScoped<IResourceService, ResourceService>();
-
-	builder.Services.AddScoped<IUserProjectPermissionRepository, UserProjectPermissionRepository>();
-	builder.Services.AddScoped<IPermissionService, PermissionService>();
-
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IRoleService, RoleService>();
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-
-builder.Services.AddScoped<ITagRepository, TagRepository>();
-builder.Services.AddScoped<ITagService, TagService>();
-
-builder.Services.AddScoped<IProjectTagRepository, ProjectTagRepository>();
-
-#endregion Dependency injection
+builder.Services.AddServices();
+builder.Services.AddRepositories();
+builder.Services.AddAutoMapper();
 
 	builder.Services.AddPermissions();
 

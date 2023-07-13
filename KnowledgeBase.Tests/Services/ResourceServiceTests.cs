@@ -355,4 +355,44 @@ public class ResourceServiceTests
         // assert
         result.Should().BeNull();
     }
+
+    [Fact]
+    public void GetAll_NoResourceExistsInDatabase_ReturnsEmptyEnumerable()
+    {
+        _resourceRepository.Setup(r => r.GetAll()).Returns(Array.Empty<Resource>());
+
+        // act
+        var result = _resourceService.GetAll();
+
+        // assert
+        result.ToArray().Should().BeEmpty();
+    }
+
+    [Fact]
+    public void GetAll_NoDeletedResourcesExistInDatabse_ReturnsEveryResource()
+    {
+        var resources = new Resource[] { new Resource(), new Resource() };
+        _resourceRepository.Setup(r => r.GetAll()).Returns(resources);
+
+        // act
+        var result = _resourceService.GetAll();
+
+        // assert
+        result.ToArray().Length.Should().Be(resources.Length);
+    }
+
+    [Fact]
+    public void GetAll_DeletedResourcesExistInDatabse_ReturnsOnlyNotDeletedResources()
+    {
+        var resources = new Resource[] { new Resource { IsDeleted = false, } };
+        var deletedResources = new Resource[] { new Resource { IsDeleted = true, } };
+        var allResources = resources.Union(deletedResources);
+        _resourceRepository.Setup(r => r.GetAll()).Returns(allResources);
+
+        // act
+        var result = _resourceService.GetAll();
+
+        // assert
+        result.ToArray().Length.Should().Be(resources.Length);
+    }
 }

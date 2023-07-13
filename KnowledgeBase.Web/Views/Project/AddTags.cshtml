@@ -1,12 +1,9 @@
 ﻿@using KnowledgeBase.Logic.Dto;
 @model KnowledgeBase.Logic.Dto.AddTagDto;
-@{
-    AddTagDto tags = Model;
-}
 
-@using (Html.BeginForm("AddTags", "Project", FormMethod.Post))
+
+@using (Html.BeginForm("AddTags", "Project",new { id = ViewBag.ProjectId } , FormMethod.Post))
 {
-    @Html.TextBoxFor(tags => tags.Tags)
-    @Html.HiddenFor(tags => tags.ProjectId, new { id = "ProjectId" });
+    @Html.TextBoxFor(tags => tags.Tags)    
     <input type="Submit" value="Add"/>
 }

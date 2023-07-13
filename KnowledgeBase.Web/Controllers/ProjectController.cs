@@ -116,23 +116,24 @@ public class ProjectController : Controller
     public IActionResult ManageTags(Guid id)
     {
         var tags = _projectService.GetAllTagsByProjectId(id);
+        ViewBag.projectId = id;
         return View(tags);
     }
 
     [HttpGet]
-    [Authorize(Policy = ProjectPermission.CanEditProject)]
+   // [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult AddTags(Guid id)
-    {
-        AddTagDto addTagDto = new AddTagDto();
+    {      
         ViewBag.ProjectId = id;
-        return View(addTagDto);
+        return View();
     }
 
     [HttpPost]
-    [Authorize(Policy = ProjectPermission.CanEditProject)]
-    public IActionResult AddTags(AddTagDto addTagDto)
+    //[Authorize(Policy = ProjectPermission.CanEditProject)]
+    public IActionResult AddTags(AddTagDto addTagDto, Guid id)
     {
-               
+        addTagDto.ProjectId = id;
+        //addTagDto.ProjectId = ViewBag.ProjectId;
         if(ModelState.IsValid)
         {
             string[] tagsNames = addTagDto.Tags.Split(',');
@@ -141,10 +142,10 @@ public class ProjectController : Controller
             {
                 TagDto tag = _tagService.GetTagByName(tagName.Trim()) ?? new TagDto { Name = tagName.Trim() };
 
-                if(tag != null)
+                if(tag.Id == Guid.Empty)
                 {
-                    var id = _tagService.Add(tag);
-                    tag.Id = id;
+                    var NewId = _tagService.Add(tag);
+                    tag.Id = NewId;
                 }
                 _projectService.AddTagToProject(tag, addTagDto.ProjectId);
 

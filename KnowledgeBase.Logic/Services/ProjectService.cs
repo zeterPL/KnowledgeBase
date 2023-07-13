@@ -206,17 +206,11 @@ public class ProjectService : IProjectService
 
     public void AddTagToProject(TagDto tagDto, Guid projectId)
     {
-        Tag tag = new Tag
-        {
-            Id = tagDto.Id,
-            Name = tagDto.Name,
-        };
-        var newTagId = _tagRepository.Add(tag);
-
+       
         ProjectTag projectTag = new ProjectTag
         {
             ProjectId = projectId,
-            TagId = newTagId,
+            TagId = tagDto.Id,
         };
         _projectTagRepository.Add(projectTag);
     }

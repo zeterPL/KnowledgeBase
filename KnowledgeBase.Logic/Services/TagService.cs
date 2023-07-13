@@ -48,7 +48,8 @@ namespace KnowledgeBase.Logic.Services
         public TagDto? GetTagByName(string name)
         {
             var tag = _tagRepository.GetAll().Where(t => t.Name == name).SingleOrDefault();
-            return tag.ToTagDto();
+            if (tag is null) return null;
+            else return tag.ToTagDto();
         }
     }
 }

@@ -12,8 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<KnowledgeDbContext>(options =>
-    options.UseSqlServer(connectionString,
-        optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); }));
+{
+    options.UseSqlServer(connectionString, optionsSqlServer => { optionsSqlServer.MigrationsAssembly("KnowledgeBase.Data"); });
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -43,8 +46,7 @@ builder.Services.AddScoped<ITagService, TagService>();
 
 builder.Services.AddScoped<IProjectTagRepository, ProjectTagRepository>();
 
-
-#endregion
+#endregion Dependency injection
 
 builder.Services.AddPermissions();
 

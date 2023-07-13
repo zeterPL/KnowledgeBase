@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using FluentAssertions;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
@@ -286,5 +287,72 @@ public class ResourceServiceTests
         // assert
         _resourceRepository.Verify(r => r.Update(It.IsAny<Resource>()), Times.Once);
         _azureStorageService.Verify(s => s.UploadFileAsync(It.IsAny<UploadAzureResourceFile>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task DownloadAsync_ResourceDoesntExist_ReturnsNull()
+    {
+        var resourceId = Guid.NewGuid();
+        _resourceRepository.Setup(r => r.Get(resourceId)).Returns((Resource?)null);
+
+        // act
+        var result = await _resourceService.DownloadAsync(resourceId);
+
+        // assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DownloadAsync_ValidResource_ReturnsResourceWithStream()
+    {
+        var resourceId = Guid.NewGuid();
+        var resource = new Resource
+        {
+            AzureFileName = "FileName",
+        };
+        var resourceDto = new ResourceDto();
+        var stream = new Mock<Stream>();
+        var contentType = "content";
+
+        _resourceRepository.Setup(r => r.Get(resourceId)).Returns(resource);
+        _mapper.Setup(m => m.Map<ResourceDto>(resource)).Returns(resourceDto);
+
+        _azureStorageService.Setup
+            (s => s.DownloadFileAsync(It.IsAny<AzureResourceFile>()))
+            .Returns(async () => new DownloadAzureResourceFile(stream.Object, contentType));
+
+        // act
+        DownloadResourceDto? result = await _resourceService.DownloadAsync(resourceId);
+
+        // assert
+        result.Should().NotBeNull();
+        result.Content.Should().BeSameAs(stream.Object);
+        result.ContentType.Should().BeSameAs(contentType);
+        result.AzureFileName.Should().BeSameAs(result.AzureFileName);
+    }
+
+    public static IEnumerable<object[]> AzureExceptions()
+    {
+        yield return new object[] { new FileNotFoundException() };
+        yield return new object[] { new RequestFailedException("") };
+    }
+
+    [Theory]
+    [MemberData(nameof(AzureExceptions))]
+    public async Task DownloadAsync_ValidResourceButAzureServiceThrows_ReturnsNull<TException>(TException exceptionType) where TException : Exception
+    {
+        var resourceId = Guid.NewGuid();
+        var resource = new Resource();
+        var resourceDto = new ResourceDto();
+
+        _resourceRepository.Setup(r => r.Get(resourceId)).Returns(resource);
+        _mapper.Setup(m => m.Map<ResourceDto>(resource)).Returns(resourceDto);
+        _azureStorageService.Setup(s => s.DownloadFileAsync(It.IsAny<AzureResourceFile>())).Throws(exceptionType);
+
+        // act
+        var result = await _resourceService.DownloadAsync(resourceId);
+
+        // assert
+        result.Should().BeNull();
     }
 }

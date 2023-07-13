@@ -6,7 +6,7 @@
     List<TagDto> tags = Model;
 }
 <div>
-    <a asp-action="AddTag">Add Tag</a>
+    <a asp-action="AddTags" asp-route-id="@ViewBag.projectId">Add tags to project</a>
 
     @foreach (TagDto tag in tags)
     {

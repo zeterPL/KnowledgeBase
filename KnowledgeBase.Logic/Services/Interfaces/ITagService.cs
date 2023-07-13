@@ -12,6 +12,7 @@ namespace KnowledgeBase.Logic.Services.Interfaces
         public IList<TagDto> GetAll();
         public TagDto GetById(Guid id);
         public void Delete(TagDto tag);
-        public void Add(TagDto tag);   
+        public Guid Add(TagDto tag);   
+        public TagDto? GetTagByName(string name);
     }
 }

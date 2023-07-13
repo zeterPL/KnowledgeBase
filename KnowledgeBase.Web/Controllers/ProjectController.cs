@@ -10,10 +10,12 @@ namespace KnowledgeBase.Web.Controllers;
 public class ProjectController : Controller
 {
     private readonly IProjectService _projectService;
+    private readonly ITagService _tagService;
 
-    public ProjectController(IProjectService projectService)
+    public ProjectController(IProjectService projectService, ITagService tagService)
     {
         _projectService = projectService;
+        _tagService = tagService;
     }
 
     public IActionResult Index()
@@ -116,4 +118,42 @@ public class ProjectController : Controller
         var tags = _projectService.GetAllTagsByProjectId(id);
         return View(tags);
     }
+
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
+    public IActionResult AddTags(Guid id)
+    {
+        AddTagDto addTagDto = new AddTagDto();
+        ViewBag.ProjectId = id;
+        return View(addTagDto);
+    }
+
+    [HttpPost]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
+    public IActionResult AddTags(AddTagDto addTagDto)
+    {
+               
+        if(ModelState.IsValid)
+        {
+            string[] tagsNames = addTagDto.Tags.Split(',');
+
+            foreach (string tagName in tagsNames)
+            {
+                TagDto tag = _tagService.GetTagByName(tagName.Trim()) ?? new TagDto { Name = tagName.Trim() };
+
+                if(tag != null)
+                {
+                    var id = _tagService.Add(tag);
+                    tag.Id = id;
+                }
+                _projectService.AddTagToProject(tag, addTagDto.ProjectId);
+
+            }
+            return RedirectToAction("ManageTags", new { id = addTagDto.ProjectId });
+            
+        }
+
+        return View(addTagDto);
+    }
+
 }

@@ -1,61 +1,80 @@
 using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Web.Configuration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using NLog.Web;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+try
+{
+	var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<KnowledgeDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<Role>()
-    .AddEntityFrameworkStores<KnowledgeDbContext>();
+	builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+		.AddEntityFrameworkStores<KnowledgeDbContext>();
+	LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddServices();
 builder.Services.AddRepositories();
 builder.Services.AddAutoMapper();
 
-builder.Services.AddPermissions();
+	builder.Services.AddPermissions();
 
-builder.Services.AddControllersWithViews();
+	builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+	builder.Logging.ClearProviders();
+	builder.Host.UseNLog();
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
+	var app = builder.Build();
 
-    var context = services.GetRequiredService<KnowledgeDbContext>();
-    context.Database.EnsureCreated();
+	using (var scope = app.Services.CreateScope())
+	{
+		var services = scope.ServiceProvider;
+
+		var context = services.GetRequiredService<KnowledgeDbContext>();
+		context.Database.EnsureCreated();
+	}
+
+	// Configure the HTTP request pipeline.
+	if (app.Environment.IsDevelopment())
+	{
+		app.UseMigrationsEndPoint();
+	}
+	else
+	{
+		app.UseExceptionHandler("/Error");
+		// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+		app.UseHsts();
+	}
+
+	app.UseHttpsRedirection();
+	app.UseStaticFiles();
+
+	app.UseRouting();
+
+	app.UseAuthentication();
+	app.UseAuthorization();
+
+	app.MapRazorPages();
+
+	app.MapControllerRoute(
+		name: "default",
+		pattern: "{controller}/{action=Index}/{id?}");
+
+	app.Run();
 }
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+catch (Exception ex)
 {
-    app.UseMigrationsEndPoint();
+	logger.Error(ex);
+	throw (ex);
 }
-else
+finally
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	NLog.LogManager.Shutdown();
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapRazorPages();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
-app.Run();

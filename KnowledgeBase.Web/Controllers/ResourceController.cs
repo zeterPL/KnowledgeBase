@@ -1,4 +1,4 @@
-﻿using Azure;
+using Azure;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;

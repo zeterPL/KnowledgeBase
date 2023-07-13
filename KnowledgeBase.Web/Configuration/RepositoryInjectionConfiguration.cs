@@ -10,7 +10,9 @@ public static class RepositoryInjectionConfiguration
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IResourceRepository, ResourceRepository>();
         services.AddScoped<IUserProjectPermissionRepository, UserProjectPermissionRepository>();
-        
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+
         return services;
     }
 }

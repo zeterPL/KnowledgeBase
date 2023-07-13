@@ -12,8 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NuGet.DependencyResolver;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +46,23 @@ namespace KnowledgeBase.Tests.Services
 				_mapper.Object);
 		}
 
-        
-    }
+		[Fact]
+		public void Poject_ReturnsExistedProject_FromDatabase()
+		{
+			// arrange
+			var projectId = Guid.NewGuid();
+			var project = new Project();
+			var projectDto = new ProjectDto();
+
+			_projectRepository.Setup(r => r.Get(projectId)).Returns(project);
+			_mapper.Setup(m => m.Map<ProjectDto>(project)).Returns(projectDto);
+
+			// act
+			var result = _projectService.Get(projectId);
+
+
+			// assert
+			result.Equals(projectDto);
+		}
+	}
 }

@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="C:\Users\PiotrDąbrowski\.nuget\packages\nlog.config\4.7.15\contentFiles\any\any\NLog.config" />
+    <Compile Remove="Data\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <None Remove="Data\**" />
   </ItemGroup>
 
   <ItemGroup>

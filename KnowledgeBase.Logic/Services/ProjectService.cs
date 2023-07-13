@@ -113,9 +113,7 @@ public class ProjectService : IProjectService
 
     public Guid Add(ProjectDto projectDto)
     {
-        var newProject = _mapper.Map<Project>(projectDto);
-        _projectRepository.Add(newProject);
-        
+        var newProject = _mapper.Map<Project>(projectDto);        
         var newProjectId = _projectRepository.Add(newProject);
 
 		// Default permissions

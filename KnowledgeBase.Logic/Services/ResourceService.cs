@@ -32,14 +32,14 @@ public class ResourceService : IResourceService
         return _mapper.Map<ResourceDto>(resource);
     }
 
-    private async Task<ResourceDto> UploadFile(ResourceDto resourceDto, string projectName)
+    private async Task<ResourceDto> UploadFile(ResourceDto resourceDto, Guid projectId)
     {
         if (resourceDto.File == null)
         {
             throw new ArgumentException("File cant be null");
         }
 
-        var uploadFile = new UploadAzureResourceFile(resourceDto.Name, projectName, resourceDto.File);
+        var uploadFile = new UploadAzureResourceFile(resourceDto.Name, projectId, resourceDto.File);
         var azureResourceFile = await _azureStorageService.UploadFileAsync(uploadFile);
 
         resourceDto.AzureStorageAbsolutePath = azureResourceFile.AzureStoragePath;
@@ -49,13 +49,13 @@ public class ResourceService : IResourceService
 
     public async Task AddAsync(ResourceDto resourceDto)
     {
-        var projectName = _projectRepository.Get(resourceDto.ProjectId)?.Name;
-        if (projectName == null)
+        var projectId = _projectRepository.Get(resourceDto.ProjectId)?.Id;
+        if (projectId == null)
         {
             throw new ArgumentException("Project assigned to resource doesn't exist");
         }
 
-        var createdResourceDto = await UploadFile(resourceDto, projectName);
+        var createdResourceDto = await UploadFile(resourceDto, projectId.ToGuid());
 
         Resource resource = _mapper.Map<Resource>(createdResourceDto);
         _resourceRepository.Add(resource);
@@ -108,7 +108,7 @@ public class ResourceService : IResourceService
             return;
         }
 
-        var uploadedResource = await UploadFile(resourceDto, resource.Project!.Name);
+        var uploadedResource = await UploadFile(resourceDto, resource.Project!.Id);
 
         resource.AzureFileName = uploadedResource.AzureFileName!;
         resource.AzureStorageAbsolutePath = uploadedResource.AzureStorageAbsolutePath!;

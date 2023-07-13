@@ -1,5 +1,6 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,12 @@ namespace KnowledgeBase.Data.Repositories
         {
             _context.Set<Tag>().AddRange(tags); 
             _context.SaveChanges();
+        }
+
+        public IList<Tag> GetAllByProjectId(Guid projectId)
+        {
+            return _context.Set<ProjectTag>().Where(pt => pt.ProjectId == projectId)
+                .Select(pt => pt.Tag).ToList();
         }
     }
 }

@@ -10,5 +10,6 @@ namespace KnowledgeBase.Data.Repositories.Interfaces
     public interface ITagRepository : IGenericRepository<Tag>
     {
         public void AddRange(IList<Tag> tags);
+        public IList<Tag> GetAllByProjectId(Guid projectId);
     }
 }

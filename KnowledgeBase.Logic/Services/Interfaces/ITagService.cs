@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Logic.Dto;
+﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Logic.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace KnowledgeBase.Logic.Services.Interfaces
         public void Delete(TagDto tag);
         public Guid Add(TagDto tag);   
         public TagDto? GetTagByName(string name);
+        public IList<Tag> GetAllByProjectId(Guid projectId);
     }
 }

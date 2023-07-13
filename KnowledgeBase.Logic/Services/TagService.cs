@@ -51,5 +51,9 @@ namespace KnowledgeBase.Logic.Services
             if (tag is null) return null;
             else return tag.ToTagDto();
         }
+        public IList<Tag> GetAllByProjectId(Guid projectId)
+        {
+            return _tagRepository.GetAllByProjectId(projectId);
+        }
     }
 }

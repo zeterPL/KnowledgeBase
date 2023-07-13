@@ -191,15 +191,8 @@ public class ProjectService : IProjectService
     }
 
     public IList<TagDto> GetAllTagsByProjectId(Guid projectId)
-    {
-        List<TagDto> tags = new List<TagDto>();
-        var projectTags = _projectTagRepository.GetByProjectId(projectId);
-        foreach(ProjectTag projectTag in projectTags)
-        {
-            TagDto tag = _tagRepository.Get(projectTag.TagId).ToTagDto();
-            tags.Add(tag);
-        }
-        return tags;
+    {  
+        return _tagRepository.GetAllByProjectId(projectId).Select(t => t.ToTagDto()).ToList();   
     }
 
     public void AddTagToProject(TagDto tagDto, Guid projectId)

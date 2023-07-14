@@ -62,9 +62,11 @@ namespace KnowledgeBase.Tests.Services
             User user = new User();
 
             _userRepository.Setup(u => u.Get(userDto.Id)).Returns(user);
-            
+
+
             var result = _userService.Update(userDto);
-          
+
+
             _userRepository.Verify(u => u.Get(userDto.Id), Times.Once());
             result.Should().Be(userDto).And.NotBeNull();
         }
@@ -76,9 +78,20 @@ namespace KnowledgeBase.Tests.Services
             _userRepository.Setup(u => u.GetAllUserPermissionsByUserId(userId)).Returns((IList<UserProjectPermission>?)null);
 
             var result = _userService.GetAllUserPermissions(userId);
-            
-            _userRepository.Verify(u=> u.GetAllUserPermissionsByUserId(userId), Times.Once());
+
+            _userRepository.Verify(u => u.GetAllUserPermissionsByUserId(userId), Times.Once());
             result.Should().BeNull();
+        }
+
+        [Fact]
+        public void Delete_UserExists()
+        {
+            Guid userId = Guid.NewGuid();
+            UserDto userDto = new UserDto { Id = userId };
+
+            _userService.Delete(userDto);
+
+            _userService.GetById(userId).Should().BeNull();
         }
     }
 }

@@ -53,6 +53,32 @@ namespace KnowledgeBase.Tests.Services
 
             _userRepository.Verify(u => u.Get(userId), Times.Once());
             result.Should().BeNull();
-        }    
+        }
+
+        [Fact]
+        public void Update_UserExistsInDatabase_ReturnsUserDto()
+        {
+            UserDto userDto = new UserDto { Id = Guid.NewGuid() };
+            User user = new User();
+
+            _userRepository.Setup(u => u.Get(userDto.Id)).Returns(user);
+            
+            var result = _userService.Update(userDto);
+          
+            _userRepository.Verify(u => u.Get(userDto.Id), Times.Once());
+            result.Should().Be(userDto).And.NotBeNull();
+        }
+
+        [Fact]
+        public void GetPermissions_PermissionsNotExists_ReturnsNull()
+        {
+            Guid userId = Guid.NewGuid();
+            _userRepository.Setup(u => u.GetAllUserPermissionsByUserId(userId)).Returns((IList<UserProjectPermission>?)null);
+
+            var result = _userService.GetAllUserPermissions(userId);
+            
+            _userRepository.Verify(u=> u.GetAllUserPermissionsByUserId(userId), Times.Once());
+            result.Should().BeNull();
+        }
     }
 }

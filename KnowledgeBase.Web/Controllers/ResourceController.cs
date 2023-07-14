@@ -95,7 +95,7 @@ namespace KnowledgeBase.Web.Controllers
 
         public IActionResult Edit(Guid id)
         {
-            var resource = _resourceService.GetAzureResource(id);
+            var resource = _resourceService.Get<AzureResourceDto>(id);
             if (resource == null)
             {
                 return NotFound();
@@ -106,7 +106,7 @@ namespace KnowledgeBase.Web.Controllers
 
         public IActionResult Delete(Guid id)
         {
-            return View(_resourceService.Get(id));
+            return View(_resourceService.Get<AzureResourceDto>(id));
         }
 
         [HttpPost]

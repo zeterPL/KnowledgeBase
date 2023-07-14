@@ -27,10 +27,10 @@ public class ResourceService : IResourceService
         _projectRepository = projectRepository;
     }
 
-    public ResourceDto? Get(Guid id)
+    public T Get<T>(Guid id) where T : ResourceDto?
     {
         var resource = _resourceRepository.Get(id);
-        return _mapper.Map<ResourceDto>(resource);
+        return _mapper.Map<T>(resource);
     }
 
     private async Task<AzureResourceDto> UploadFile(AzureResourceDto resourceDto)

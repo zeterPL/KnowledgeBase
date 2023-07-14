@@ -15,4 +15,6 @@ public interface IProjectService
     public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId);
 
     public ProjectDto? Get(Guid id);
+
+    public IEnumerable<ProjectDto> GetByProjectName(string name, Guid userId);
 }

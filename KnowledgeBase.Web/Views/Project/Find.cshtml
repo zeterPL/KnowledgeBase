@@ -1,0 +1,26 @@
+﻿
+@using KnowledgeBase.Logic.Dto;
+@model KnowledgeBase.Logic.Dto.ProjectDto;
+@{
+   
+}
+
+@Html.AntiForgeryToken()
+<div>
+    @Html.LabelFor(Model => Model.Name)
+    @Html.EditorFor(Model => Model.Name)
+    @Html.ValidationMessageFor(Model => Model.Name)
+    <input type="submit" value="Find" />
+</div>
+<div>
+    @foreach (ProjectDto projecdto in ViewBag.projects)
+    {
+        <div>
+            @projecdto.Id
+            @projecdto.Name
+            <a asp-action="Details" asp-route-id="@projecdto.Id">details</a>
+            <a asp-action="Edit" asp-route-id="@projecdto.Id">edit</a>
+            <a asp-action="Delete" asp-route-id="@projecdto.Id">delete</a>
+        </div>
+    }
+</div>

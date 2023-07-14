@@ -184,5 +184,12 @@ public class ProjectService : IProjectService
         return projects.Select(p => _mapper.Map<ProjectDto>(p));
     }
 
+    public IEnumerable<ProjectDto> GetByProjectName(string name, Guid id)
+    {
+        var pojects = _projectRepository.GetAllReadableByUser(id);
+
+        return pojects.Select(p => _mapper.Map<ProjectDto>(p)).Where(p => p.Name.Contains(name));
+    }
+
     #endregion public methods
 }

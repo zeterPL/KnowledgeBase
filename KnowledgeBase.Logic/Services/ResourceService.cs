@@ -33,7 +33,7 @@ public class ResourceService : IResourceService
         return _mapper.Map<ResourceDto>(resource);
     }
 
-    private async Task<AzureResourceDto> UploadFile(CreateAzureResourceDto resourceDto)
+    private async Task<AzureResourceDto> UploadFile(AzureResourceDto resourceDto)
     {
         if (resourceDto.File == null)
         {
@@ -65,7 +65,26 @@ public class ResourceService : IResourceService
         _resourceRepository.SoftDelete(resource);
     }
 
-    public async Task UpdateAsync(ResourceDto resourceDto)
+    private async Task UpdateAzureResourceAsync(AzureResourceDto resourceDto, AzureResource resource)
+    {
+        resource.Name = resourceDto.Name;
+        resource.Description = resourceDto.Description;
+
+        if (resourceDto.File == null)
+        {
+            _resourceRepository.Update(resource);
+            return;
+        }
+
+        var uploadedResource = await UploadFile(resourceDto);
+
+        resource.AzureFileName = uploadedResource.AzureFileName!;
+        resource.AzureStorageAbsolutePath = uploadedResource.AzureStorageAbsolutePath!;
+
+        _resourceRepository.Update(resource);
+    }
+
+    public async Task UpdateAsync<T>(T resourceDto) where T : ResourceDto
     {
         var id = resourceDto.Id.ToGuid();
         if (id == Guid.Empty)
@@ -78,31 +97,11 @@ public class ResourceService : IResourceService
         {
             return;
         }
+        resourceDto.ProjectId = resource.ProjectId;
 
-        var newResource = _mapper.Map<Resource>(resourceDto);
-        newResource.ProjectId = resource.ProjectId;
-        foreach (var propertyInfo in resource.GetType().GetProperties())
+        if (resourceDto is AzureResourceDto azureDto && resource is AzureResource azureResource)
         {
-            if (propertyInfo.GetValue(newResource) != null)
-            {
-                propertyInfo.SetValue(resource, propertyInfo.GetValue(newResource));
-            }
-        }
-
-        if (resourceDto is CreateAzureResourceDto azureDto)
-        {
-            if (azureDto.File == null)
-            {
-                _resourceRepository.Update(resource);
-                return;
-            }
-
-            var uploadedResource = await UploadFile(azureDto, resource.Project!.Id);
-
-            ((AzureResource)resource).AzureFileName = uploadedResource.AzureFileName!;
-            ((AzureResource)resource).AzureStorageAbsolutePath = uploadedResource.AzureStorageAbsolutePath!;
-
-            _resourceRepository.Update(resource);
+            await UpdateAzureResourceAsync(azureDto, azureResource);
         }
     }
 

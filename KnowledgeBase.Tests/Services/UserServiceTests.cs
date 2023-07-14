@@ -59,13 +59,11 @@ namespace KnowledgeBase.Tests.Services
         public void Update_UserExistsInDatabase_ReturnsUserDto()
         {
             UserDto userDto = new UserDto { Id = Guid.NewGuid() };
-            User user = new User();
+            User user = new User { Id = userDto.Id };
 
             _userRepository.Setup(u => u.Get(userDto.Id)).Returns(user);
 
-
             var result = _userService.Update(userDto);
-
 
             _userRepository.Verify(u => u.Get(userDto.Id), Times.Once());
             result.Should().Be(userDto).And.NotBeNull();
@@ -103,8 +101,8 @@ namespace KnowledgeBase.Tests.Services
                 new User(),
                 new User(),
                 new User(),
-            };           
-           
+            };
+
             _userRepository.Setup(u => u.GetAll()).Returns(users);
 
             var result = _userService.GetAllUsers();

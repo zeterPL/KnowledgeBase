@@ -19,7 +19,6 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 using Xunit;
 
 namespace KnowledgeBase.Tests.Services

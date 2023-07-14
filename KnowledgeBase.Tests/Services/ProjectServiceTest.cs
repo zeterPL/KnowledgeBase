@@ -30,6 +30,8 @@ namespace KnowledgeBase.Tests.Services
 		private readonly Mock<IUserProjectPermissionRepository> _permissionRepository;
 		private readonly Mock<IUserRepository> _userRepository;
 		private readonly Mock<IRoleRepository> _roleRepository;
+		private readonly Mock<ITagRepository> _tagRepository;
+		private readonly Mock<IProjectTagRepository> _projectTagRepository;
 		private readonly IProjectService _projectService;
 
 		public ProjectServiceTest()
@@ -39,10 +41,12 @@ namespace KnowledgeBase.Tests.Services
 			_permissionRepository = new Mock<IUserProjectPermissionRepository>();
 			_userRepository = new Mock<IUserRepository>();
 			_roleRepository = new Mock<IRoleRepository>();
+			_tagRepository = new Mock<ITagRepository>();
+			_projectTagRepository = new Mock<IProjectTagRepository>();
 
 			_projectService = new ProjectService(_projectRepository.Object, _permissionRepository.Object,
 				_userRepository.Object, _roleRepository.Object,
-				_mapper.Object);
+				_mapper.Object, _tagRepository.Object, _projectTagRepository.Object);
 		}
 
 		[Fact]

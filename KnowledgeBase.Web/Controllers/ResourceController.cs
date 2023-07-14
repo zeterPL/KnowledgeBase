@@ -1,5 +1,6 @@
 using Azure;
-using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Resources;
+using KnowledgeBase.Logic.Dto.Resources.AzureResource;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +24,7 @@ namespace KnowledgeBase.Web.Controllers
             return View(_resourceService.GetAll().ToList());
         }
 
-        private CreateResourceDto SetUpAssignableProjects(CreateResourceDto dto)
+        private ICreateResourceDto SetUpAssignableProjects(ICreateResourceDto dto)
         {
             var projects = _projectService.GetAllReadableByUser(dto.UserId);
             dto.AssignableProjects = projects;
@@ -33,13 +34,13 @@ namespace KnowledgeBase.Web.Controllers
         [Authorize]
         public IActionResult Create()
         {
-            var resourceDto = SetUpAssignableProjects(new CreateResourceDto { UserId = User.GetUserId() });
+            var resourceDto = SetUpAssignableProjects(new CreateAzureResourceDto { UserId = User.GetUserId() });
             return View(resourceDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateResourceDto resourceDto)
+        public async Task<IActionResult> Create(CreateAzureResourceDto resourceDto)
         {
             resourceDto.UserId = User.GetUserId();
 
@@ -67,7 +68,7 @@ namespace KnowledgeBase.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ResourceDto resourceDto)
+        public async Task<IActionResult> Edit(AzureResourceDto resourceDto)
         {
             if (!ModelState.IsValid)
             {
@@ -94,7 +95,7 @@ namespace KnowledgeBase.Web.Controllers
 
         public IActionResult Edit(Guid id)
         {
-            var resource = _resourceService.Get(id);
+            var resource = _resourceService.GetAzureResource(id);
             if (resource == null)
             {
                 return NotFound();
@@ -125,7 +126,7 @@ namespace KnowledgeBase.Web.Controllers
                 return NotFound();
             }
 
-            return File(resource.Content, resource.ContentType, resource.AzureFileName);
+            return File(resource.Content, resource.ContentType, resource.FileName);
         }
     }
 }

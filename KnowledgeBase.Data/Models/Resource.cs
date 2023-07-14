@@ -19,4 +19,6 @@ public class Resource : IDeletableEntity
 
     public string AzureStorageAbsolutePath { get; set; }
     public string AzureFileName { get; set; }
+
+    public virtual ICollection<UserResourcePermission> UserPermissions { get; set; }
 }

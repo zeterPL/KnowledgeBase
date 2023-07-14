@@ -157,7 +157,7 @@ public class ProjectService : IProjectService
         }
 
         if (!_projectRepository.ProjectExists(id))
-        {
+        {   
             return Guid.Empty;
         }
 

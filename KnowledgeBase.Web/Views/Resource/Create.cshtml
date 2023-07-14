@@ -1,5 +1,5 @@
 ﻿@using KnowledgeBase.Data.Models.Enums
-@model KnowledgeBase.Logic.Dto.CreateResourceDto
+@model KnowledgeBase.Logic.Dto.Resources.AzureResource.CreateAzureResourceDto;
 
 @{
     var projectSelectList = Model.AssignableProjects!.Select(p => new SelectListItem(p.Name, p.Id.ToString()));

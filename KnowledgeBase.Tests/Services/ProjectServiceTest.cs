@@ -115,5 +115,31 @@ namespace KnowledgeBase.Tests.Services
 
 			_projectRepository.Verify(p => p.Get(project.Id), Times.Never);
         }
-    }
+
+		[Fact]
+		public void SoftDelete_RturnTrue()
+		{
+			//arrange
+
+			var project = new Project() { Id = Guid.NewGuid(), IsDeleted = false };
+
+			//act
+			_projectRepository.Setup(p => p.SoftDelete(project)).Equals(true);
+
+			_projectRepository.Verify(p => p.Get(project.Id), Times.Never);
+		}
+
+		[Fact]
+		public void GetAllReadableByUser_WithoutProjectsReturnNull()
+		{
+			//arrange
+			var user = new User() { Id = Guid.NewGuid()};
+
+			//act
+			var result = _projectService.GetAllReadableByUser(user.Id);
+
+			//assert
+			result.Equals(null);
+		}
+	}
 }

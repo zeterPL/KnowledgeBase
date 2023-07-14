@@ -129,6 +129,7 @@ namespace KnowledgeBase.Tests.Services
 			_projectRepository.Verify(p => p.Get(project.Id), Times.Never);
 		}
 
+
 		[Fact]
 		public void GetAllReadableByUser_WithoutProjectsReturnNull()
 		{

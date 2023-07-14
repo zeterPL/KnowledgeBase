@@ -172,7 +172,8 @@ namespace KnowledgeBase.Logic.Services
         public IEnumerable<UserDto> GetAllUsers()
         {
             var users = _userRepository.GetAll();
-            return users.Select(u => u.ToUserDto());
+            if (users is null) return null;
+            else return users.Select(u => u.ToUserDto());
         }
 
         public UserDto GetById(Guid id)

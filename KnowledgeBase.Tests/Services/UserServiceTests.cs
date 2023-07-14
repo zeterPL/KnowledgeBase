@@ -93,5 +93,33 @@ namespace KnowledgeBase.Tests.Services
 
             _userService.GetById(userId).Should().BeNull();
         }
+
+        [Fact]
+        public void GetAll_UsersExists_ReturnsUserDtoList()
+        {
+            List<User> users = new List<User>
+            {
+                new User(),
+                new User(),
+                new User(),
+                new User(),
+            };           
+           
+            _userRepository.Setup(u => u.GetAll()).Returns(users);
+
+            var result = _userService.GetAllUsers();
+
+            result.ToList().Count.Should().Be(users.Count);
+        }
+
+        [Fact]
+        public void GetAll_UsersNotExists_ReturnsNull()
+        {
+            _userRepository.Setup(u => u.GetAll()).Returns((List<User>?)null);
+
+            var result = _userService.GetAllUsers();
+
+            result.Should().BeNull();
+        }
     }
 }

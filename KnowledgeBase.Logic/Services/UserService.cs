@@ -177,8 +177,9 @@ namespace KnowledgeBase.Logic.Services
 
         public UserDto GetById(Guid id)
         {
-            var user = _userRepository.Get(id).ToUserDto();
-            return user;
+            var user = _userRepository.Get(id);
+            if (user is null) return null;
+            return user.ToUserDto();
         }
 
         public bool SoftDelete(UserDto user)

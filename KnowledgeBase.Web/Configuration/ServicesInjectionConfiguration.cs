@@ -19,7 +19,8 @@ public static class ServicesInjectionConfiguration
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITagService, TagService>();
 
-        services.AddScoped<IResourceHandler<AzureResource,AzureResourceDto, CreateAzureResourceDto>, AzureResourceHandler>();
+        services.AddScoped<IResourceHandler, AzureResourceHandler>();
+        services.AddScoped<ResourceHandlersManager>();
 
         return services;
     }

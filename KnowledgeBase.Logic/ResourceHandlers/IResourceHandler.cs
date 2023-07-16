@@ -1,13 +1,10 @@
-﻿using KnowledgeBase.Data.Models;
-using KnowledgeBase.Logic.Dto.Resources;
+﻿using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 
 namespace KnowledgeBase.Logic.ResourceHandlers;
 
-public interface IResourceHandler<in TModel, in TDto, in TCreateDto>
-    where TModel : Resource
-    where TDto : ResourceDto
-    where TCreateDto : ICreateResourceDto
+public interface IResourceHandler
 {
-    public Task<Guid> AddAsync(TCreateDto createDto);
-    public Task<Guid> UpdateAsync(TDto dto, TModel model);
+    Task<Guid> AddAsync<T>(T resourceDto) where T : ICreateResourceDto;
+    Task UpdateAsync<T>(T resourceDto) where T : IUpdateResourceDto;
+    Type GetResourceType();
 }

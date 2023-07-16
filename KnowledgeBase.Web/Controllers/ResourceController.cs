@@ -1,6 +1,7 @@
 using Azure;
 using KnowledgeBase.Logic.Dto.Resources;
 using KnowledgeBase.Logic.Dto.Resources.AzureResource;
+using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -32,26 +33,25 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [Authorize]
-        public IActionResult Create()
+        public IActionResult CreateAzure()
         {
             var resourceDto = SetUpAssignableProjects(new CreateAzureResourceDto { UserId = User.GetUserId() });
-            return View(resourceDto);
+            return View((CreateAzureResourceDto)resourceDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateAzureResourceDto resourceDto)
+        public async Task<IActionResult> CreateAzure(CreateAzureResourceDto resourceDto)
         {
             resourceDto.UserId = User.GetUserId();
 
             if (!ModelState.IsValid)
             {
-                return View(SetUpAssignableProjects(resourceDto));
+                return View((CreateAzureResourceDto)SetUpAssignableProjects(resourceDto));
             }
 
             try
             {
-                resourceDto.File = resourceDto.NewFile;
                 await _resourceService.AddAsync(resourceDto);
             }
             catch (ArgumentException)
@@ -68,14 +68,12 @@ namespace KnowledgeBase.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(AzureResourceDto resourceDto)
+        public async Task<IActionResult> EditAzure(UpdateAzureResourceDto resourceDto)
         {
             if (!ModelState.IsValid)
             {
                 return View(resourceDto);
             }
-
-            resourceDto.UserId = User.GetUserId();
 
             try
             {
@@ -93,20 +91,20 @@ namespace KnowledgeBase.Web.Controllers
             return RedirectToAction(actionName: "Index");
         }
 
-        public IActionResult Edit(Guid id)
+        public IActionResult EditAzure(Guid id)
         {
-            var resource = _resourceService.Get<AzureResourceDto>(id);
+            var resource = _resourceService.Get<ResourceDto>(id);
             if (resource == null)
             {
                 return NotFound();
             }
 
-            return View(resource);
+            return View(new UpdateAzureResourceDto { Name = resource.Name, Description = resource.Description });
         }
 
         public IActionResult Delete(Guid id)
         {
-            return View(_resourceService.Get<AzureResourceDto>(id));
+            return View(_resourceService.Get<ResourceDto>(id));
         }
 
         [HttpPost]

@@ -1,8 +1,9 @@
-﻿@model IEnumerable<KnowledgeBase.Logic.Dto.Resources.ResourceDto>
+﻿@model IEnumerable<KnowledgeBase.Logic.Dto.Resources.Interfaces.IResourceDto>
 @{
     var resources = Model;
 }
-<a asp-action="Create">Create</a>
+<a asp-action="CreateAzure">Create azure</a>
+<a asp-action="CreateNote">Create note</a>
 <table class="table">
     <thead>
     <tr>

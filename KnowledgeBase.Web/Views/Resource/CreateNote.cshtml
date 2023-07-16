@@ -1,7 +1,11 @@
-﻿@using KnowledgeBase.Data.Models.Enums;
-@model KnowledgeBase.Logic.Dto.Resources.AzureResource.AzureResourceDto;
+﻿@using KnowledgeBase.Data.Models.Enums
+@model KnowledgeBase.Logic.Dto.Resources.NoteResource.CreateNoteResourceDto;
 
-@using (Html.BeginForm("Edit", "Resource", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@{
+    var projectSelectList = Model.AssignableProjects!.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
+}
+
+@using (Html.BeginForm("CreateNote", "Resource", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <div class="mb-3">
@@ -20,9 +24,14 @@
         @Html.ValidationMessageFor(resource => resource.Category, string.Empty, new { @class = "form-text text-danger" })
     </div>
     <div class="mb-3">
-        @Html.LabelFor(resource => resource.File, new { @class = "form-label" })
-        @Html.TextBox("file", "", new { type = "file", @class = "form-control", @id = "File" })
-        @Html.ValidationMessageFor(resource => resource.File, string.Empty, new { @class = "form-text text-danger" })
+        @Html.LabelFor(resource => resource.ProjectId, new { @class = "form-label" })
+        @Html.DropDownListFor(resource => resource.ProjectId, projectSelectList, new { @class = "form-control" })
+        @Html.ValidationMessageFor(resource => resource.ProjectId, string.Empty, new { @class = "form-text text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(resource => resource.Note, new { @class = "form-label" })
+        @Html.TextBoxFor(resource => resource.Note, new { @class = "form-control" })
+        @Html.ValidationMessageFor(resource => resource.Note, string.Empty, new { @class = "form-text text-danger" })
     </div>
     <div>
         <input class="btn btn-primary" type="submit" value="Save"/>

@@ -5,7 +5,7 @@ using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.AzureServices;
 using KnowledgeBase.Logic.AzureServices.File;
 using KnowledgeBase.Logic.Dto.Resources;
-using KnowledgeBase.Logic.Dto.Resources.AzureResource;
+using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 using KnowledgeBase.Logic.ResourceHandlers;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
@@ -18,27 +18,26 @@ public class ResourceService : IResourceService
     private readonly IProjectRepository _projectRepository;
     private readonly IMapper _mapper;
     private readonly IAzureStorageService _azureStorageService;
-    private readonly IResourceHandler<AzureResource, AzureResourceDto, CreateAzureResourceDto> _azureResourceHandler;
+    private readonly ResourceHandlersManager _resourceHandlers;
 
     public ResourceService(IResourceRepository resourceRepository, IMapper mapper,
         IProjectRepository projectRepository,
-        IResourceHandler<AzureResource, AzureResourceDto, CreateAzureResourceDto> azureResourceHandler,
-        IAzureStorageService azureStorageService)
+        IAzureStorageService azureStorageService, ResourceHandlersManager resourceHandlers)
     {
         _resourceRepository = resourceRepository;
         _mapper = mapper;
         _projectRepository = projectRepository;
-        _azureResourceHandler = azureResourceHandler;
         _azureStorageService = azureStorageService;
+        _resourceHandlers = resourceHandlers;
     }
 
-    public T Get<T>(Guid id) where T : ResourceDto?
+    public T? Get<T>(Guid id) where T : ResourceDto
     {
         var resource = _resourceRepository.Get(id);
         return _mapper.Map<T>(resource);
     }
 
-    public void SoftDelete(ResourceDto resourceDto)
+    public void SoftDelete(IResourceDto resourceDto)
     {
         var id = resourceDto.Id.ToGuid();
         if (id == Guid.Empty)
@@ -55,7 +54,7 @@ public class ResourceService : IResourceService
         _resourceRepository.SoftDelete(resource);
     }
 
-    public IEnumerable<ResourceDto> GetAll()
+    public IEnumerable<IResourceDto> GetAll()
     {
         IEnumerable<Resource> resourceList = _resourceRepository.GetAll().Where(r => !r.IsDeleted);
         return resourceList.Select(r => _mapper.Map<ResourceDto>(r));
@@ -90,26 +89,23 @@ public class ResourceService : IResourceService
         }
     }
 
-    public async Task UpdateAsync<T>(T resourceDto) where T : ResourceDto
+    public async Task UpdateAsync<T>(T resourceDto) where T : IUpdateResourceDto
     {
-        var id = resourceDto.Id.ToGuid();
+        var id = resourceDto.Id;
         if (id == Guid.Empty)
         {
             return;
         }
 
         var resource = await _resourceRepository.GetResourceWithProjectAsync(id);
-        if (resource == null || resource.Category != resourceDto.Category)
+        if (resource == null)
         {
             return;
         }
 
         resourceDto.ProjectId = resource.ProjectId;
 
-        if (resourceDto is AzureResourceDto azureDto && resource is AzureResource azureResource)
-        {
-            await _azureResourceHandler.UpdateAsync(azureDto, azureResource);
-        }
+        await _resourceHandlers.GetResourceHandler<T>().UpdateAsync(resourceDto);
     }
 
     public async Task AddAsync<T>(T resourceDto) where T : ICreateResourceDto
@@ -119,9 +115,6 @@ public class ResourceService : IResourceService
             throw new ArgumentException("Project assigned to resource doesn't exist");
         }
 
-        if (resourceDto is CreateAzureResourceDto azureResourceDto)
-        {
-            await _azureResourceHandler.AddAsync(azureResourceDto);
-        }
+        await _resourceHandlers.GetResourceHandler<T>().AddAsync(resourceDto);
     }
 }

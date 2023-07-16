@@ -1,9 +1,8 @@
 ﻿using KnowledgeBase.Data.Models.Enums;
-using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 
-namespace KnowledgeBase.Logic.Dto.Resources;
+namespace KnowledgeBase.Logic.Dto.Resources.Interfaces;
 
-public class ResourceDto : IResourceDto
+public interface IResourceDto
 {
     public Guid? Id { get; set; }
     public string Name { get; set; }

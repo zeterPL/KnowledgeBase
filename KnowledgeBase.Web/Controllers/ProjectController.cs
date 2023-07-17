@@ -222,7 +222,7 @@ public class ProjectController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult FoundProjectByTag(TagDto tagDto)
     {
-        var redableByUserAndFiltered = _projectService.GetAllProjectsByTagName(tagDto, User.GetUserId()).Select( p => p.Id);
+        var redableByUserAndFiltered = _projectService.GetAllProjectsByTagName(tagDto, User.GetUserId());
         
         return View(redableByUserAndFiltered);
     }

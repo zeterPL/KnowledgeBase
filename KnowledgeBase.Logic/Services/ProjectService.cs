@@ -227,7 +227,7 @@ public class ProjectService : IProjectService
             findproject.Add(Get(project.ProjectId));
         }
 
-        return projects.Select(p => _mapper.Map<ProjectDto>(p));
+        return findproject.Select(p => _mapper.Map<ProjectDto>(p));
     }
     #endregion public methods
 }

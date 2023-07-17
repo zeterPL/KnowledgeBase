@@ -14,7 +14,7 @@ public class ResourceHandlersManager
 
     private IResourceHandler GetResourceHandler<T>() where T : IResourceAction
     {
-        var handler = _handlers.Single(h => h.GetResourceType() == typeof(T).BaseType);
+        var handler = _handlers.Single(h => h.ResourceType == typeof(T).BaseType);
         return handler;
     }
 

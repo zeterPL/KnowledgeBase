@@ -14,10 +14,7 @@ public class CredentialsResourceHandler : IResourceHandler
         _mapper = mapper;
     }
 
-    public Type GetResourceType()
-    {
-        return typeof(CredentialsResourceDto);
-    }
+    public Type ResourceType => typeof(CredentialsResourceDto);
 
     public async Task<Resource> UpdateDetailsAsync<T>(T dto, Resource model) where T : IResourceAction
     {

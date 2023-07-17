@@ -13,15 +13,12 @@ public class AzureResourceHandler : IResourceHandler
     private readonly IAzureStorageService _azureStorageService;
     private readonly IMapper _mapper;
 
+    public Type ResourceType => typeof(AzureResourceDto);
+
     public AzureResourceHandler(IAzureStorageService azureStorageService, IMapper mapper)
     {
         _azureStorageService = azureStorageService;
         _mapper = mapper;
-    }
-
-    public Type GetResourceType()
-    {
-        return typeof(AzureResourceDto);
     }
 
     private async Task<AzureResourceDto> UploadFile(string name, Guid projectId, IFormFile? file)

@@ -14,10 +14,7 @@ public class NoteResourceHandler : IResourceHandler
         _mapper = mapper;
     }
 
-    public Type GetResourceType()
-    {
-        return typeof(NoteResourceDto);
-    }
+    public Type ResourceType { get => typeof(NoteResourceDto); }
 
     public async Task<Resource> UpdateDetailsAsync<T>(T dto, Resource model) where T : IResourceAction
     {

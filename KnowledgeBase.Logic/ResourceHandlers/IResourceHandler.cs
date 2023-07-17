@@ -8,5 +8,5 @@ public interface IResourceHandler
     Task<Resource> UpdateDetailsAsync<T>(T resourceDto, Resource resourceModel)
         where T : IResourceAction;
 
-    Type GetResourceType();
+    public Type ResourceType { get; }
 }

@@ -11,5 +11,6 @@ namespace KnowledgeBase.Data.Repositories.Interfaces
     public interface IUserResourcePermissionRepository : IGenericRepository<UserResourcePermission>
     {
         public bool CheckIfUserHasPermissionsToResource(Guid resourceId, Guid userId, ResourcePermissionName permissionName);   
+        public void AddRange(IList<UserResourcePermission> resourcePermissions);
     }
 }

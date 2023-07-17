@@ -77,7 +77,7 @@ namespace KnowledgeBase.Data.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "Where",
+                name: "Target",
                 table: "Resource",
                 type: "nvarchar(100)",
                 maxLength: 100,
@@ -88,9 +88,9 @@ namespace KnowledgeBase.Data.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("01718026-1ed4-4557-865e-16235b81ee1b"), "Admin user role", "Admin" },
-                    { new Guid("8a77c6c3-6efe-44c8-a883-2444b1b95991"), "Basic user role", "Basic" },
-                    { new Guid("eb947012-e259-4da3-81e3-7b27b14a8197"), "SuperAdmin user role", "SuperAdmin" }
+                    { new Guid("7b67874b-5b30-45f4-90b6-833ff410e532"), "Admin user role", "Admin" },
+                    { new Guid("c096fb31-7951-4f46-a652-f83bbf19230c"), "SuperAdmin user role", "SuperAdmin" },
+                    { new Guid("df491d6f-29f0-4471-924a-ee71978ee09c"), "Basic user role", "Basic" }
                 });
         }
 
@@ -100,17 +100,17 @@ namespace KnowledgeBase.Data.Migrations
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("01718026-1ed4-4557-865e-16235b81ee1b"));
+                keyValue: new Guid("7b67874b-5b30-45f4-90b6-833ff410e532"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("8a77c6c3-6efe-44c8-a883-2444b1b95991"));
+                keyValue: new Guid("c096fb31-7951-4f46-a652-f83bbf19230c"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("eb947012-e259-4da3-81e3-7b27b14a8197"));
+                keyValue: new Guid("df491d6f-29f0-4471-924a-ee71978ee09c"));
 
             migrationBuilder.DropColumn(
                 name: "Discriminator",
@@ -129,7 +129,7 @@ namespace KnowledgeBase.Data.Migrations
                 table: "Resource");
 
             migrationBuilder.DropColumn(
-                name: "Where",
+                name: "Target",
                 table: "Resource");
 
             migrationBuilder.AlterColumn<string>(

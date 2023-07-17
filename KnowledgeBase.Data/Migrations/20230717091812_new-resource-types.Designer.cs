@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230714091045_new-resource-types")]
+    [Migration("20230717091812_new-resource-types")]
     partial class newresourcetypes
     {
         /// <inheritdoc />
@@ -120,19 +120,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8a77c6c3-6efe-44c8-a883-2444b1b95991"),
+                            Id = new Guid("df491d6f-29f0-4471-924a-ee71978ee09c"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("01718026-1ed4-4557-865e-16235b81ee1b"),
+                            Id = new Guid("7b67874b-5b30-45f4-90b6-833ff410e532"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("eb947012-e259-4da3-81e3-7b27b14a8197"),
+                            Id = new Guid("c096fb31-7951-4f46-a652-f83bbf19230c"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -396,7 +396,7 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasDiscriminator().HasValue("AzureResource");
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.CredentialResource", b =>
+            modelBuilder.Entity("KnowledgeBase.Data.Models.CredentialsResource", b =>
                 {
                     b.HasBaseType("KnowledgeBase.Data.Models.Resource");
 
@@ -410,12 +410,12 @@ namespace KnowledgeBase.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Where")
+                    b.Property<string>("Target")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasDiscriminator().HasValue("CredentialResource");
+                    b.HasDiscriminator().HasValue("CredentialsResource");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.NoteResource", b =>

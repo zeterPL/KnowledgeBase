@@ -43,9 +43,9 @@ public class AzureResourceConfiguration : IEntityTypeConfiguration<AzureResource
     }
 }
 
-public class CredentialResourceConfiguration : IEntityTypeConfiguration<CredentialResource>
+public class CredentialResourceConfiguration : IEntityTypeConfiguration<CredentialsResource>
 {
-    public void Configure(EntityTypeBuilder<CredentialResource> builder)
+    public void Configure(EntityTypeBuilder<CredentialsResource> builder)
     {
         builder.Property(r => r.Login)
             .HasMaxLength(30);
@@ -53,7 +53,7 @@ public class CredentialResourceConfiguration : IEntityTypeConfiguration<Credenti
         builder.Property(r => r.Password)
             .HasMaxLength(50);
 
-        builder.Property(r => r.Where)
+        builder.Property(r => r.Target)
             .HasMaxLength(100);
     }
 }

@@ -52,6 +52,7 @@ namespace KnowledgeBase.Web.Controllers
 
             try
             {
+                resourceDto.File = resourceDto.NewFile;
                 await _resourceService.AddAsync(resourceDto);
             }
             catch (ArgumentException)

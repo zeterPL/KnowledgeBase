@@ -103,9 +103,12 @@ public class ResourceService : IResourceService
             return;
         }
 
+        resource.Name = resourceDto.Name;
+        resource.Description = resourceDto.Description;
         resourceDto.ProjectId = resource.ProjectId;
 
-        await _resourceHandlers.GetResourceHandler<T>().UpdateAsync(resourceDto);
+        resource = await _resourceHandlers.UpdateDetails(resourceDto, resource);
+        _resourceRepository.Update(resource);
     }
 
     public async Task AddAsync<T>(T resourceDto) where T : ICreateResourceDto
@@ -115,6 +118,17 @@ public class ResourceService : IResourceService
             throw new ArgumentException("Project assigned to resource doesn't exist");
         }
 
-        await _resourceHandlers.GetResourceHandler<T>().AddAsync(resourceDto);
+        var resource = new Resource
+        {
+            Name = resourceDto.Name,
+            Description = resourceDto.Description,
+            Category = resourceDto.Category,
+            ProjectId = resourceDto.ProjectId,
+            UserId = resourceDto.UserId,
+            IsDeleted = false,
+        };
+
+        var newResource = await _resourceHandlers.UpdateDetails(resourceDto, resource);
+        _resourceRepository.Add(newResource);
     }
 }

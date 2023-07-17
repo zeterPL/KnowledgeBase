@@ -3,7 +3,6 @@ using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
-using Microsoft.Extensions.Azure;
 
 namespace KnowledgeBase.Logic.Services
 {

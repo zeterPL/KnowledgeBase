@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Logic.Dto.Resources.Interfaces;
+﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 
 namespace KnowledgeBase.Logic.ResourceHandlers;
 
@@ -11,9 +12,15 @@ public class ResourceHandlersManager
         _handlers = handlers;
     }
 
-    public IResourceHandler GetResourceHandler<T>() where T : IResourceAction
+    private IResourceHandler GetResourceHandler<T>() where T : IResourceAction
     {
         var handler = _handlers.Single(h => h.GetResourceType() == typeof(T).BaseType);
         return handler;
+    }
+
+    public async Task<Resource> UpdateDetails<TDto>(TDto resourceDto, Resource resourceModel)
+        where TDto : IResourceAction
+    {
+        return await GetResourceHandler<TDto>().UpdateDetailsAsync(resourceDto, resourceModel);
     }
 }

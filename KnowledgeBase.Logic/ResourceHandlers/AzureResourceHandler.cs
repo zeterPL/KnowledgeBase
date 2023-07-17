@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using KnowledgeBase.Data.Models;
-using KnowledgeBase.Data.Repositories.Interfaces;
+﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Logic.AzureServices;
 using KnowledgeBase.Logic.AzureServices.File;
 using KnowledgeBase.Logic.Dto.Resources.AzureResource;
@@ -12,15 +10,15 @@ namespace KnowledgeBase.Logic.ResourceHandlers;
 public class AzureResourceHandler : IResourceHandler
 {
     private readonly IAzureStorageService _azureStorageService;
-    private readonly IResourceRepository _resourceRepository;
-    private readonly IMapper _mapper;
 
-    public AzureResourceHandler(IAzureStorageService azureStorageService, IMapper mapper,
-        IResourceRepository resourceRepository)
+    public AzureResourceHandler(IAzureStorageService azureStorageService)
     {
         _azureStorageService = azureStorageService;
-        _mapper = mapper;
-        _resourceRepository = resourceRepository;
+    }
+
+    public Type GetResourceType()
+    {
+        return typeof(AzureResourceDto);
     }
 
     private async Task<AzureResourceDto> UploadFile(string name, Guid projectId, IFormFile? file)
@@ -40,47 +38,25 @@ public class AzureResourceHandler : IResourceHandler
         };
     }
 
-    public async Task<Guid> AddAsync<T>(T dto) where T : ICreateResourceDto
+    public async Task<Resource> UpdateDetailsAsync<T>(T dto, Resource model)
+        where T : IResourceAction
     {
-        if (dto is not CreateAzureResourceDto resourceDto)
+        if (dto is not AzureResourceDto resourceDto)
         {
-            throw new ArgumentException();
+            throw new ArgumentException("Invalid resource types for this handler");
         }
-
-        await UploadFile(resourceDto.Name, resourceDto.ProjectId, resourceDto.File);
-        var resource = _mapper.Map<AzureResource>(resourceDto);
-        _resourceRepository.Add(resource);
-        return resource.Id;
-    }
-
-    public async Task UpdateAsync<T>(T dto) where T : IUpdateResourceDto
-    {
-        if (dto is not UpdateAzureResourceDto resourceDto)
-        {
-            throw new ArgumentException();
-        }
-
-        var resource = (AzureResource)_resourceRepository.Get(dto.Id)!;
-
-        resource.Name = resourceDto.Name;
-        resource.Description = resourceDto.Description;
 
         if (resourceDto.File == null)
         {
-            _resourceRepository.Update(resource);
-            return;
+            return model;
         }
 
         var result = await UploadFile(resourceDto.Name, resourceDto.ProjectId, resourceDto.File);
 
+        var resource = (AzureResource)model;
         resource.AzureFileName = result.AzureFileName!;
         resource.AzureStorageAbsolutePath = result.AzureStorageAbsolutePath!;
 
-        _resourceRepository.Update(resource);
-    }
-
-    public Type GetResourceType()
-    {
-        return typeof(AzureResourceDto);
+        return resource;
     }
 }

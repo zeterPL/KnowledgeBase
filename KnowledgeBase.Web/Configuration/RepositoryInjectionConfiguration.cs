@@ -12,6 +12,8 @@ public static class RepositoryInjectionConfiguration
         services.AddScoped<IUserProjectPermissionRepository, UserProjectPermissionRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<IProjectTagRepository, ProjectTagRepository>();
         services.AddScoped<IUserResourcePermissionRepository, UserResourcePermissionRepository>();
 
         return services;

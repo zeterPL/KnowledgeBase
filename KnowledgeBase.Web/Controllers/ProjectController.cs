@@ -11,12 +11,15 @@ public class ProjectController : Controller
 {
 	private readonly IProjectService _projectService;
 	public readonly ILogger<ProjectController> _logger;
+    private readonly ITagService _tagService;
 
-	public ProjectController(IProjectService projectService, ILogger<ProjectController> logger)
+	public ProjectController(IProjectService projectService, ILogger<ProjectController> logger, ITagService tagService)
 	{
 		_projectService = projectService;
 		_logger = logger;
-	}
+        _tagService = tagService;
+    }
+   
 
 	public IActionResult Index()
 	{
@@ -140,4 +143,58 @@ public class ProjectController : Controller
 			return NotFound("Project is null");
 		}
 	}
+    
+
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanReadProject)]
+    public IActionResult ManageTags(Guid id)
+    {
+        var tags = _projectService.GetAllTagsByProjectId(id);
+        ViewBag.projectId = id;
+        return View(tags);
+    }
+
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
+    public IActionResult AddTags(Guid id)
+    {
+        ViewBag.ProjectId = id;
+        return View();
+    }
+
+    [HttpPost]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
+    public IActionResult AddTags(AddTagDto addTagDto, Guid id)
+    {
+        addTagDto.ProjectId = id;
+        //addTagDto.ProjectId = ViewBag.ProjectId;
+        if (ModelState.IsValid)
+        {
+            string[] tagsNames = addTagDto.Tags.Split(',');
+
+            foreach (string tagName in tagsNames)
+            {
+                TagDto tag = _tagService.GetTagByName(tagName.Trim()) ?? new TagDto { Name = tagName.Trim() };
+
+                if (tag.Id == Guid.Empty)
+                {
+                    var NewId = _tagService.Add(tag);
+                    tag.Id = NewId;
+                }
+                _projectService.AddTagToProject(tag, addTagDto.ProjectId);
+            }
+            return RedirectToAction("ManageTags", new { id = addTagDto.ProjectId });
+        }
+
+        return View(addTagDto);
+    }
+
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanEditProject)]
+    public IActionResult DeleteTag(Guid TagId, Guid ProjectId)
+    {
+        TagDto tag = new TagDto { Id = TagId };
+        _projectService.RemoveTagFromProject(tag, ProjectId);
+        return RedirectToAction("ManageTags", new { id = ProjectId });
+    }
 }

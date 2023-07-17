@@ -15,6 +15,7 @@ public static class ServicesInjectionConfiguration
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserResourcePermissionService, UserResourcePermissionService>();
+        services.AddScoped<ITagService, TagService>();
 
         return services;
     }

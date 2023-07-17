@@ -10,7 +10,7 @@ namespace KnowledgeBase.Data.Models.Enums
     {
         CanRead,
         CanSave,
-        CadEdit,
+        CanEdit,
         CanDelete,
     }
 }

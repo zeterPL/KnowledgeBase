@@ -2,6 +2,7 @@ using Azure;
 using KnowledgeBase.Logic.Dto.Resources;
 using KnowledgeBase.Logic.Dto.Resources.AzureResource;
 using KnowledgeBase.Logic.Dto.Resources.Interfaces;
+using KnowledgeBase.Logic.Dto.Resources.NoteResource;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         public IActionResult CreateAzure()
         {
             var resourceDto = SetUpAssignableProjects(new CreateAzureResourceDto { UserId = User.GetUserId() });
@@ -67,6 +69,18 @@ namespace KnowledgeBase.Web.Controllers
             return RedirectToAction(actionName: "Index");
         }
 
+        [HttpGet]
+        public IActionResult EditAzure(Guid id)
+        {
+            var resource = _resourceService.Get<ResourceDto>(id);
+            if (resource == null)
+            {
+                return NotFound();
+            }
+
+            return View(new UpdateAzureResourceDto { Name = resource.Name, Description = resource.Description });
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAzure(UpdateAzureResourceDto resourceDto)
@@ -92,20 +106,31 @@ namespace KnowledgeBase.Web.Controllers
             return RedirectToAction(actionName: "Index");
         }
 
-        public IActionResult EditAzure(Guid id)
-        {
-            var resource = _resourceService.Get<ResourceDto>(id);
-            if (resource == null)
-            {
-                return NotFound();
-            }
-
-            return View(new UpdateAzureResourceDto { Name = resource.Name, Description = resource.Description });
-        }
-
         public IActionResult Delete(Guid id)
         {
             return View(_resourceService.Get<ResourceDto>(id));
+        }
+
+        [HttpGet]
+        public IActionResult CreateNote()
+        {
+            var resourceDto = SetUpAssignableProjects(new CreateNoteResourceDto { UserId = User.GetUserId() });
+            return View((CreateNoteResourceDto)resourceDto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateNote(CreateNoteResourceDto resourceDto)
+        {
+            resourceDto.UserId = User.GetUserId();
+
+            if (!ModelState.IsValid)
+            {
+                return View((CreateNoteResourceDto)SetUpAssignableProjects(resourceDto));
+            }
+
+            await _resourceService.AddAsync(resourceDto);
+
+            return RedirectToAction(actionName: "Index");
         }
 
         [HttpPost]

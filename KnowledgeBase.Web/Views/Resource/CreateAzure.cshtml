@@ -3,6 +3,7 @@
 
 @{
     var projectSelectList = Model.AssignableProjects!.Select(p => new SelectListItem(p.Name, p.Id.ToString()));
+    var resourceCategories = Model.AssignableCategories!.Select(c => new SelectListItem(c.ToString(), c.ToString()));
 }
 
 @using (Html.BeginForm("CreateAzure", "Resource", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -20,7 +21,7 @@
     </div>
     <div class="mb-3">
         @Html.LabelFor(resource => resource.Category, new { @class = "form-label" })
-        @Html.DropDownListFor(resource => resource.Category, Html.GetEnumSelectList<ResourceCategory>(), new { @class = "form-control" })
+        @Html.DropDownListFor(resource => resource.Category, resourceCategories, new { @class = "form-control" })
         @Html.ValidationMessageFor(resource => resource.Category, string.Empty, new { @class = "form-text text-danger" })
     </div>
     <div class="mb-3">
@@ -29,9 +30,9 @@
         @Html.ValidationMessageFor(resource => resource.ProjectId, string.Empty, new { @class = "form-text text-danger" })
     </div>
     <div class="mb-3">
-        @Html.LabelFor(resource => resource.File, new { @class = "form-label" })
-        @Html.TextBox("File", "", new { type = "file", @class = "form-control", @id = "NewFile" })
-        @Html.ValidationMessageFor(resource => resource.File, string.Empty, new { @class = "form-text text-danger" })
+        @Html.LabelFor(resource => resource.NewFile, new { @class = "form-label" })
+        @Html.TextBox("NewFile", "", new { type = "file", @class = "form-control", @id = "NewFile" })
+        @Html.ValidationMessageFor(resource => resource.NewFile, string.Empty, new { @class = "form-text text-danger" })
     </div>
     <div>
         <input class="btn btn-primary" type="submit" value="Save"/>

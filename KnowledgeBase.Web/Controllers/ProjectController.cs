@@ -4,27 +4,28 @@ using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace KnowledgeBase.Web.Controllers;
 
 public class ProjectController : Controller
 {
-	private readonly IProjectService _projectService;
-	public readonly ILogger<ProjectController> _logger;
+    private readonly IProjectService _projectService;
+    public readonly ILogger<ProjectController> _logger;
     private readonly ITagService _tagService;
 
-	public ProjectController(IProjectService projectService, ILogger<ProjectController> logger, ITagService tagService)
-	{
-		_projectService = projectService;
-		_logger = logger;
+    public ProjectController(IProjectService projectService, ILogger<ProjectController> logger, ITagService tagService)
+    {
+        _projectService = projectService;
+        _logger = logger;
         _tagService = tagService;
     }
-   
 
-	public IActionResult Index()
-	{
-		return View();
-	}
+
+    public IActionResult Index()
+    {
+        return View();
+    }
 
     public IActionResult List()
     {
@@ -125,23 +126,23 @@ public class ProjectController : Controller
         }
     }
 
-	[HttpGet]
-	[Authorize(Policy = ProjectPermission.CanReadProject)]
-	public IActionResult Details(Guid id)
-	{
-		try
-		{
-			_logger.LogInformation("Detailing project");
-			ProjectDto? project = _projectService.Get(id);
-			return View(project);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex.Message);
-			return NotFound("Project is null");
-		}
-	}
-    
+    [HttpGet]
+    [Authorize(Policy = ProjectPermission.CanReadProject)]
+    public IActionResult Details(Guid id)
+    {
+        try
+        {
+            _logger.LogInformation("Detailing project");
+            ProjectDto? project = _projectService.Get(id);
+            return View(project);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return NotFound("Project is null");
+        }
+    }
+
 
     [HttpGet]
     [Authorize(Policy = ProjectPermission.CanReadProject)]
@@ -194,5 +195,18 @@ public class ProjectController : Controller
         TagDto tag = new TagDto { Id = TagId };
         _projectService.RemoveTagFromProject(tag, ProjectId);
         return RedirectToAction("ManageTags", new { id = ProjectId });
+    }
+
+    public IActionResult Find()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult FoundProject(ProjectDto project)
+    {
+        var projects = _projectService.GetAllReadableByUser(User.GetUserId());
+        return View(projects.Where(p => p.Name.Contains(project.Name)));
     }
 }

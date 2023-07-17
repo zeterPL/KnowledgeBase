@@ -22,5 +22,4 @@ public interface IProjectService
 
     public void RemoveTagFromProject(TagDto tagDto, Guid projectId);
 
-    public IEnumerable<ProjectDto> GetByProjectName(string name, Guid userId);
 }

@@ -213,6 +213,5 @@ public class ProjectService : IProjectService
 
         _projectTagRepository.RemoveByTagAndProjectId(tagDto.Id, projectId);
     }
-
     #endregion public methods
 }

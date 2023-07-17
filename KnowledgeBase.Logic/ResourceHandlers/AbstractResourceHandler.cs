@@ -10,12 +10,12 @@ public abstract class AbstractResourceHandler<TDto, TModel> : IResourceHandler
 {
     private readonly IMapper _mapper;
 
-    public AbstractResourceHandler(IMapper mapper)
+    protected AbstractResourceHandler(IMapper mapper)
     {
         _mapper = mapper;
     }
 
-    public Type ResourceType { get => typeof(TDto); }
+    public Type ResourceType => typeof(TDto);
 
     protected abstract Task<Resource> HandleUpdateDetails(TDto dto, TModel model);
 

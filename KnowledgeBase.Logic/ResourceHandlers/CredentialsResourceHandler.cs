@@ -1,45 +1,24 @@
 ﻿using AutoMapper;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Logic.Dto.Resources.CredentialsResource;
-using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 
 namespace KnowledgeBase.Logic.ResourceHandlers;
 
-public class CredentialsResourceHandler : IResourceHandler
+public class CredentialsResourceHandler : AbstractResourceHandler<CredentialsResourceActionDto, CredentialsResource> 
 {
-    private readonly IMapper _mapper;
-
-    public CredentialsResourceHandler(IMapper mapper)
+    public CredentialsResourceHandler(IMapper mapper) : base(mapper)
     {
-        _mapper = mapper;
     }
 
-    public Type ResourceType => typeof(CredentialsResourceDto);
-
-    public async Task<Resource> UpdateDetailsAsync<T>(T dto, Resource model) where T : IResourceAction
+    protected async override Task<Resource> HandleUpdateDetails(CredentialsResourceActionDto dto, CredentialsResource model)
     {
-        if (dto is not CredentialsResourceDto resourceDto)
+        model.Login = dto.Login;
+        model.Target = dto.Target;
+        if (dto.Password != null)
         {
-            throw new ArgumentException("Invalid resource types for this handler");
+            model.Password = dto.Password;
         }
 
-        CredentialsResource resource;
-        if (dto is ICreateResourceDto)
-        {
-            resource = _mapper.Map<CredentialsResource>(model);
-        }
-        else
-        {
-            resource = (CredentialsResource)model;
-        }
-
-        resource.Login = resourceDto.Login;
-        resource.Target = resourceDto.Target;
-        if (resourceDto.Password != null)
-        {
-            resource.Password = resourceDto.Password;
-        }
-
-        return resource;
+        return model;
     }
 }

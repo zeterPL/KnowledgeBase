@@ -3,22 +3,17 @@ using KnowledgeBase.Data.Models;
 using KnowledgeBase.Logic.AzureServices;
 using KnowledgeBase.Logic.AzureServices.File;
 using KnowledgeBase.Logic.Dto.Resources.AzureResource;
-using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace KnowledgeBase.Logic.ResourceHandlers;
 
-public class AzureResourceHandler : IResourceHandler
+public class AzureResourceHandler : AbstractResourceHandler<AzureResourceActionDto, AzureResource>
 {
     private readonly IAzureStorageService _azureStorageService;
-    private readonly IMapper _mapper;
 
-    public Type ResourceType => typeof(AzureResourceDto);
-
-    public AzureResourceHandler(IAzureStorageService azureStorageService, IMapper mapper)
+    public AzureResourceHandler(IAzureStorageService azureStorageService, IMapper mapper) : base(mapper)
     {
         _azureStorageService = azureStorageService;
-        _mapper = mapper;
     }
 
     private async Task<AzureResourceDto> UploadFile(string name, Guid projectId, IFormFile? file)
@@ -38,34 +33,18 @@ public class AzureResourceHandler : IResourceHandler
         };
     }
 
-    public async Task<Resource> UpdateDetailsAsync<T>(T dto, Resource model)
-        where T : IResourceAction
+    protected override async Task<Resource> HandleUpdateDetails(AzureResourceActionDto dto, AzureResource model)
     {
-        if (dto is not AzureResourceDto resourceDto)
-        {
-            throw new ArgumentException("Invalid resource types for this handler");
-        }
-
-        if (resourceDto.File == null)
+        if (dto.File == null)
         {
             return model;
         }
 
-        var result = await UploadFile(resourceDto.Name, resourceDto.ProjectId, resourceDto.File);
+        var result = await UploadFile(dto.Name, dto.ProjectId, dto.File);
 
-        AzureResource resource;
-        if (dto is ICreateResourceDto)
-        {
-            resource = _mapper.Map<AzureResource>(model);
-        }
-        else
-        {
-            resource = (AzureResource)model;
-        }
+        model.AzureFileName = result.AzureFileName!;
+        model.AzureStorageAbsolutePath = result.AzureStorageAbsolutePath!;
 
-        resource.AzureFileName = result.AzureFileName!;
-        resource.AzureStorageAbsolutePath = result.AzureStorageAbsolutePath!;
-
-        return resource;
+        return model;
     }
 }

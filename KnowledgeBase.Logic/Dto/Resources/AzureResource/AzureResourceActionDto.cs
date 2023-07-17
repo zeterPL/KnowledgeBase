@@ -2,7 +2,6 @@
 
 namespace KnowledgeBase.Logic.Dto.Resources.AzureResource;
 
-public class UpdateAzureResourceDto : AzureResourceActionDto, IUpdateResourceDto
+public class AzureResourceActionDto : AzureResourceDto, IResourceAction
 {
-    public new Guid Id { get; set; }
 }

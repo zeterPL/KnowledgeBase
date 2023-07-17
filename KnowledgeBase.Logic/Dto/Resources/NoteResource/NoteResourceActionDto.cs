@@ -2,7 +2,6 @@
 
 namespace KnowledgeBase.Logic.Dto.Resources.NoteResource;
 
-public class UpdateNoteResourceDto : NoteResourceActionDto, IUpdateResourceDto
+public abstract class NoteResourceActionDto : NoteResourceDto, IResourceAction
 {
-    public new Guid Id { get; set; }
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace KnowledgeBase.Logic.Dto.Resources.AzureResource;
 
-public class CreateAzureResourceDto : AzureResourceDto, ICreateResourceDto
+public class CreateAzureResourceDto : AzureResourceActionDto, ICreateResourceDto
 {
     public IEnumerable<ProjectDto>? AssignableProjects { get; set; }
 

@@ -1,40 +1,18 @@
 ﻿using AutoMapper;
 using KnowledgeBase.Data.Models;
-using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 using KnowledgeBase.Logic.Dto.Resources.NoteResource;
 
 namespace KnowledgeBase.Logic.ResourceHandlers;
 
-public class NoteResourceHandler : IResourceHandler
+public class NoteResourceHandler : AbstractResourceHandler<NoteResourceActionDto, NoteResource>
 {
-    private readonly IMapper _mapper;
-
-    public NoteResourceHandler(IMapper mapper)
+    public NoteResourceHandler(IMapper mapper) : base(mapper)
     {
-        _mapper = mapper;
     }
 
-    public Type ResourceType { get => typeof(NoteResourceDto); }
-
-    public async Task<Resource> UpdateDetailsAsync<T>(T dto, Resource model) where T : IResourceAction
+    protected override async Task<Resource> HandleUpdateDetails(NoteResourceActionDto dto, NoteResource model)
     {
-        if (dto is not NoteResourceDto resourceDto)
-        {
-            throw new ArgumentException("Invalid resource types for this handler");
-        }
-
-        NoteResource resource;
-        if (dto is ICreateResourceDto)
-        {
-            resource = _mapper.Map<NoteResource>(model);
-        }
-        else
-        {
-            resource = (NoteResource)model;
-        }
-
-        resource.Note = resourceDto.Note;
-
-        return resource;
+        model.Note = dto.Note;
+        return model;
     }
 }

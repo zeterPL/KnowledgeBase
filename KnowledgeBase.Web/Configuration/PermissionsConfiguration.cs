@@ -29,10 +29,18 @@ public static class PermissionsConfiguration
                 policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanDelete)));
             options.AddPolicy(ResourcePermission.CanDownloadResource, policy =>
                 policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanDownload)));
+
+            options.AddPolicy(UserRolesTypes.SuperAdmin, policy =>
+                policy.Requirements.Add(new UserRoleRequirement(UserRoles.SuperAdmin)));
+            options.AddPolicy(UserRolesTypes.Admin, policy =>
+                policy.Requirements.Add(new UserRoleRequirement(UserRoles.Admin)));
+            options.AddPolicy(UserRolesTypes.Basic, policy =>
+                policy.Requirements.Add(new UserRoleRequirement(UserRoles.Basic)));
         });
 
         services.AddTransient<IAuthorizationHandler, ProjectPermissionHandler>();
         services.AddTransient<IAuthorizationHandler, ResourcePermissionHandler>();
+        services.AddTransient<IAuthorizationHandler, UserRoleHandler>();
 
         return services;
     }

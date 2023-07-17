@@ -39,13 +39,15 @@ public class ProjectController : Controller
 	}
 
 	[HttpGet]
-	public IActionResult Create()
+    [Authorize]
+    public IActionResult Create()
 	{
 		return View();
 	}
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
+	[Authorize]
 	public IActionResult Create(ProjectDto project)
 	{
 		try

@@ -144,7 +144,7 @@ public class ResourceService : IResourceService
         var resource = await _resourceRepository.GetResourceWithProjectAsync(id);
         if (resource == null)
         {
-            return;
+            return; 
         }
 
         var newResource = _mapper.Map<Resource>(resourceDto);

@@ -1,6 +1,8 @@
-﻿using KnowledgeBase.Logic.Dto;
+﻿using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Logic.ViewModels;
+using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,13 +26,13 @@ namespace KnowledgeBase.Web.Controllers
             _projectService = projectService;
         }
 
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Index()
         {
             return RedirectToAction("List");
         }
 
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult List()
         {
             var users = _userService.GetAllUsers();
@@ -38,7 +40,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = )]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Details(Guid id)
         {
             UserDto user = new UserDto();
@@ -56,7 +58,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Create()
         {
             var roles = _roleService.GetAll();
@@ -65,7 +67,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Create(UserDto user)
         {
             Guid newUserId;
@@ -87,7 +89,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Permissions(Guid id)
         {
             ViewBag.UserId = id;
@@ -110,7 +112,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult ManagePermission(
             Guid userId, Guid projectId)
         {
@@ -127,7 +129,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult AddPermission(Guid userId, Guid projectId)
         {
             var permissionOptions = new SelectList(new List<SelectListItem>
@@ -143,7 +145,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult AddPermission(PermissionDto permission)
         {
             var selectedName = int.Parse(Request.Form["Permissions"]);
@@ -158,7 +160,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult DeletePermission(Guid id)
         {
             var permission = _permissionService.GetById(id);
@@ -175,7 +177,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Edit(Guid id)
         {
             var user = _userService.GetById(id);
@@ -188,7 +190,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Edit(UserDto user)
         {
             if (ModelState.IsValid)
@@ -201,7 +203,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Delete(Guid id)
         {
             var user = _userService.GetById(id);

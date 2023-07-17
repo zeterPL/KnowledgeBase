@@ -38,7 +38,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = )]
+        [Authorize]
         public IActionResult Details(Guid id)
         {
             UserDto user = new UserDto();

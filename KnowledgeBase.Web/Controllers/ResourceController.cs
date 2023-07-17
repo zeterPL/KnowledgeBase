@@ -122,6 +122,7 @@ namespace KnowledgeBase.Web.Controllers
         public async Task<IActionResult> CreateNote(CreateNoteResourceDto resourceDto)
         {
             resourceDto.UserId = User.GetUserId();
+            resourceDto.Category = Data.Models.Enums.ResourceCategory.Note;
 
             if (!ModelState.IsValid)
             {

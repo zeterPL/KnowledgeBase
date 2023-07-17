@@ -8,6 +8,10 @@ public class ResourceMapper : Profile
 {
     public ResourceMapper()
     {
-        CreateMap<AzureResource, ResourceDto>().ReverseMap();
+        CreateMap<AzureResource, ResourceDto >();
+        CreateMap<NoteResource, ResourceDto>();
+
+        CreateMap<Resource, AzureResource>();
+        CreateMap<Resource, NoteResource>();
     }
 }

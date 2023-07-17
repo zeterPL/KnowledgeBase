@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Data.Models;
+﻿using AutoMapper;
+using KnowledgeBase.Data.Models;
 using KnowledgeBase.Logic.AzureServices;
 using KnowledgeBase.Logic.AzureServices.File;
 using KnowledgeBase.Logic.Dto.Resources.AzureResource;
@@ -10,10 +11,12 @@ namespace KnowledgeBase.Logic.ResourceHandlers;
 public class AzureResourceHandler : IResourceHandler
 {
     private readonly IAzureStorageService _azureStorageService;
+    private readonly IMapper _mapper;
 
-    public AzureResourceHandler(IAzureStorageService azureStorageService)
+    public AzureResourceHandler(IAzureStorageService azureStorageService, IMapper mapper)
     {
         _azureStorageService = azureStorageService;
+        _mapper = mapper;
     }
 
     public Type GetResourceType()
@@ -53,7 +56,16 @@ public class AzureResourceHandler : IResourceHandler
 
         var result = await UploadFile(resourceDto.Name, resourceDto.ProjectId, resourceDto.File);
 
-        var resource = (AzureResource)model;
+        AzureResource resource;
+        if (dto is ICreateResourceDto)
+        {
+            resource = _mapper.Map<AzureResource>(model);
+        }
+        else
+        {
+            resource = (AzureResource)model;
+        }
+
         resource.AzureFileName = result.AzureFileName!;
         resource.AzureStorageAbsolutePath = result.AzureStorageAbsolutePath!;
 

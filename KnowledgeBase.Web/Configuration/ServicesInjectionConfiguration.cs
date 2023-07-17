@@ -20,6 +20,7 @@ public static class ServicesInjectionConfiguration
         services.AddScoped<ITagService, TagService>();
 
         services.AddScoped<IResourceHandler, AzureResourceHandler>();
+        services.AddScoped<IResourceHandler, NoteResourceHandler>();
         services.AddScoped<ResourceHandlersManager>();
 
         return services;

@@ -134,6 +134,32 @@ namespace KnowledgeBase.Web.Controllers
             return RedirectToAction(actionName: "Index");
         }
 
+        [HttpGet]
+        public IActionResult EditNote(Guid id)
+        {
+            var resource = _resourceService.Get<NoteResourceDto>(id);
+            if (resource == null)
+            {
+                return NotFound();
+            }
+
+            var dto = new UpdateNoteResourceDto { Name = resource.Name, Description = resource.Description, Note = resource.Note };
+            return View(dto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditNote(UpdateNoteResourceDto resourceDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(resourceDto);
+            }
+
+            await _resourceService.UpdateAsync(resourceDto);
+
+            return RedirectToAction(actionName: "Index");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(ResourceDto resourceDto)

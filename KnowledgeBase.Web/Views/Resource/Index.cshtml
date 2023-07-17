@@ -39,9 +39,17 @@
                 <a asp-action="Details" asp-controller="Project" asp-route-id="@resource.ProjectId">@resource.ProjectId</a>
             </td>
             <td>
+            @if(resource.Category == KnowledgeBase.Data.Models.Enums.ResourceCategory.Documentation ||
+                resource.Category == KnowledgeBase.Data.Models.Enums.ResourceCategory.Document)
+            {
                 <a asp-action="EditAzure" asp-route-id="@resource.Id">edit</a>
-                <a asp-action="Delete" asp-route-id="@resource.Id">delete</a>
                 <a asp-action="Download" asp-route-id="@resource.Id">download</a>
+            }
+            @if(resource.Category == KnowledgeBase.Data.Models.Enums.ResourceCategory.Note)
+            {
+                <a asp-action="EditNote" asp-route-id="@resource.Id">edit</a>
+            }
+            <a asp-action="Delete" asp-route-id="@resource.Id">delete</a>
             </td>
         </tr>
     }

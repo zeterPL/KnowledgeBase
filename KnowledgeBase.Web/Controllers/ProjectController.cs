@@ -1,9 +1,11 @@
-﻿using KnowledgeBase.Logic.Dto;
+﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Construction;
 using System.Linq;
 
 namespace KnowledgeBase.Web.Controllers;
@@ -206,7 +208,27 @@ public class ProjectController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult FoundProject(ProjectDto project)
     {
-        var projects = _projectService.GetAllReadableByUser(User.GetUserId());
-        return View(projects.Where(p => p.Name.Contains(project.Name)));
+        var projects = _projectService.GetAllReadableByUser(User.GetUserId()).Where(p => p.Name.Contains(project.Name));
+        return View(projects);
     }
+
+
+    public IActionResult FindByTag()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult FoundProjectByTag(TagDto tagDto)
+    {
+        var redableByUserAndFiltered = _projectService.GetAllProjectsByTagName(tagDto, User.GetUserId()).Select( p => p.Id);
+        
+        return View(redableByUserAndFiltered);
+    }
+
+
+
+
+
 }

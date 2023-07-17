@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KnowledgeBase.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigrationxd : Migration
+    public partial class initxd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,6 +51,18 @@ namespace KnowledgeBase.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Role", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tag",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tag", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,6 +116,30 @@ namespace KnowledgeBase.Data.Migrations
                         name: "FK_AspNetUsers_Role_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Role",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjectTag",
+                columns: table => new
+                {
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectTag", x => new { x.ProjectId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_ProjectTag_Project_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Project",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectTag_Tag_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tag",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -203,7 +239,9 @@ namespace KnowledgeBase.Data.Migrations
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AzureStorageAbsolutePath = table.Column<string>(type: "nvarchar(225)", maxLength: 225, nullable: false),
+                    AzureFileName = table.Column<string>(type: "nvarchar(104)", maxLength: 104, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -257,9 +295,9 @@ namespace KnowledgeBase.Data.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0a69952f-c9a6-4077-8a36-1ec3cac5aa25"), "SuperAdmin user role", "SuperAdmin" },
-                    { new Guid("18954c46-a9c9-4506-a67d-dc1037fe5236"), "Basic user role", "Basic" },
-                    { new Guid("6c3b9869-f57c-40bb-adb1-cba576254e44"), "Admin user role", "Admin" }
+                    { new Guid("625ea369-a38d-4624-9afe-6f52a0c60dad"), "Basic user role", "Basic" },
+                    { new Guid("acfa076a-0a73-4dff-903f-1f1e2bbb3f58"), "SuperAdmin user role", "SuperAdmin" },
+                    { new Guid("ea17f74d-cd94-47cc-9928-e802a053d1a7"), "Admin user role", "Admin" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -307,6 +345,11 @@ namespace KnowledgeBase.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProjectTag_TagId",
+                table: "ProjectTag",
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Resource_ProjectId",
                 table: "Resource",
                 column: "ProjectId");
@@ -346,6 +389,9 @@ namespace KnowledgeBase.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ProjectTag");
+
+            migrationBuilder.DropTable(
                 name: "Resource");
 
             migrationBuilder.DropTable(
@@ -353,6 +399,9 @@ namespace KnowledgeBase.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Tag");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

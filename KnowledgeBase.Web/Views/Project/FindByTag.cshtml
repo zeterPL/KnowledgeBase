@@ -1,0 +1,14 @@
+﻿@using KnowledgeBase.Logic.Dto;
+@model KnowledgeBase.Logic.Dto.TagDto;
+@{
+}
+@using (Html.BeginForm("FoundProjectByTag", "Project", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div>
+        Enter the tag name
+        @Html.EditorFor(Model => Model.Name)
+        @Html.ValidationMessageFor(Model => Model.Name)
+        <a asp-route="FoundProjectByTag"><input type="submit" value="Find" /></a>
+    </div>
+}

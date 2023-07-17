@@ -134,19 +134,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6eefdab9-5ddc-4629-b53f-d497da886e0b"),
+                            Id = new Guid("625ea369-a38d-4624-9afe-6f52a0c60dad"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("79f89f50-d520-49f1-bbdf-adb13a5f8a96"),
+                            Id = new Guid("ea17f74d-cd94-47cc-9928-e802a053d1a7"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("9abfb461-0a83-4094-8e36-171d84aa9d1e"),
+                            Id = new Guid("acfa076a-0a73-4dff-903f-1f1e2bbb3f58"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });

@@ -29,11 +29,7 @@ public class ResourceService : IResourceService
         _permissionRepository = permissionRepository;
     }
 
-    public ResourceDto? Get(Guid id)
-    {
-        var resource = _resourceRepository.Get(id);
-        return _mapper.Map<ResourceDto>(resource);
-    }
+    #region private methods
 
     private async Task<ResourceDto> UploadFile(ResourceDto resourceDto, Guid projectId)
     {
@@ -84,6 +80,10 @@ public class ResourceService : IResourceService
         _permissionRepository.AddRange(list);
     }
 
+    #endregion private methods
+
+    #region public methods
+
     public async Task AddAsync(ResourceDto resourceDto)
     {
         var projectId = _projectRepository.Get(resourceDto.ProjectId)?.Id;
@@ -93,10 +93,20 @@ public class ResourceService : IResourceService
         }
 
         var createdResourceDto = await UploadFile(resourceDto, projectId.ToGuid());
-    
+
         Resource resource = _mapper.Map<Resource>(createdResourceDto);
         var newId = _resourceRepository.Add(resource);
+        if(newId == Guid.Empty)
+        {
+            throw new ArgumentException("Resource Id doesn't exist");
+        }
         addDefaultPermissions(createdResourceDto.UserId, newId);
+    }
+
+    public ResourceDto? Get(Guid id)
+    {
+        var resource = _resourceRepository.Get(id);
+        return _mapper.Map<ResourceDto>(resource);
     }
 
     public void SoftDelete(ResourceDto resourceDto)
@@ -191,4 +201,6 @@ public class ResourceService : IResourceService
             return null;
         }
     }
+
+    #endregion public methods
 }

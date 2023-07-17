@@ -1,6 +1,7 @@
 using Azure;
 using KnowledgeBase.Logic.Dto.Resources;
 using KnowledgeBase.Logic.Dto.Resources.AzureResource;
+using KnowledgeBase.Logic.Dto.Resources.CredentialsResource;
 using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 using KnowledgeBase.Logic.Dto.Resources.NoteResource;
 using KnowledgeBase.Logic.Services.Interfaces;
@@ -156,6 +157,29 @@ namespace KnowledgeBase.Web.Controllers
             }
 
             await _resourceService.UpdateAsync(resourceDto);
+
+            return RedirectToAction(actionName: "Index");
+        }
+
+        [HttpGet]
+        public IActionResult CreateCredentials()
+        {
+            var resourceDto = SetUpAssignableProjects(new CreateCredentialsResourceDto { UserId = User.GetUserId() });
+            return View((CreateCredentialsResourceDto)resourceDto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCredentials(CreateCredentialsResourceDto resourceDto)
+        {
+            resourceDto.UserId = User.GetUserId();
+            resourceDto.Category = Data.Models.Enums.ResourceCategory.Credentials;
+
+            if (!ModelState.IsValid)
+            {
+                return View((CreateCredentialsResourceDto)SetUpAssignableProjects(resourceDto));
+            }
+
+            await _resourceService.AddAsync(resourceDto);
 
             return RedirectToAction(actionName: "Index");
         }

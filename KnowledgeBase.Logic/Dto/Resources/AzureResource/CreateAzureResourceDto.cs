@@ -6,5 +6,5 @@ namespace KnowledgeBase.Logic.Dto.Resources.AzureResource;
 public class CreateAzureResourceDto : AzureResourceDto, ICreateResourceDto
 {
     public IEnumerable<ProjectDto>? AssignableProjects { get; set; }
-    public IFormFile File { get; set; }
+    public IFormFile NewFile { get; set; }
 }

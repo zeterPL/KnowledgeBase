@@ -173,6 +173,7 @@ namespace KnowledgeBase.Web.Controllers
         {
             resourceDto.UserId = User.GetUserId();
             resourceDto.Category = Data.Models.Enums.ResourceCategory.Credentials;
+            resourceDto.Password = resourceDto.NewPassword;
 
             if (!ModelState.IsValid)
             {
@@ -180,6 +181,38 @@ namespace KnowledgeBase.Web.Controllers
             }
 
             await _resourceService.AddAsync(resourceDto);
+
+            return RedirectToAction(actionName: "Index");
+        }
+
+        [HttpGet]
+        public IActionResult EditCredentials(Guid id)
+        {
+            var resource = _resourceService.Get<CredentialsResourceDto>(id);
+            if (resource == null)
+            {
+                return NotFound();
+            }
+
+            var dto = new UpdateCredentialsResourceDto
+            {
+                Name = resource.Name,
+                Description = resource.Description,
+                Login = resource.Login,
+                Target = resource.Target
+            };
+            return View(dto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditCredentials(UpdateCredentialsResourceDto resourceDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(resourceDto);
+            }
+
+            await _resourceService.UpdateAsync(resourceDto);
 
             return RedirectToAction(actionName: "Index");
         }

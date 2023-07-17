@@ -50,6 +50,10 @@
             {
                 <a asp-action="EditNote" asp-route-id="@resource.Id">edit</a>
             }
+            @if (resource.Category == KnowledgeBase.Data.Models.Enums.ResourceCategory.Credentials)
+            {
+                <a asp-action="EditCredentials" asp-route-id="@resource.Id">edit</a>
+            }
             <a asp-action="Delete" asp-route-id="@resource.Id">delete</a>
             </td>
         </tr>

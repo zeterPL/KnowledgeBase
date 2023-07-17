@@ -21,6 +21,7 @@ public static class ServicesInjectionConfiguration
 
         services.AddScoped<IResourceHandler, AzureResourceHandler>();
         services.AddScoped<IResourceHandler, NoteResourceHandler>();
+        services.AddScoped<IResourceHandler, CredentialsResourceHandler>();
         services.AddScoped<ResourceHandlersManager>();
 
         return services;

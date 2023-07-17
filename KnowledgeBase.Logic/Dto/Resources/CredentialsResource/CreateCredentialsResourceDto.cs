@@ -7,4 +7,5 @@ public class CreateCredentialsResourceDto : CredentialsResourceDto, ICreateResou
 {
     public IEnumerable<ProjectDto>? AssignableProjects { get; set; }
     public IEnumerable<ResourceCategory> AssignableCategories => new List<ResourceCategory> { ResourceCategory.Credentials };
+    public string NewPassword { get; set; }
 }

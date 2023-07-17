@@ -28,6 +28,8 @@ public class ResourceConfiguration : IEntityTypeConfiguration<Resource>
 
         builder.Property(r => r.Category)
             .HasConversion<string>();
+
+        builder.HasDiscriminator<string>("ResourceType");
     }
 }
 

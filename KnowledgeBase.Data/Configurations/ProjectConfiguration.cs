@@ -13,9 +13,9 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 		builder.Property(p => p.Name)
 			.HasMaxLength(100);
 
-		builder.HasMany(p => p.Resources)
-			.WithOne(r => r.Project)
-			.HasForeignKey(r => r.ProjectId);
+        builder.HasMany(p => p.Resources)
+            .WithOne(r => r.Project)
+            .HasForeignKey(r => r.ProjectId);     
 
 		var defaultProject = new Project
 		{

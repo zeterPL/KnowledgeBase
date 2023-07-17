@@ -12,5 +12,6 @@ namespace KnowledgeBase.Data.Models.Enums
         CanSave,
         CanEdit,
         CanDelete,
+        CanDownload
     }
 }

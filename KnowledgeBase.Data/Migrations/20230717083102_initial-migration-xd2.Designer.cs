@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230713072220_Initial-Migration-xd")]
-    partial class InitialMigrationxd
+    [Migration("20230717083102_initial-migration-xd2")]
+    partial class initialmigrationxd2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,16 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AzureFileName")
+                        .IsRequired()
+                        .HasMaxLength(104)
+                        .HasColumnType("nvarchar(104)");
+
+                    b.Property<string>("AzureStorageAbsolutePath")
+                        .IsRequired()
+                        .HasMaxLength(225)
+                        .HasColumnType("nvarchar(225)");
 
                     b.Property<string>("Category")
                         .IsRequired()
@@ -112,19 +122,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("18954c46-a9c9-4506-a67d-dc1037fe5236"),
+                            Id = new Guid("76690512-155d-4a50-a376-c682aa4cd066"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("6c3b9869-f57c-40bb-adb1-cba576254e44"),
+                            Id = new Guid("8559a4db-a374-4545-960b-600ae779133e"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("0a69952f-c9a6-4077-8a36-1ec3cac5aa25"),
+                            Id = new Guid("bb1e8e41-26b2-4554-ad70-4e5a98d63254"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -234,6 +244,31 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserProjectPermission");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ResourceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResourceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserResourcePermission");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -418,6 +453,25 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
+                {
+                    b.HasOne("KnowledgeBase.Data.Models.Resource", "Resource")
+                        .WithMany("UserPermissions")
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KnowledgeBase.Data.Models.User", "User")
+                        .WithMany("ResourcePermissions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Resource");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -476,6 +530,11 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("UsersPermissions");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
+                {
+                    b.Navigation("UserPermissions");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
                 {
                     b.Navigation("Users");
@@ -484,6 +543,8 @@ namespace KnowledgeBase.Data.Migrations
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
                     b.Navigation("ProjectsPermissions");
+
+                    b.Navigation("ResourcePermissions");
 
                     b.Navigation("Resources");
                 });

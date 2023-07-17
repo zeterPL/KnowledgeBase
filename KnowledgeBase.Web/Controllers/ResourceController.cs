@@ -2,6 +2,7 @@ using Azure;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -67,6 +68,7 @@ namespace KnowledgeBase.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = ResourcePermission.CanEditResource)]
         public async Task<IActionResult> Edit(ResourceDto resourceDto)
         {
             if (!ModelState.IsValid)
@@ -92,6 +94,7 @@ namespace KnowledgeBase.Web.Controllers
             return RedirectToAction(actionName: "Index");
         }
 
+        [Authorize(Policy = ResourcePermission.CanEditResource)]
         public IActionResult Edit(Guid id)
         {
             var resource = _resourceService.Get(id);
@@ -103,6 +106,7 @@ namespace KnowledgeBase.Web.Controllers
             return View(resource);
         }
 
+        [Authorize(Policy = ResourcePermission.CanDeleteResource)]
         public IActionResult Delete(Guid id)
         {
             return View(_resourceService.Get(id));
@@ -110,6 +114,7 @@ namespace KnowledgeBase.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = ResourcePermission.CanDeleteResource)]
         public IActionResult Delete(ResourceDto resourceDto)
         {
             _resourceService.SoftDelete(resourceDto);
@@ -117,6 +122,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = ResourcePermission.CanDownloadResource)]
         public async Task<IActionResult> Download(Guid id)
         {
             var resource = await _resourceService.DownloadAsync(id);

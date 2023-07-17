@@ -2,9 +2,10 @@
 {
     public static class ResourcePermission
     {
-        public static string CanReadResource = "CanReadResource";
-        public static string CanEditResource = "CanEditResource";
-        public static string CanSaveResource = "CanSaveResource";
-        public static string CanDeleteResource = "CanDeleteResource";
+        public const string CanReadResource = "CanReadResource";
+        public const string CanEditResource = "CanEditResource";
+        public const string CanSaveResource = "CanSaveResource";
+        public const string CanDeleteResource = "CanDeleteResource";
+        public const string CanDownloadResource = "CanDownloadResource";
     }
 }

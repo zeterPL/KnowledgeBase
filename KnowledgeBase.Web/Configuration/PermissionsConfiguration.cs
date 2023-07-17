@@ -27,6 +27,8 @@ public static class PermissionsConfiguration
                policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanSave)));
             options.AddPolicy(ResourcePermission.CanDeleteResource, policy =>
                 policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanDelete)));
+            options.AddPolicy(ResourcePermission.CanDownloadResource, policy =>
+                policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanDownload)));
         });
 
         services.AddTransient<IAuthorizationHandler, ProjectPermissionHandler>();

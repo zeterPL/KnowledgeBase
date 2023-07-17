@@ -77,6 +77,13 @@ public class ResourceService : IResourceService
             Name = Data.Models.Enums.ResourcePermissionName.CanDelete
         };
         list.Add(permission4);
+        UserResourcePermission permission5 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanDownload
+        };
+        list.Add(permission5);
         _permissionRepository.AddRange(list);
     }
 

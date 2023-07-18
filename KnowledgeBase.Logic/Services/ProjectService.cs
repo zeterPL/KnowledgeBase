@@ -217,16 +217,18 @@ public class ProjectService : IProjectService
     public IEnumerable<ProjectDto> GetAllProjectsByTagName(TagDto tagDto, Guid userId)
     {
         var tagId = _tagRepository.GetAll().Where(p => p.Name.Equals(tagDto.Name)).FirstOrDefault().Id;
-        //var projects = _projectRepository.GetAllReadableByUser(userId).Where(p => p.ProjectTags == _projectTagRepository.GetByTagtId(tagId));
-        //var projectsTag = _projectTagRepository.GetByTagtId(tagId).Where(p => p.Project == _projectRepository.GetAllReadableByUser(userId));
         var projects = _projectTagRepository.GetByTagtId(tagId);
+        var allRedableByUser = _projectRepository.GetAllReadableByUser(userId);
 
         List<ProjectDto> findproject = new List<ProjectDto>();
         foreach (var project in projects)
         {
-            findproject.Add(Get(project.ProjectId));
+            foreach(var userProject in allRedableByUser)
+            {
+                if(userProject.Id == project.ProjectId)
+                    findproject.Add(Get(project.ProjectId));
+            }
         }
-
         return findproject.Select(p => _mapper.Map<ProjectDto>(p));
     }
     #endregion public methods

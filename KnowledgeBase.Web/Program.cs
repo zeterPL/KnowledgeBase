@@ -14,10 +14,13 @@ var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurre
 try
 {
 	var builder = WebApplication.CreateBuilder(args);
-	// Add services to the container.
+
+	//AZURE CONNECTION
 	var connectionString = builder.Configuration.GetConnectionString("AzureConnection");
+
 	builder.Services.AddDbContext<KnowledgeDbContext>(options =>
 		options.UseSqlServer(connectionString));
+
 	builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 	builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)

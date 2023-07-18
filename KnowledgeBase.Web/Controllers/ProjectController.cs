@@ -1,5 +1,6 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Logic.ViewModels;
 using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
@@ -12,12 +13,15 @@ public class ProjectController : Controller
 	private readonly IProjectService _projectService;
 	public readonly ILogger<ProjectController> _logger;
     private readonly ITagService _tagService;
+    private readonly IUserService _userService;
 
-	public ProjectController(IProjectService projectService, ILogger<ProjectController> logger, ITagService tagService)
+    public ProjectController(IProjectService projectService, ILogger<ProjectController> logger, 
+		ITagService tagService, IUserService userService)
 	{
 		_projectService = projectService;
 		_logger = logger;
         _tagService = tagService;
+		_userService = userService;
     }
    
 
@@ -195,4 +199,28 @@ public class ProjectController : Controller
         _projectService.RemoveTagFromProject(tag, ProjectId);
         return RedirectToAction("ManageTags", new { id = ProjectId });
     }
+
+	[HttpGet]
+	public IActionResult AssignUsers(Guid id)
+	{
+		var users = _userService.GetAllUsers();
+		var viewModels = new List<AssignUserToProjectViewModel>();
+		foreach(var user in users)
+		{
+			var vm = new AssignUserToProjectViewModel
+			{
+				UserId = user.Id,
+				FirstName = user.FirstName,
+				LastName = user.LastName
+			};
+			viewModels.Add(vm);
+		}
+		return View(viewModels);
+	}
+
+	[HttpPost]
+	public IActionResult AssigUsers()
+	{
+		return RedirectToAction("List");
+	}
 }

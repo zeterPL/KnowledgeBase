@@ -219,7 +219,7 @@ public class ProjectController : Controller
 	}
 
 	[HttpPost]
-	public IActionResult AssigUsers()
+	public IActionResult AssigUsers(List<AssignUserToProjectViewModel> users)
 	{
 		return RedirectToAction("List");
 	}

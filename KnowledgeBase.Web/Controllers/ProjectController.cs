@@ -1,12 +1,9 @@
-﻿using KnowledgeBase.Data.Models;
-using KnowledgeBase.Logic.Dto;
+﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Construction;
-using System.Linq;
 
 namespace KnowledgeBase.Web.Controllers;
 
@@ -208,8 +205,17 @@ public class ProjectController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult FoundProject(ProjectDto project)
     {
-        var projects = _projectService.GetAllReadableByUser(User.GetUserId()).Where(p => p.Name.Contains(project.Name));
-        return View(projects);
+        try
+        {
+            _logger.LogInformation("Project Found");
+            var projects = _projectService.GetAllReadableByUser(User.GetUserId()).Where(p => p.Name.Contains(project.Name));
+            return View(projects);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return NotFound("there is no project");
+        }
     }
 
 
@@ -222,9 +228,17 @@ public class ProjectController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult FoundProjectByTag(TagDto tagDto)
     {
-        var redableByUserAndFiltered = _projectService.GetAllProjectsByTagName(tagDto, User.GetUserId());
-        
-        return View(redableByUserAndFiltered);
+        try
+        {
+            _logger.LogInformation("Project Found");
+            var redableByUserAndFiltered = _projectService.GetAllProjectsByTagName(tagDto, User.GetUserId());
+            return View(redableByUserAndFiltered);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return NotFound("there is no project with this tagName");
+        }
     }
 
 

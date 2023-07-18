@@ -218,7 +218,6 @@ public class ProjectController : Controller
         }
     }
 
-
     public IActionResult FindByTag()
     {
         return View();

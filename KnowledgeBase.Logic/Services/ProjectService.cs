@@ -15,14 +15,20 @@ public class ProjectService : IProjectService
     private readonly IUserProjectPermissionRepository _permissionRepository;
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
+    private readonly ITagRepository _tagRepository;
+    private readonly IProjectTagRepository _projectTagRepository;
+
     public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository,
-        IUserRepository userRepository, IRoleRepository roleRepository, IMapper mapper)
+        IUserRepository userRepository, IRoleRepository roleRepository, IMapper mapper, ITagRepository tagRepository,
+        IProjectTagRepository projectTagsRepository)
     {
-        this._projectRepository = projectRepository;
-        this._permissionRepository = permissionRepository;
-        this._mapper = mapper;
+        _projectRepository = projectRepository;
+        _permissionRepository = permissionRepository;
+        _mapper = mapper;
         _userRepository = userRepository;
         _roleRepository = roleRepository;
+        _tagRepository = tagRepository;
+        _projectTagRepository = projectTagsRepository;
     }
 
     #region private methods
@@ -151,7 +157,7 @@ public class ProjectService : IProjectService
         }
 
         if (!_projectRepository.ProjectExists(id))
-        {
+        {   
             return Guid.Empty;
         }
 
@@ -182,6 +188,30 @@ public class ProjectService : IProjectService
     {
         var projects = _projectRepository.GetAllReadableByUser(userId);
         return projects.Select(p => _mapper.Map<ProjectDto>(p));
+    }
+
+    public IList<TagDto> GetAllTagsByProjectId(Guid projectId)
+    {  
+        return _tagRepository.GetAllByProjectId(projectId).Select(t => t.ToTagDto()).ToList();   
+    }
+
+    public void AddTagToProject(TagDto tagDto, Guid projectId)
+    {
+       
+        ProjectTag projectTag = new ProjectTag
+        {
+            ProjectId = projectId,
+            TagId = tagDto.Id,
+        };
+        _projectTagRepository.Add(projectTag);
+    }
+
+    public void RemoveTagFromProject(TagDto tagDto, Guid projectId)
+    {
+        var projectTags = _projectTagRepository.GetByProjectId(projectId);
+        ProjectTag tagToRemove = projectTags.Where(pt => pt.TagId == tagDto.Id).FirstOrDefault();
+
+        _projectTagRepository.RemoveByTagAndProjectId(tagDto.Id, projectId);
     }
 
     #endregion public methods

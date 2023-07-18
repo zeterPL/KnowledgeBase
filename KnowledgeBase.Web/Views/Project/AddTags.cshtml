@@ -1,0 +1,10 @@
+﻿@using KnowledgeBase.Logic.Dto;
+@model KnowledgeBase.Logic.Dto.AddTagDto;
+
+
+@using (Html.BeginForm("AddTags", "Project",new { id = ViewBag.ProjectId } , FormMethod.Post))
+{
+    <div>Insert tags separated by comma</div>
+    @Html.TextBoxFor(tags => tags.Tags)    
+    <input type="Submit" value="Add"/>
+}

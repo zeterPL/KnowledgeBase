@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230712085448_tags")]
+    [Migration("20230718072656_tags")]
     partial class tags
     {
         /// <inheritdoc />
@@ -93,6 +93,10 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ResourceType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -103,6 +107,10 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Resource");
+
+                    b.HasDiscriminator<string>("ResourceType").HasValue("Resource");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
@@ -111,51 +119,35 @@ namespace KnowledgeBase.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("Role");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9b2471bc-e525-4d77-967e-f536104be37d"),
-                            ConcurrencyStamp = "92339bb2-9429-4a03-b964-afca475b92b8",
+                            Id = new Guid("07e5c474-1395-4b16-840b-58b5a69fe53d"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("65fa9115-2873-461b-a196-44db3926f65e"),
-                            ConcurrencyStamp = "c5558356-0464-404c-90e2-c54f592fb103",
+                            Id = new Guid("ddd1b4a9-7db5-463d-af45-a166d97d9ed0"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("973555d1-af41-4e54-8420-cb9440b681d7"),
-                            ConcurrencyStamp = "3c480873-76d2-4feb-b49e-d2e5a5f85e25",
+                            Id = new Guid("3632deb5-0642-4d30-b5d8-0a21028e1d1a"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -282,6 +274,34 @@ namespace KnowledgeBase.Data.Migrations
                     b.ToTable("UserProjectPermission");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -389,6 +409,57 @@ namespace KnowledgeBase.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.AzureResource", b =>
+                {
+                    b.HasBaseType("KnowledgeBase.Data.Models.Resource");
+
+                    b.Property<string>("AzureFileName")
+                        .IsRequired()
+                        .HasMaxLength(104)
+                        .HasColumnType("nvarchar(104)");
+
+                    b.Property<string>("AzureStorageAbsolutePath")
+                        .IsRequired()
+                        .HasMaxLength(225)
+                        .HasColumnType("nvarchar(225)");
+
+                    b.HasDiscriminator().HasValue("AzureResource");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.CredentialsResource", b =>
+                {
+                    b.HasBaseType("KnowledgeBase.Data.Models.Resource");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Target")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasDiscriminator().HasValue("CredentialsResource");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.NoteResource", b =>
+                {
+                    b.HasBaseType("KnowledgeBase.Data.Models.Resource");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasDiscriminator().HasValue("NoteResource");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
@@ -457,7 +528,7 @@ namespace KnowledgeBase.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("KnowledgeBase.Data.Models.Role", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -484,7 +555,7 @@ namespace KnowledgeBase.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("KnowledgeBase.Data.Models.Role", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)

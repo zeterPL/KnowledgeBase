@@ -46,7 +46,8 @@ public class ResourceService : IResourceService
         return resourceDto;
     }
 
-    private void addDefaultPermissions(Guid userId, Guid resourceId)
+   
+    private void AddDefaultPermissions(Guid userId, Guid resourceId)
     {
         var list = new List<UserResourcePermission>();
         UserResourcePermission permission1 = new UserResourcePermission
@@ -107,7 +108,7 @@ public class ResourceService : IResourceService
         {
             throw new ArgumentException("Resource Id doesn't exist");
         }
-        addDefaultPermissions(createdResourceDto.UserId, newId);
+        AddDefaultPermissions(createdResourceDto.UserId, newId);
     }
 
     public ResourceDto? Get(Guid id)

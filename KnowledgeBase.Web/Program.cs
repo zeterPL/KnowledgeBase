@@ -1,11 +1,6 @@
 using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
-using KnowledgeBase.Data.Repositories;
-using KnowledgeBase.Data.Repositories.Interfaces;
-using KnowledgeBase.Logic.Services;
-using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Web.Configuration;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
@@ -13,7 +8,7 @@ using NLog.Web;
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 try
 {
-	var builder = WebApplication.CreateBuilder(args);
+    var builder = WebApplication.CreateBuilder(args);
 
 	//AZURE CONNECTION
 	var connectionString = builder.Configuration.GetConnectionString("AzureConnection");
@@ -23,82 +18,65 @@ try
 
 	builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-	builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-		.AddEntityFrameworkStores<KnowledgeDbContext>();
-	LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<KnowledgeDbContext>();
+    LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("DefaultConnection");
 
-	builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    builder.Services.AddServices();
+    builder.Services.AddRepositories();
+    builder.Services.AddAutoMapper();
 
+    builder.Services.AddPermissions();
 
-	#region Dependency injection
+    builder.Services.AddControllersWithViews();
 
-	builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-	builder.Services.AddScoped<IProjectService, ProjectService>();
-	builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
-	builder.Services.AddScoped<IResourceService, ResourceService>();
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
 
-	builder.Services.AddScoped<IUserProjectPermissionRepository, UserProjectPermissionRepository>();
-	builder.Services.AddScoped<IPermissionService, PermissionService>();
+    var app = builder.Build();
 
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IRoleService, RoleService>();
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+        var context = services.GetRequiredService<KnowledgeDbContext>();
+        context.Database.EnsureCreated();
+    }
 
-#endregion
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseMigrationsEndPoint();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Error");
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.UseHsts();
+    }
 
-	builder.Services.AddPermissions();
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
 
-	builder.Services.AddControllersWithViews();
+    app.UseRouting();
 
-	builder.Logging.ClearProviders();
-	builder.Host.UseNLog();
+    app.UseAuthentication();
+    app.UseAuthorization();
 
-	var app = builder.Build();
+    app.MapRazorPages();
 
-	using (var scope = app.Services.CreateScope())
-	{
-		var services = scope.ServiceProvider;
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller}/{action=Index}/{id?}");
 
-		var context = services.GetRequiredService<KnowledgeDbContext>();
-		context.Database.EnsureCreated();
-	}
-
-	// Configure the HTTP request pipeline.
-	if (app.Environment.IsDevelopment())
-	{
-		app.UseMigrationsEndPoint();
-	}
-	else
-	{
-		app.UseExceptionHandler("/Error");
-		// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-		app.UseHsts();
-	}
-
-	app.UseHttpsRedirection();
-	app.UseStaticFiles();
-
-	app.UseRouting();
-
-	app.UseAuthentication();
-	app.UseAuthorization();
-
-	app.MapRazorPages();
-
-	app.MapControllerRoute(
-		name: "default",
-		pattern: "{controller}/{action=Index}/{id?}");
-
-	app.Run();
+    app.Run();
 }
 catch (Exception ex)
 {
-	logger.Error(ex);
-	throw (ex);
+    logger.Error(ex);
+    throw (ex);
 }
 finally
 {
-	NLog.LogManager.Shutdown();
+    NLog.LogManager.Shutdown();
 }

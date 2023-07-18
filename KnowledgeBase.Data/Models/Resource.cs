@@ -14,6 +14,9 @@ public class Resource : IDeletableEntity
     public Guid ProjectId { get; set; }
     public virtual Project? Project { get; set; }
 
-	public Guid UserId { get; set; }
-	public virtual User User { get; set; }
+    public Guid UserId { get; set; }
+    public virtual User User { get; set; }
+
+    public string AzureStorageAbsolutePath { get; set; }
+    public string AzureFileName { get; set; }
 }

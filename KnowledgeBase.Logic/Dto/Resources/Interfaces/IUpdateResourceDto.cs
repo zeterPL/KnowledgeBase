@@ -1,6 +1,6 @@
 ﻿namespace KnowledgeBase.Logic.Dto.Resources.Interfaces;
 
-public interface IUpdateResourceDto : IResourceAction
+public interface IUpdateResourceDto : IResourceActionDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

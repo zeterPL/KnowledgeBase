@@ -1,6 +1,6 @@
 ﻿namespace KnowledgeBase.Logic.Dto.Resources.Interfaces;
 
-public interface IResourceAction
+public interface IResourceActionDto
 {
     
 }

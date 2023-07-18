@@ -6,7 +6,7 @@ namespace KnowledgeBase.Logic.ResourceHandlers;
 public interface IResourceHandler
 {
     Task<Resource> UpdateDetailsAsync<T>(T resourceDto, Resource resourceModel)
-        where T : IResourceAction;
+        where T : IResourceActionDto;
 
     public Type ResourceType { get; }
 }

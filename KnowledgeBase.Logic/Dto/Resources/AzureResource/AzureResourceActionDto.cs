@@ -2,6 +2,6 @@
 
 namespace KnowledgeBase.Logic.Dto.Resources.AzureResource;
 
-public class AzureResourceActionDto : AzureResourceDto, IResourceAction
+public class AzureResourceActionDto : AzureResourceDto, IResourceActionDto
 {
 }

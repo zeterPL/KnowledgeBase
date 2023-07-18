@@ -2,6 +2,6 @@
 
 namespace KnowledgeBase.Logic.Dto.Resources.NoteResource;
 
-public abstract class NoteResourceActionDto : NoteResourceDto, IResourceAction
+public abstract class NoteResourceActionDto : NoteResourceDto, IResourceActionDto
 {
 }

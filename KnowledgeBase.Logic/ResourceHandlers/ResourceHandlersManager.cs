@@ -12,14 +12,14 @@ public class ResourceHandlersManager
         _handlers = handlers;
     }
 
-    private IResourceHandler GetResourceHandler<T>() where T : IResourceAction
+    private IResourceHandler GetResourceHandler<T>() where T : IResourceActionDto
     {
         var handler = _handlers.Single(h => h.ResourceType == typeof(T).BaseType);
         return handler;
     }
 
     public async Task<Resource> UpdateDetails<TDto>(TDto resourceDto, Resource resourceModel)
-        where TDto : IResourceAction
+        where TDto : IResourceActionDto
     {
         return await GetResourceHandler<TDto>().UpdateDetailsAsync(resourceDto, resourceModel);
     }

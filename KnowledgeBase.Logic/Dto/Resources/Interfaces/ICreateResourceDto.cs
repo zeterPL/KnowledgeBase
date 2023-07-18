@@ -2,7 +2,7 @@
 
 namespace KnowledgeBase.Logic.Dto.Resources.Interfaces;
 
-public interface ICreateResourceDto : IResourceAction
+public interface ICreateResourceDto : IResourceActionDto
 {
     public Guid? Id { get; set; }
     public string Name { get; set; }

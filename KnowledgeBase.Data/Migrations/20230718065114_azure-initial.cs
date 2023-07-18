@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KnowledgeBase.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigrationxd : Migration
+    public partial class azureinitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -257,9 +257,9 @@ namespace KnowledgeBase.Data.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0a69952f-c9a6-4077-8a36-1ec3cac5aa25"), "SuperAdmin user role", "SuperAdmin" },
-                    { new Guid("18954c46-a9c9-4506-a67d-dc1037fe5236"), "Basic user role", "Basic" },
-                    { new Guid("6c3b9869-f57c-40bb-adb1-cba576254e44"), "Admin user role", "Admin" }
+                    { new Guid("39b01e28-4d2b-4620-b7f9-692bc47f9de9"), "Admin user role", "Admin" },
+                    { new Guid("46ed3d8c-dc2b-4a45-acb3-a0e3d371feb9"), "SuperAdmin user role", "SuperAdmin" },
+                    { new Guid("5f7c5ee9-0c13-4743-b794-9dd7f3d25e8d"), "Basic user role", "Basic" }
                 });
 
             migrationBuilder.CreateIndex(

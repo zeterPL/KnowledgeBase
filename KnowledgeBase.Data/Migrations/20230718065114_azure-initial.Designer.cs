@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230713095050_test")]
-    partial class test
+    [Migration("20230718065114_azure-initial")]
+    partial class azureinitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,19 +112,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3868f7d2-e8af-441a-b57b-07f71f7aa56d"),
+                            Id = new Guid("5f7c5ee9-0c13-4743-b794-9dd7f3d25e8d"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("036fb46a-4dbc-48c5-991d-5f0a4de7edc7"),
+                            Id = new Guid("39b01e28-4d2b-4620-b7f9-692bc47f9de9"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("9abbedf1-79bf-4238-9287-927f8466a063"),
+                            Id = new Guid("46ed3d8c-dc2b-4a45-acb3-a0e3d371feb9"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });

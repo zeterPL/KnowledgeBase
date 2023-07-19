@@ -2,11 +2,12 @@
 @model KnowledgeBase.Logic.Dto.TagDto;
 @{
 }
+<h5>divide them by ", " if you want to pass more tags</h5>
 @using (Html.BeginForm("FoundProjectByTag", "Project", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     <div>
-        Enter the tag name
+        Enter the tags name
         @Html.EditorFor(Model => Model.Name)
         @Html.ValidationMessageFor(Model => Model.Name)
         <a asp-route="FoundProjectByTag"><input type="submit" value="Find" /></a>

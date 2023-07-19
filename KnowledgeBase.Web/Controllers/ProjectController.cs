@@ -44,7 +44,8 @@ public class ProjectController : Controller
 	[HttpGet]
 	public IActionResult Create()
 	{
-		return View();
+		var project = new ProjectDto { StartDate = DateTime.Now };
+		return View(project);
 	}
 
 	[HttpPost]

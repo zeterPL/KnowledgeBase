@@ -16,25 +16,83 @@ public class ResourceService : IResourceService
 {
     private readonly IResourceRepository _resourceRepository;
     private readonly IProjectRepository _projectRepository;
+    private readonly IUserResourcePermissionRepository _permissionRepository;
     private readonly IMapper _mapper;
     private readonly IAzureStorageService _azureStorageService;
     private readonly ResourceHandlersManager _resourceHandlers;
 
-    public ResourceService(IResourceRepository resourceRepository, IMapper mapper,
+    public ResourceService(IResourceRepository resourceRepository,
+        IMapper mapper,
         IProjectRepository projectRepository,
-        IAzureStorageService azureStorageService, ResourceHandlersManager resourceHandlers)
+        IAzureStorageService azureStorageService,
+        ResourceHandlersManager resourceHandlers,
+        IUserResourcePermissionRepository permissionRepository)
     {
         _resourceRepository = resourceRepository;
         _mapper = mapper;
         _projectRepository = projectRepository;
         _azureStorageService = azureStorageService;
         _resourceHandlers = resourceHandlers;
+        _permissionRepository = permissionRepository;
     }
 
     public T? Get<T>(Guid id) where T : ResourceDto
     {
         var resource = _resourceRepository.Get(id);
         return _mapper.Map<T>(resource);
+    }
+
+    #region private methods
+
+    private void AddDefaultPermissions(Guid userId, Guid resourceId)
+    {
+        var list = new List<UserResourcePermission>();
+        UserResourcePermission permission1 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanSave
+        };
+        list.Add(permission1);
+        UserResourcePermission permission2 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanRead
+        };
+        list.Add(permission2);
+        UserResourcePermission permission3 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanEdit
+        };
+        list.Add(permission3);
+        UserResourcePermission permission4 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanDelete
+        };
+        list.Add(permission4);
+        UserResourcePermission permission5 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanDownload
+        };
+        list.Add(permission5);
+        _permissionRepository.AddRange(list);
+    }
+
+    #endregion private methods
+
+    #region public methods
+
+    public ResourceDto? Get(Guid id)
+    {
+        var resource = _resourceRepository.Get(id);
+        return _mapper.Map<ResourceDto>(resource);
     }
 
     public void SoftDelete(IResourceDto resourceDto)
@@ -130,5 +188,8 @@ public class ResourceService : IResourceService
 
         var newResource = await _resourceHandlers.UpdateDetails(resourceDto, resource);
         _resourceRepository.Add(newResource);
+        AddDefaultPermissions(newResource.UserId, newResource.Id);
     }
+
+    #endregion public methods
 }

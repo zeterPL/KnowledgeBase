@@ -21,6 +21,7 @@ public class ResourceServiceTests
     private readonly Mock<IAzureStorageService> _azureStorageService;
     private readonly Mock<IMapper> _mapper;
     private readonly Mock<ResourceHandlersManager> _resourceHandlerManager;
+    private readonly Mock<IUserResourcePermissionRepository> _permissionRepository;
     private readonly IResourceService _resourceService;
 
     public ResourceServiceTests()
@@ -30,9 +31,11 @@ public class ResourceServiceTests
         _azureStorageService = new Mock<IAzureStorageService>();
         _mapper = new Mock<IMapper>();
         _resourceHandlerManager = new Mock<ResourceHandlersManager>(new List<IResourceHandler>());
+        _permissionRepository = new Mock<IUserResourcePermissionRepository>();
 
         _resourceService = new ResourceService(_resourceRepository.Object, _mapper.Object,
-            _projectRepository.Object, _azureStorageService.Object, _resourceHandlerManager.Object);
+            _projectRepository.Object, _azureStorageService.Object, _resourceHandlerManager.Object,
+            _permissionRepository.Object);
     }
 
     [Fact]

@@ -6,6 +6,7 @@ using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 using KnowledgeBase.Logic.Dto.Resources.NoteResource;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -71,6 +72,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = ResourcePermission.CanEditResource)]
         public IActionResult EditAzure(Guid id)
         {
             var resource = _resourceService.Get<ResourceDto>(id);
@@ -84,6 +86,7 @@ namespace KnowledgeBase.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = ResourcePermission.CanEditResource)]
         public async Task<IActionResult> EditAzure(UpdateAzureResourceDto resourceDto)
         {
             if (!ModelState.IsValid)
@@ -107,6 +110,7 @@ namespace KnowledgeBase.Web.Controllers
             return RedirectToAction(actionName: "Index");
         }
 
+        [Authorize(Policy = ResourcePermission.CanDeleteResource)]
         public IActionResult Delete(Guid id)
         {
             return View(_resourceService.Get<ResourceDto>(id));
@@ -136,6 +140,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = ResourcePermission.CanEditResource)]
         public IActionResult EditNote(Guid id)
         {
             var resource = _resourceService.Get<NoteResourceDto>(id);
@@ -149,6 +154,8 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = ResourcePermission.CanEditResource)]
         public async Task<IActionResult> EditNote(UpdateNoteResourceDto resourceDto)
         {
             if (!ModelState.IsValid)
@@ -169,6 +176,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCredentials(CreateCredentialsResourceDto resourceDto)
         {
             resourceDto.UserId = User.GetUserId();
@@ -186,6 +194,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = ResourcePermission.CanEditResource)]
         public IActionResult EditCredentials(Guid id)
         {
             var resource = _resourceService.Get<CredentialsResourceDto>(id);
@@ -205,6 +214,8 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = ResourcePermission.CanEditResource)]
         public async Task<IActionResult> EditCredentials(UpdateCredentialsResourceDto resourceDto)
         {
             if (!ModelState.IsValid)
@@ -219,6 +230,7 @@ namespace KnowledgeBase.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = ResourcePermission.CanDeleteResource)]
         public IActionResult Delete(ResourceDto resourceDto)
         {
             _resourceService.SoftDelete(resourceDto);
@@ -226,6 +238,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = ResourcePermission.CanDownloadResource)]
         public async Task<IActionResult> Download(Guid id)
         {
             var resource = await _resourceService.DownloadAsync(id);

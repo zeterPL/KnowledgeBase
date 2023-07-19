@@ -7,5 +7,7 @@ public interface IUserProjectPermissionRepository : IGenericRepository<UserProje
 {
     public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission);
 
-    public void AddRange(List<UserProjectPermission> permissions);
+    public void AddRange(IEnumerable<UserProjectPermission> permissions);
+
+    public Task AddRangeAsync(IEnumerable<UserProjectPermission> permissions);
 }

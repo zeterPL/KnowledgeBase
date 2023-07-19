@@ -14,10 +14,16 @@ public class UserProjectPermissionRepository : GenericRepository<UserProjectPerm
         permissions = context.Set<UserProjectPermission>();
     }
 
-    public void AddRange(List<UserProjectPermission> permissions)
+    public void AddRange(IEnumerable<UserProjectPermission> permissions)
     {
         _context.AddRange(permissions);
         _context.SaveChanges();
+    }
+
+    public async Task AddRangeAsync(IEnumerable<UserProjectPermission> permissions)
+    {
+        await GetSet().AddRangeAsync(permissions);
+        await _context.SaveChangesAsync();
     }
 
     public bool UserHasProjectPermission(Guid userId, Guid projectId, ProjectPermissionName permission)

@@ -119,17 +119,17 @@ public class ProjectService : IProjectService
 
     public Guid Add(ProjectDto projectDto)
     {
-        var newProject = _mapper.Map<Project>(projectDto);        
+        var newProject = _mapper.Map<Project>(projectDto);
         var newProjectId = _projectRepository.Add(newProject);
 
-		// Default permissions
-		var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
-		{
-			PermissionName = p,
-			UserId = projectDto.UserId.ToGuid(),
-			ProjectId = newProject.Id,
-		});
-		SavePermissions(permissions);
+        // Default permissions
+        var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
+        {
+            PermissionName = p,
+            UserId = projectDto.UserId.ToGuid(),
+            ProjectId = newProject.Id,
+        });
+        SavePermissions(permissions);
 
         AssignPermissionsToSuperUsers(newProjectId, projectDto.UserId.ToGuid());
 
@@ -157,7 +157,7 @@ public class ProjectService : IProjectService
         }
 
         if (!_projectRepository.ProjectExists(id))
-        {   
+        {
             return Guid.Empty;
         }
 
@@ -167,13 +167,13 @@ public class ProjectService : IProjectService
         return id;
     }
 
-	public void SoftDelete(ProjectDto projectDto)
-	{
-		var id = projectDto.Id.ToGuid();
-		if (id == Guid.Empty)
-		{
-			return;
-		}
+    public void SoftDelete(ProjectDto projectDto)
+    {
+        var id = projectDto.Id.ToGuid();
+        if (id == Guid.Empty)
+        {
+            return;
+        }
 
         var project = _projectRepository.Get(id);
         if (project == null) // Project doesnt exist
@@ -191,13 +191,13 @@ public class ProjectService : IProjectService
     }
 
     public IList<TagDto> GetAllTagsByProjectId(Guid projectId)
-    {  
-        return _tagRepository.GetAllByProjectId(projectId).Select(t => t.ToTagDto()).ToList();   
+    {
+        return _tagRepository.GetAllByProjectId(projectId).Select(t => t.ToTagDto()).ToList();
     }
 
     public void AddTagToProject(TagDto tagDto, Guid projectId)
     {
-       
+
         ProjectTag projectTag = new ProjectTag
         {
             ProjectId = projectId,
@@ -216,16 +216,23 @@ public class ProjectService : IProjectService
 
     public IEnumerable<ProjectDto> GetAllProjectsByTagName(TagDto tagDto, Guid userId)
     {
-            var tag = _tagRepository.GetAll().FirstOrDefault(p => p.Name.Equals(tagDto.Name));
-            var tagId = tag.Id;
-            var projects = _projectTagRepository.GetByTagtId(tagId);
-            var allRedableByUser = _projectRepository.GetAllReadableByUser(userId);
+        var tagsSplitFromInput = tagDto.Name.Split(", ");
 
-            var findproject = projects
-                .Where(project => allRedableByUser.Any(userProject => userProject.Id == project.ProjectId))
-                .Select(project => Get(project.ProjectId))
-                .ToList();
-            return findproject.Select(p => _mapper.Map<ProjectDto>(p));
+        var tags = _tagRepository.GetAll()
+            .Where(tag => tagsSplitFromInput.Contains(tag.Name))
+            .ToList();
+
+        var tagsId = tags.Select(tag => tag.Id).ToList();
+
+        var projects = tagsId.SelectMany(t => _projectTagRepository.GetByTagtId(t)).ToList();
+
+        var allRedableByUser = _projectRepository.GetAllReadableByUser(userId);
+
+        var findproject = projects
+            .Where(project => allRedableByUser.Any(userProject => userProject.Id == project.ProjectId))
+            .Select(project => Get(project.ProjectId))
+            .ToList();
+        return findproject.Select(p => _mapper.Map<ProjectDto>(p));
 
     }
     #endregion public methods

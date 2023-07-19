@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Logic.ViewModels;
 using KnowledgeBase.Shared;
@@ -14,14 +15,16 @@ public class ProjectController : Controller
 	public readonly ILogger<ProjectController> _logger;
     private readonly ITagService _tagService;
     private readonly IUserService _userService;
+    private readonly IProjectInterestedUserService _projectInterestedUserService;
 
     public ProjectController(IProjectService projectService, ILogger<ProjectController> logger, 
-		ITagService tagService, IUserService userService)
+		ITagService tagService, IUserService userService, IProjectInterestedUserService projectInterestedUserService)
 	{
 		_projectService = projectService;
 		_logger = logger;
         _tagService = tagService;
 		_userService = userService;
+		_projectInterestedUserService = projectInterestedUserService;
     }
    
 
@@ -203,24 +206,17 @@ public class ProjectController : Controller
 	[HttpGet]
 	public IActionResult AssignUsers(Guid id)
 	{
-		var users = _userService.GetAllUsers();
-		var viewModels = new List<AssignUserToProjectViewModel>();
-		foreach(var user in users)
-		{
-			var vm = new AssignUserToProjectViewModel
-			{
-				UserId = user.Id,
-				FirstName = user.FirstName,
-				LastName = user.LastName
-			};
-			viewModels.Add(vm);
-		}
-		return View(viewModels);
+		var users = _userService.GetAllUsers();	
+		ViewBag.Users = users;
+		ViewBag.ProjectId = id;
+		var selectedUsers = new List<Guid>();
+		return View(selectedUsers);
 	}
 
 	[HttpPost]
-	public IActionResult AssigUsers(List<AssignUserToProjectViewModel> users)
+	public IActionResult AssignUsers(List<Guid> selectedUsers, Guid id)
 	{
+		_projectInterestedUserService.AddInterestedUsersToSpecificProjectByUsersIds(selectedUsers, id);
 		return RedirectToAction("List");
 	}
 }

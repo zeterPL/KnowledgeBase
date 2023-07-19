@@ -18,5 +18,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         
         builder.HasMany(u => u.Resources)
             .WithOne(r => r.User);
+
+        builder.HasOne(x => x.Role)
+            .WithMany(r => r.Users)
+            .HasForeignKey(x => x.RoleId);
     }
 }

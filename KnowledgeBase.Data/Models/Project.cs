@@ -10,4 +10,5 @@ public class Project : IDeletableEntity
     public bool IsDeleted { get; set; }
     public virtual ICollection<UserProjectPermission> UsersPermissions { get; set; }
     public virtual ICollection<ProjectTag> ProjectTags { get; set; }
+    public virtual ICollection<ProjectInterestedUser> InterestedUsers { get; set; }
 }

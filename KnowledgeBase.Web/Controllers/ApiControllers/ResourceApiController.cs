@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Resources;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -23,19 +24,7 @@ namespace KnowledgeBase.Web.Controllers.ApiControllers
         [HttpGet]
         public IEnumerable<ResourceDto> Get()
         {
-            return _resourceService.GetAll();
-        }
-
-        [HttpPost]
-        public IActionResult Create([FromBody] ResourceDto resourcedto)
-        {
-            return Ok(_resourceService.AddAsync(resourcedto));
-        }
-
-        [HttpPut]
-        public IActionResult Put([FromBody] ResourceDto resourcedto)
-        {
-            return Ok(_resourceService.UpdateAsync(resourcedto));
+            return (IEnumerable<ResourceDto>)_resourceService.GetAll();
         }
 
         [HttpDelete]

@@ -3,13 +3,24 @@
     List<Guid> selectedUsers = Model;
 }
 
+<h3>Add new users</h3>
 @using (Html.BeginForm("AssignUsers", "Project", new {id = ViewBag.ProjectId} , FormMethod.Post))
 {
     @foreach(UserDto user in ViewBag.Users)
     {
-        <input type="checkbox" name="selectedUsers" value="@user.Id"/>
-        <label>@user.FirstName</label> <label>@user.LastName</label>
+        <div>
+            <input type="checkbox" name="selectedUsers" value="@user.Id" />
+            <label>@user.FirstName</label> <label>@user.LastName</label>
+        </div>       
     }
 
-    <input type="submit"/>
+    <input class="btn btn-submit" type="submit"/>
+}
+<hr/>
+<h3>Already added users</h3>
+@foreach (UserDto user in ViewBag.AddedUsers)
+{
+    <div>
+        <label>@user.FirstName</label> <label>@user.LastName</label>
+    </div>
 }

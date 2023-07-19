@@ -206,8 +206,10 @@ public class ProjectController : Controller
 	[HttpGet]
 	public IActionResult AssignUsers(Guid id)
 	{
-		var users = _userService.GetAllUsers();	
+		var users = _userService.GetUsersNotInterestedInProject(id);
+		var addedUsers = _userService.GetInterestedUsersByProjectId(id);
 		ViewBag.Users = users;
+		ViewBag.AddedUsers = addedUsers;
 		ViewBag.ProjectId = id;
 		var selectedUsers = new List<Guid>();
 		return View(selectedUsers);

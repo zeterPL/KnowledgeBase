@@ -21,5 +21,8 @@ namespace KnowledgeBase.Logic.Services.Interfaces
         public void AssignPermissionBasedOnUserRole(RoleDto role, Guid userId);
 
         public void AddPermisionsToSpecificProject(Guid projectId, Guid userId);
+
+        public IList<UserDto> GetUsersNotInterestedInProject(Guid projectId);
+        public List<UserDto> GetInterestedUsersByProjectId(Guid projectId);
     }
 }

@@ -14,19 +14,19 @@ namespace KnowledgeBase.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DeleteData(
-                table: "AspNetRoles",
+                table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("2e4aad75-a51e-4fb7-8061-f4b98f7c61fc"));
+                keyValue: new Guid("2e8bf69c-df35-4aca-931b-724d09b13054"));
 
             migrationBuilder.DeleteData(
-                table: "AspNetRoles",
+                table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("565a5e47-d75c-4e8d-a8a1-b75e21a60c0d"));
+                keyValue: new Guid("35274396-9223-4da5-8412-69f55ebe6ee0"));
 
             migrationBuilder.DeleteData(
-                table: "AspNetRoles",
+                table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("868773a4-1051-44ae-9744-97bae50614c8"));
+                keyValue: new Guid("cf6032fb-5509-453f-a308-eaafb2f20155"));
 
             migrationBuilder.CreateTable(
                 name: "Tag",
@@ -65,13 +65,13 @@ namespace KnowledgeBase.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                table: "Role",
+                columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("65fa9115-2873-461b-a196-44db3926f65e"), "c5558356-0464-404c-90e2-c54f592fb103", "Admin user role", "Admin", null },
-                    { new Guid("973555d1-af41-4e54-8420-cb9440b681d7"), "3c480873-76d2-4feb-b49e-d2e5a5f85e25", "SuperAdmin user role", "SuperAdmin", null },
-                    { new Guid("9b2471bc-e525-4d77-967e-f536104be37d"), "92339bb2-9429-4a03-b964-afca475b92b8", "Basic user role", "Basic", null }
+                    { new Guid("07e5c474-1395-4b16-840b-58b5a69fe53d"), "Basic user role", "Basic" },
+                    { new Guid("3632deb5-0642-4d30-b5d8-0a21028e1d1a"), "SuperAdmin user role", "SuperAdmin" },
+                    { new Guid("ddd1b4a9-7db5-463d-af45-a166d97d9ed0"), "Admin user role", "Admin" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -90,28 +90,28 @@ namespace KnowledgeBase.Data.Migrations
                 name: "Tag");
 
             migrationBuilder.DeleteData(
-                table: "AspNetRoles",
+                table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("65fa9115-2873-461b-a196-44db3926f65e"));
+                keyValue: new Guid("07e5c474-1395-4b16-840b-58b5a69fe53d"));
 
             migrationBuilder.DeleteData(
-                table: "AspNetRoles",
+                table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("973555d1-af41-4e54-8420-cb9440b681d7"));
+                keyValue: new Guid("3632deb5-0642-4d30-b5d8-0a21028e1d1a"));
 
             migrationBuilder.DeleteData(
-                table: "AspNetRoles",
+                table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("9b2471bc-e525-4d77-967e-f536104be37d"));
+                keyValue: new Guid("ddd1b4a9-7db5-463d-af45-a166d97d9ed0"));
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                table: "Role",
+                columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("2e4aad75-a51e-4fb7-8061-f4b98f7c61fc"), "be689ce3-4fd7-4531-888f-6458ae8a8662", "Admin user role", "Admin", null },
-                    { new Guid("565a5e47-d75c-4e8d-a8a1-b75e21a60c0d"), "373000eb-1cfa-48a6-85df-32ae0939956b", "SuperAdmin user role", "SuperAdmin", null },
-                    { new Guid("868773a4-1051-44ae-9744-97bae50614c8"), "273eb104-9c38-4ce4-96bc-08c40b0bbe6f", "Basic user role", "Basic", null }
+                    { new Guid("2e8bf69c-df35-4aca-931b-724d09b13054"), "Admin user role", "Admin" },
+                    { new Guid("35274396-9223-4da5-8412-69f55ebe6ee0"), "Basic user role", "Basic" },
+                    { new Guid("cf6032fb-5509-453f-a308-eaafb2f20155"), "SuperAdmin user role", "SuperAdmin" }
                 });
         }
     }

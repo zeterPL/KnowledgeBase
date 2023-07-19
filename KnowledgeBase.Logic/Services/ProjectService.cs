@@ -119,17 +119,17 @@ public class ProjectService : IProjectService
 
     public Guid Add(ProjectDto projectDto)
     {
-        var newProject = _mapper.Map<Project>(projectDto);        
+        var newProject = _mapper.Map<Project>(projectDto);
         var newProjectId = _projectRepository.Add(newProject);
 
-		// Default permissions
-		var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
-		{
-			PermissionName = p,
-			UserId = projectDto.UserId.ToGuid(),
-			ProjectId = newProject.Id,
-		});
-		SavePermissions(permissions);
+        // Default permissions
+        var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
+        {
+            PermissionName = p,
+            UserId = projectDto.UserId.ToGuid(),
+            ProjectId = newProject.Id,
+        });
+        SavePermissions(permissions);
 
         AssignPermissionsToSuperUsers(newProjectId, projectDto.UserId.ToGuid());
 
@@ -167,13 +167,13 @@ public class ProjectService : IProjectService
         return id;
     }
 
-	public void SoftDelete(ProjectDto projectDto)
-	{
-		var id = projectDto.Id.ToGuid();
-		if (id == Guid.Empty)
-		{
-			return;
-		}
+    public void SoftDelete(ProjectDto projectDto)
+    {
+        var id = projectDto.Id.ToGuid();
+        if (id == Guid.Empty)
+        {
+            return;
+        }
 
         var project = _projectRepository.Get(id);
         if (project == null) // Project doesnt exist

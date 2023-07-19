@@ -242,4 +242,14 @@ public class ProjectController : Controller
 		}
 		return View(interested);
     }
+
+    [HttpGet]
+    public IActionResult DeleteInterestedUser(Guid userId, Guid projectId)
+    {
+        var interested = _projectInterestedUserService.GetInterestedUserByUserIdAndProjectId(userId, projectId);
+
+		_projectInterestedUserService.Delete(interested);	
+
+		return RedirectToAction("AssignUsers", new { id = projectId });
+    }
 }

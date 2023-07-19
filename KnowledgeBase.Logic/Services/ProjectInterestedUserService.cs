@@ -36,6 +36,12 @@ namespace KnowledgeBase.Logic.Services
             _projectInterestedUserRepository.AddRange(newInterestedUsers);
         }
 
+        public void Delete(ProjectInterestedUserDto interestedDto)
+        {
+            var tmp = _projectInterestedUserRepository.Get(interestedDto.Id);
+            _projectInterestedUserRepository.Remove(tmp);
+        }
+
         public ProjectInterestedUserDto? GetInterestedUserByUserIdAndProjectId(Guid userId, Guid projectId)
         {
             var interested = _projectInterestedUserRepository.GetAll().Where(pu => pu.UserId == userId && pu.ProjectId == projectId)

@@ -23,5 +23,6 @@
     <div>       
         <label>@user.FirstName</label> <label>@user.LastName</label>             
         <a asp-action="EditInterestedUser" asp-route-userId = "@user.Id" asp-route-projectId = "@ViewBag.ProjectId" class="btn btn-primary">Edit</a>
+        <a asp-action="DeleteInterestedUser" asp-route-userId = "@user.Id" asp-route-projectId = "@ViewBag.ProjectId" class="btn btn-primary">Delete</a>
     </div>
 }

@@ -5,10 +5,11 @@ using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.AzureServices;
 using KnowledgeBase.Logic.AzureServices.File;
-using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Resources;
+using KnowledgeBase.Logic.Dto.Resources.Interfaces;
+using KnowledgeBase.Logic.ResourceHandlers;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Moq;
 
 namespace KnowledgeBase.Tests.Services;
@@ -18,8 +19,9 @@ public class ResourceServiceTests
     private readonly Mock<IResourceRepository> _resourceRepository;
     private readonly Mock<IProjectRepository> _projectRepository;
     private readonly Mock<IAzureStorageService> _azureStorageService;
-    private readonly Mock<IUserResourcePermissionRepository> _permissionRepository;
     private readonly Mock<IMapper> _mapper;
+    private readonly Mock<ResourceHandlersManager> _resourceHandlerManager;
+    private readonly Mock<IUserResourcePermissionRepository> _permissionRepository;
     private readonly IResourceService _resourceService;
 
     public ResourceServiceTests()
@@ -27,11 +29,13 @@ public class ResourceServiceTests
         _resourceRepository = new Mock<IResourceRepository>();
         _projectRepository = new Mock<IProjectRepository>();
         _azureStorageService = new Mock<IAzureStorageService>();
-        _permissionRepository = new Mock<IUserResourcePermissionRepository>();
         _mapper = new Mock<IMapper>();
+        _resourceHandlerManager = new Mock<ResourceHandlersManager>(new List<IResourceHandler>());
+        _permissionRepository = new Mock<IUserResourcePermissionRepository>();
 
         _resourceService = new ResourceService(_resourceRepository.Object, _mapper.Object,
-            _azureStorageService.Object, _projectRepository.Object, _permissionRepository.Object);
+            _projectRepository.Object, _azureStorageService.Object, _resourceHandlerManager.Object,
+            _permissionRepository.Object);
     }
 
     [Fact]
@@ -46,7 +50,7 @@ public class ResourceServiceTests
         _mapper.Setup(m => m.Map<ResourceDto>(resource)).Returns(resourceDto);
 
         // act
-        var result = _resourceService.Get(resourceId);
+        var result = _resourceService.Get<ResourceDto>(resourceId);
 
         // assert
         _resourceRepository.Verify(r => r.Get(resourceId), Times.Once);
@@ -64,7 +68,7 @@ public class ResourceServiceTests
         _mapper.Setup(m => m.Map<ResourceDto>(null)).Returns((ResourceDto?)null);
 
         // act
-        var result = _resourceService.Get(resourceId);
+        var result = _resourceService.Get<ResourceDto>(resourceId);
 
         // assert
         _resourceRepository.Verify(r => r.Get(resourceId), Times.Once);
@@ -135,160 +139,31 @@ public class ResourceServiceTests
     {
         // arrange
         var projectId = Guid.NewGuid();
-        var resourceDto = new ResourceDto
-        {
-            ProjectId = projectId,
-        };
+        var createResourceDto = new Mock<ICreateResourceDto>();
+        createResourceDto.Setup(r => r.ProjectId).Returns(projectId);
 
-        _projectRepository.Setup(r => r.Get(projectId)).Returns((Project?)null);
+        _projectRepository.Setup(r => r.ProjectExists(projectId)).Returns(false);
 
         // act assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _resourceService.AddAsync(resourceDto));
-        _projectRepository.Verify(r => r.Get(projectId), Times.Once);
-    }
-
-    [Fact]
-    public async Task AddAsync_FileIsNull_ThrowsArgumentException()
-    {
-        // arrange
-        var projectId = Guid.NewGuid();
-        var project = new Project
-        {
-            Id = projectId,
-            Name = "Project",
-        };
-        var resourceDto = new ResourceDto
-        {
-            ProjectId = projectId,
-            File = null,
-        };
-
-        _projectRepository.Setup(r => r.Get(projectId)).Returns(project);
-
-        // act assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await _resourceService.AddAsync(resourceDto));
-        _projectRepository.Verify(r => r.Get(projectId), Times.Once);
-    }
-
-    [Fact]
-    public async Task AddAsync_ValidResource_CallsAzureServiceUploadFile()
-    {
-        // arrange
-        var file = new Mock<IFormFile>();
-        var projectId = Guid.NewGuid();
-        var project = new Project
-        {
-            Id = projectId,
-            Name = "Project",
-        };
-        var resourceDto = new ResourceDto
-        {
-            ProjectId = projectId,
-            File = file.Object,
-        };
-
-        var azureResource = new AzureResourceFile { AzureFileName = "FileName", AzureStoragePath = "AzurePath" };
-
-        _projectRepository.Setup(r => r.Get(projectId)).Returns(project);
-        _azureStorageService.Setup
-            (s => s.UploadFileAsync(It.IsAny<UploadAzureResourceFile>()))
-            .Returns(Task.Run(() => azureResource));
-
-        // act
-        await _resourceService.AddAsync(resourceDto);
-
-        // assert
-        _azureStorageService.Verify(s => s.UploadFileAsync(It.IsAny<UploadAzureResourceFile>()), Times.Once);
-        _resourceRepository.Verify(s => s.Add(It.IsAny<Resource>()), Times.Once);
+        await Assert.ThrowsAsync<ArgumentException>(async () => await _resourceService.AddAsync(createResourceDto.Object));
+        _projectRepository.Verify(r => r.ProjectExists(projectId), Times.Once);
     }
 
     [Fact]
     public async Task UpdateAsync_ResourceDoesntExistInDatabase_Returns()
     {
         var resourceId = Guid.NewGuid();
-        var resourceDto = new ResourceDto
-        {
-            Id = resourceId,
-        };
+        var updateResourceDto = new Mock<IUpdateResourceDto>();
+        updateResourceDto.Setup(r => r.Id).Returns(resourceId);
 
         _resourceRepository.Setup(r => r.GetResourceWithProjectAsync(resourceId)).Returns(async () => null);
 
         // act
-        await _resourceService.UpdateAsync(resourceDto);
+        await _resourceService.UpdateAsync(updateResourceDto.Object);
 
         // assert
         _resourceRepository.Verify(r => r.Update(It.IsAny<Resource>()), Times.Never);
         _azureStorageService.Verify(s => s.UploadFileAsync(It.IsAny<UploadAzureResourceFile>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task UpdateAsync_UpdatedResourceWithoutNewFile_UpdatesResourceInDatabase()
-    {
-        var projectId = Guid.NewGuid();
-        var resourceId = Guid.NewGuid();
-        var resourceWithProject = new Resource
-        {
-            Id = resourceId,
-            ProjectId = projectId,
-        };
-        var resourceDto = new ResourceDto
-        {
-            Id = resourceId,
-            File = null,
-        };
-
-        _resourceRepository.Setup
-            (r => r.GetResourceWithProjectAsync(resourceId))
-            .Returns(async () => resourceWithProject);
-        _mapper.Setup(m => m.Map<Resource>(resourceDto)).Returns(new Resource());
-
-        // act
-        await _resourceService.UpdateAsync(resourceDto);
-
-        // assert
-        _resourceRepository.Verify(r => r.Update(It.IsAny<Resource>()), Times.Once);
-        _azureStorageService.Verify(s => s.UploadFileAsync(It.IsAny<UploadAzureResourceFile>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task UpdateAsync_UpdatedResourceWithNewFile_UpdatesResourceInDatabaseAndUploadsFile()
-    {
-        var projectId = Guid.NewGuid();
-        var project = new Project
-        {
-            Id = projectId,
-            Name = "Project",
-        };
-        var resourceId = Guid.NewGuid();
-        var resourceWithProject = new Resource
-        {
-            Id = resourceId,
-            ProjectId = projectId,
-            Project = project,
-        };
-        var file = new Mock<IFormFile>();
-        var resourceDto = new ResourceDto
-        {
-            Id = resourceId,
-            File = file.Object,
-        };
-
-        _resourceRepository.Setup
-            (r => r.GetResourceWithProjectAsync(resourceId))
-            .Returns(async () => resourceWithProject);
-        _mapper.Setup(m => m.Map<Resource>(resourceDto)).Returns(new Resource());
-
-        var azureResource = new AzureResourceFile { AzureFileName = "FileName", AzureStoragePath = "AzurePath" };
-        _azureStorageService.Setup
-            (s => s.UploadFileAsync(It.IsAny<UploadAzureResourceFile>()))
-            .Returns(Task.Run(() => azureResource));
-
-        // act
-        await _resourceService.UpdateAsync(resourceDto);
-
-        // assert
-        _resourceRepository.Verify(r => r.Update(It.IsAny<Resource>()), Times.Once);
-        _azureStorageService.Verify(s => s.UploadFileAsync(It.IsAny<UploadAzureResourceFile>()), Times.Once);
     }
 
     [Fact]
@@ -308,7 +183,7 @@ public class ResourceServiceTests
     public async Task DownloadAsync_ValidResource_ReturnsResourceWithStream()
     {
         var resourceId = Guid.NewGuid();
-        var resource = new Resource
+        var resource = new AzureResource
         {
             AzureFileName = "FileName",
         };
@@ -330,7 +205,7 @@ public class ResourceServiceTests
         result.Should().NotBeNull();
         result.Content.Should().BeSameAs(stream.Object);
         result.ContentType.Should().BeSameAs(contentType);
-        result.AzureFileName.Should().BeSameAs(result.AzureFileName);
+        result.FileName.Should().BeSameAs(resource.AzureFileName);
     }
 
     public static IEnumerable<object[]> AzureExceptions()

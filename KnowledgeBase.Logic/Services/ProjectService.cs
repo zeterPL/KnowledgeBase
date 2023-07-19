@@ -226,23 +226,16 @@ public class ProjectService : IProjectService
             Name = p.Name,
             Description = p.Description,
             IsDeleted = false,
-        });
+        }).ToList();
+        await _projectRepository.AddRangeAsync(projects);
 
-        var projectsIds = new List<Guid>();
-
-        foreach (var project in projects)
-        {
-            projectsIds.Add(_projectRepository.Add(project));
-        }
-        /// await _projectRepository.AddRangeAsync(projects);
-
-        var permissions = projectsIds.SelectMany(project => DefaultCreatePermissions,
-            (projectId, permission) =>
+        var permissions = projects.SelectMany(project => DefaultCreatePermissions,
+            (project, permission) =>
             new UserProjectPermission
             {
                 PermissionName = permission,
                 UserId = userId,
-                ProjectId = projectId,
+                ProjectId = project.Id,
             });
 
         await _permissionRepository.AddRangeAsync(permissions);

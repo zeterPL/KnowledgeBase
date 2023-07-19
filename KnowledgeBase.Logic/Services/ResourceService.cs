@@ -14,23 +14,22 @@ public class ResourceService : IResourceService
 {
     private readonly IResourceRepository _resourceRepository;
     private readonly IProjectRepository _projectRepository;
+    private readonly IUserResourcePermissionRepository _permissionRepository;
     private readonly IMapper _mapper;
     private readonly IAzureStorageService _azureStorageService;
 
     public ResourceService(IResourceRepository resourceRepository, IMapper mapper,
-        IAzureStorageService azureStorageService, IProjectRepository projectRepository)
+        IAzureStorageService azureStorageService, IProjectRepository projectRepository,
+        IUserResourcePermissionRepository permissionRepository)
     {
         _resourceRepository = resourceRepository;
         _mapper = mapper;
         _azureStorageService = azureStorageService;
         _projectRepository = projectRepository;
+        _permissionRepository = permissionRepository;
     }
 
-    public ResourceDto? Get(Guid id)
-    {
-        var resource = _resourceRepository.Get(id);
-        return _mapper.Map<ResourceDto>(resource);
-    }
+    #region private methods
 
     private async Task<ResourceDto> UploadFile(ResourceDto resourceDto, Guid projectId)
     {
@@ -47,6 +46,52 @@ public class ResourceService : IResourceService
         return resourceDto;
     }
 
+   
+    private void AddDefaultPermissions(Guid userId, Guid resourceId)
+    {
+        var list = new List<UserResourcePermission>();
+        UserResourcePermission permission1 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanSave
+        };
+        list.Add(permission1);
+        UserResourcePermission permission2 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanRead
+        };
+        list.Add(permission2);
+        UserResourcePermission permission3 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanEdit
+        };
+        list.Add(permission3);
+        UserResourcePermission permission4 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanDelete
+        };
+        list.Add(permission4);
+        UserResourcePermission permission5 = new UserResourcePermission
+        {
+            UserId = userId,
+            ResourceId = resourceId,
+            Name = Data.Models.Enums.ResourcePermissionName.CanDownload
+        };
+        list.Add(permission5);
+        _permissionRepository.AddRange(list);
+    }
+
+    #endregion private methods
+
+    #region public methods
+
     public async Task AddAsync(ResourceDto resourceDto)
     {
         var projectId = _projectRepository.Get(resourceDto.ProjectId)?.Id;
@@ -58,7 +103,18 @@ public class ResourceService : IResourceService
         var createdResourceDto = await UploadFile(resourceDto, projectId.ToGuid());
 
         Resource resource = _mapper.Map<Resource>(createdResourceDto);
-        _resourceRepository.Add(resource);
+        var newId = _resourceRepository.Add(resource);
+        if(newId == Guid.Empty)
+        {
+            throw new ArgumentException("Resource Id doesn't exist");
+        }
+        AddDefaultPermissions(createdResourceDto.UserId, newId);
+    }
+
+    public ResourceDto? Get(Guid id)
+    {
+        var resource = _resourceRepository.Get(id);
+        return _mapper.Map<ResourceDto>(resource);
     }
 
     public void SoftDelete(ResourceDto resourceDto)
@@ -153,4 +209,6 @@ public class ResourceService : IResourceService
             return null;
         }
     }
+
+    #endregion public methods
 }

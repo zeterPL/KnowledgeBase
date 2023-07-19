@@ -134,19 +134,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6eefdab9-5ddc-4629-b53f-d497da886e0b"),
+                            Id = new Guid("76690512-155d-4a50-a376-c682aa4cd066"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("79f89f50-d520-49f1-bbdf-adb13a5f8a96"),
+                            Id = new Guid("8559a4db-a374-4545-960b-600ae779133e"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("9abfb461-0a83-4094-8e36-171d84aa9d1e"),
+                            Id = new Guid("bb1e8e41-26b2-4554-ad70-4e5a98d63254"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -271,6 +271,31 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserProjectPermission");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ResourceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResourceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserResourcePermission");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -474,6 +499,25 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
+                {
+                    b.HasOne("KnowledgeBase.Data.Models.Resource", "Resource")
+                        .WithMany("UserPermissions")
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KnowledgeBase.Data.Models.User", "User")
+                        .WithMany("ResourcePermissions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Resource");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -534,6 +578,11 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("UsersPermissions");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
+                {
+                    b.Navigation("UserPermissions");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
                 {
                     b.Navigation("Users");
@@ -547,6 +596,8 @@ namespace KnowledgeBase.Data.Migrations
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
                     b.Navigation("ProjectsPermissions");
+
+                    b.Navigation("ResourcePermissions");
 
                     b.Navigation("Resources");
                 });

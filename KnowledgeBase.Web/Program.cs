@@ -17,7 +17,7 @@ try
 
     builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<KnowledgeDbContext>();
-    LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("DefaultConnection");
+    LogManager.Configuration.Variables["ConnectionStrings"] = connectionString;
 
     builder.Services.AddServices();
     builder.Services.AddRepositories();
@@ -71,7 +71,7 @@ try
 catch (Exception ex)
 {
     logger.Error(ex);
-    throw (ex);
+    throw;
 }
 finally
 {

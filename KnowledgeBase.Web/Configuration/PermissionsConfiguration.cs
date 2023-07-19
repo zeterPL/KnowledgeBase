@@ -18,9 +18,21 @@ public static class PermissionsConfiguration
                 policy.Requirements.Add(new ProjectPermissionRequirement(ProjectPermissionName.ReadProject)));
             options.AddPolicy(ProjectPermission.CanDeleteProject, policy =>
                 policy.Requirements.Add(new ProjectPermissionRequirement(ProjectPermissionName.DeleteProject)));
+
+            options.AddPolicy(ResourcePermission.CanReadResource, policy =>
+               policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanRead)));
+            options.AddPolicy(ResourcePermission.CanEditResource, policy =>
+               policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanEdit)));
+            options.AddPolicy(ResourcePermission.CanSaveResource, policy =>
+               policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanSave)));
+            options.AddPolicy(ResourcePermission.CanDeleteResource, policy =>
+                policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanDelete)));
+            options.AddPolicy(ResourcePermission.CanDownloadResource, policy =>
+                policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanDownload)));
         });
 
-        services.AddScoped<IAuthorizationHandler, ProjectPermissionHandler>();
+        services.AddTransient<IAuthorizationHandler, ProjectPermissionHandler>();
+        services.AddTransient<IAuthorizationHandler, ResourcePermissionHandler>();
 
         return services;
     }

@@ -81,8 +81,7 @@ namespace KnowledgeBase.Logic.Services
         }
 
         public Guid AddUser(UserDto userDto)
-        {
-            var userRole = _roleRepository.Get(userDto.RoleId);
+        {         
             User user = new User
             {
                 Id = userDto.Id,
@@ -170,19 +169,22 @@ namespace KnowledgeBase.Logic.Services
         public IList<PermissionDto> GetAllUserPermissions(Guid id)
         {
             var permissions = _userRepository.GetAllUserPermissionsByUserId(id);
-            return permissions.Select(perm => perm.ToPermissionDto()).ToList();
+            if (permissions is null) return null;
+            else return permissions.Select(perm => perm.ToPermissionDto()).ToList();
         }
 
         public IEnumerable<UserDto> GetAllUsers()
         {
             var users = _userRepository.GetAll();
-            return users.Select(u => u.ToUserDto());
+            if (users is null) return null;
+            else return users.Select(u => u.ToUserDto());
         }
 
         public UserDto GetById(Guid id)
         {
-            var user = _userRepository.Get(id).ToUserDto();
-            return user;
+            var user = _userRepository.Get(id);
+            if (user is null) return null;
+            return user.ToUserDto();
         }
 
         public List<UserDto> GetInterestedUsersByProjectId(Guid projectId)

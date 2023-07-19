@@ -298,6 +298,31 @@ namespace KnowledgeBase.Data.Migrations
                     b.ToTable("UserProjectPermission");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ResourceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResourceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserResourcePermission");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
                     b.Property<Guid>("Id")
@@ -518,6 +543,25 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
+                {
+                    b.HasOne("KnowledgeBase.Data.Models.Resource", "Resource")
+                        .WithMany("UserPermissions")
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KnowledgeBase.Data.Models.User", "User")
+                        .WithMany("ResourcePermissions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Resource");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -580,6 +624,11 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("UsersPermissions");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
+                {
+                    b.Navigation("UserPermissions");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
                 {
                     b.Navigation("Users");
@@ -595,6 +644,8 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("ProjectInteresteds");
 
                     b.Navigation("ProjectsPermissions");
+
+                    b.Navigation("ResourcePermissions");
 
                     b.Navigation("Resources");
                 });

@@ -1,6 +1,7 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
+using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,26 @@ namespace KnowledgeBase.Logic.Services
                 newInterestedUsers.Add(user);
             }
             _projectInterestedUserRepository.AddRange(newInterestedUsers);
+        }
+
+        public ProjectInterestedUserDto? GetInterestedUserByUserIdAndProjectId(Guid userId, Guid projectId)
+        {
+            var interested = _projectInterestedUserRepository.GetAll().Where(pu => pu.UserId == userId && pu.ProjectId == projectId)
+                .Select(pu => pu.toProjectInterestedUserDto()).FirstOrDefault();
+            if (interested == null) return null;
+            return interested;
+        }
+
+        public void Update(ProjectInterestedUserDto interestedDto)
+        {
+            ProjectInterestedUser interested = new ProjectInterestedUser
+            {
+                Id = interestedDto.Id,
+                ProjectId = interestedDto.ProjectId,
+                UserId = interestedDto.UserId,
+                Description = interestedDto.Description,
+            };
+            _projectInterestedUserRepository.Update(interested);
         }
     }
 }

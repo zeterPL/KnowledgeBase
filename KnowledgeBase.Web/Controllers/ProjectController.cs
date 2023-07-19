@@ -221,4 +221,25 @@ public class ProjectController : Controller
 		_projectInterestedUserService.AddInterestedUsersToSpecificProjectByUsersIds(selectedUsers, id);
 		return RedirectToAction("List");
 	}
+
+	[HttpGet]
+    public IActionResult EditInterestedUser(Guid userId, Guid projectId)
+	{
+	    var interested = _projectInterestedUserService.GetInterestedUserByUserIdAndProjectId(userId, projectId);
+		ViewBag.UserId = interested.UserId;
+		ViewBag.ProjectId = interested.ProjectId;
+		ViewBag.Id = interested.Id;
+		return View(interested);
+	}
+
+    [HttpPost]
+    public IActionResult EditInterestedUser(ProjectInterestedUserDto interested)
+    {
+        if(ModelState.IsValid)
+		{
+			_projectInterestedUserService.Update(interested);
+			return RedirectToAction("AssignUsers", new { id = interested.ProjectId });
+		}
+		return View(interested);
+    }
 }

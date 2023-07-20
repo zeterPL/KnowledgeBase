@@ -120,6 +120,7 @@ public class ProjectService : IProjectService
     public Guid Add(ProjectDto projectDto)
     {
         var newProject = _mapper.Map<Project>(projectDto);
+        newProject.CreationDate = DateTime.Now;
         var newProjectId = _projectRepository.Add(newProject);
 
         // Default permissions

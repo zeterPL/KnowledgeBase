@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KnowledgeBase.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initxd : Migration
+    public partial class datetimeInProjectWithDefaultValue : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,7 +33,8 @@ namespace KnowledgeBase.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 7, 20, 9, 8, 31, 126, DateTimeKind.Local).AddTicks(2270))
                 },
                 constraints: table =>
                 {
@@ -287,17 +288,17 @@ namespace KnowledgeBase.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Project",
-                columns: new[] { "Id", "IsDeleted", "Name" },
-                values: new object[] { new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"), false, "Deafult project" });
+                columns: new[] { "Id", "CreationDate", "IsDeleted", "Name" },
+                values: new object[] { new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"), new DateTime(2023, 7, 20, 9, 8, 31, 126, DateTimeKind.Local).AddTicks(1544), false, "Deafult project" });
 
             migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("625ea369-a38d-4624-9afe-6f52a0c60dad"), "Basic user role", "Basic" },
-                    { new Guid("acfa076a-0a73-4dff-903f-1f1e2bbb3f58"), "SuperAdmin user role", "SuperAdmin" },
-                    { new Guid("ea17f74d-cd94-47cc-9928-e802a053d1a7"), "Admin user role", "Admin" }
+                    { new Guid("43490f6a-a78c-4990-8980-af601e6b6aa7"), "SuperAdmin user role", "SuperAdmin" },
+                    { new Guid("5788d6ad-6ba1-4df3-bf9f-1b7f76fb7cae"), "Admin user role", "Admin" },
+                    { new Guid("8351e26d-7dc6-4343-9633-cee884c81f47"), "Basic user role", "Basic" }
                 });
 
             migrationBuilder.CreateIndex(

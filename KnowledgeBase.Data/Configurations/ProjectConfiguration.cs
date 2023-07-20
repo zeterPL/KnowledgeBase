@@ -22,7 +22,11 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 			Id = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"),
 			Name = "Deafult project",
 			IsDeleted = false,
+			CreationDate = DateTime.Now,
 		};
 		builder.HasData(defaultProject);
+
+		builder.Property(p => p.CreationDate)
+			.HasDefaultValue(DateTime.Now);
 	}
 }

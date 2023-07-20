@@ -2,6 +2,7 @@ using KnowledgeBase.Data;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Web.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
 
@@ -17,7 +18,7 @@ try
 
     builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<KnowledgeDbContext>();
-    LogManager.Configuration.Variables["ConnectionStrings"] = builder.Configuration.GetConnectionString("DefaultConnection");
+    LogManager.Configuration.Variables["ConnectionStrings"] = connectionString;
 
     builder.Services.AddServices();
     builder.Services.AddRepositories();
@@ -29,6 +30,11 @@ try
 
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
+
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v2", new OpenApiInfo { Title = "KnowledgeBase.Web.Api", Version = "v2" });
+    });
 
     var app = builder.Build();
 
@@ -44,6 +50,11 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseMigrationsEndPoint();
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v2/swagger.json", "KnowledgeBase.Web.Api");
+        });
     }
     else
     {
@@ -71,7 +82,7 @@ try
 catch (Exception ex)
 {
     logger.Error(ex);
-    throw (ex);
+    throw;
 }
 finally
 {

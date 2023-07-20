@@ -1,0 +1,24 @@
+﻿@model KnowledgeBase.Logic.Dto.Resources.NoteResource.UpdateNoteResourceDto;
+
+@using (Html.BeginForm("EditNote", "Resource", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        @Html.LabelFor(resource => resource.Name, new { @class = "form-label" })
+        @Html.TextBoxFor(resource => resource.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(resource => resource.Name, string.Empty, new { @class = "form-text text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(resource => resource.Description, new { @class = "form-label" })
+        @Html.TextBoxFor(resource => resource.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(resource => resource.Description, string.Empty, new { @class = "form-text text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(resource => resource.Note, new { @class = "form-label" })
+        @Html.TextAreaFor(resource => resource.Note, new { @class = "form-control" })
+        @Html.ValidationMessageFor(resource => resource.Note, string.Empty, new { @class = "form-text text-danger" })
+    </div>
+    <div>
+        <input class="btn btn-primary" type="submit" value="Save" />
+    </div>
+}

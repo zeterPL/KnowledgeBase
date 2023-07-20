@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-<<<<<<<< HEAD:KnowledgeBase.Data/Migrations/20230719072919_tags.Designer.cs
-    [Migration("20230719072919_tags")]
-    partial class tags
-========
     [Migration("20230717083102_initial-migration-xd2")]
     partial class initialmigrationxd2
->>>>>>>> test:KnowledgeBase.Data/Migrations/20230717083102_initial-migration-xd2.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,44 +112,6 @@ namespace KnowledgeBase.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Name")
-<<<<<<<< HEAD:KnowledgeBase.Data/Migrations/20230719072919_tags.Designer.cs
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("efc09b8c-d2a0-41eb-b9df-d10361ce9165"),
-                            Description = "Basic user role",
-                            Name = "Basic"
-                        },
-                        new
-                        {
-                            Id = new Guid("8cc6c944-b7b2-45e6-8b24-bab95006e5fd"),
-                            Description = "Admin user role",
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("2f205e91-e7dc-48f2-b33c-d0124d6c86f5"),
-                            Description = "SuperAdmin user role",
-                            Name = "SuperAdmin"
-                        });
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.Tag", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-========
->>>>>>>> test:KnowledgeBase.Data/Migrations/20230717083102_initial-migration-xd2.Designer.cs
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -289,8 +246,6 @@ namespace KnowledgeBase.Data.Migrations
                     b.ToTable("UserProjectPermission");
                 });
 
-<<<<<<<< HEAD:KnowledgeBase.Data/Migrations/20230719072919_tags.Designer.cs
-========
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
                 {
                     b.Property<Guid>("Id")
@@ -316,7 +271,6 @@ namespace KnowledgeBase.Data.Migrations
                     b.ToTable("UserResourcePermission");
                 });
 
->>>>>>>> test:KnowledgeBase.Data/Migrations/20230717083102_initial-migration-xd2.Designer.cs
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
                     b.Property<Guid>("Id")

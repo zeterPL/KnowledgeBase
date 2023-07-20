@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230717091812_new-resource-types")]
-    partial class newresourcetypes
+    [Migration("20230719073954_add-description")]
+    partial class adddescription
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,46 @@ namespace KnowledgeBase.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectInterestedUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectInterestedUser");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
+                {
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProjectId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ProjectTag");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
                 {
                     b.Property<Guid>("Id")
@@ -77,10 +117,6 @@ namespace KnowledgeBase.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -102,10 +138,6 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Resource");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Resource");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
@@ -130,22 +162,37 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("df491d6f-29f0-4471-924a-ee71978ee09c"),
+                            Id = new Guid("5b87b3c7-b5c4-40d8-861c-9ecf361e9033"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("7b67874b-5b30-45f4-90b6-833ff410e532"),
+                            Id = new Guid("acbe6901-c569-49be-999a-5f85ff15a905"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("c096fb31-7951-4f46-a652-f83bbf19230c"),
+                            Id = new Guid("87e5094e-7ab5-4e18-b5c9-b4bcdb05b22d"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
@@ -223,8 +270,6 @@ namespace KnowledgeBase.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.Navigation("ProjectInterestedUsers");
 
                     b.HasIndex("RoleId");
 
@@ -391,55 +436,42 @@ namespace KnowledgeBase.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.AzureResource", b =>
+            modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectInterestedUser", b =>
                 {
-                    b.HasBaseType("KnowledgeBase.Data.Models.Resource");
+                    b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
+                        .WithMany("InterestedUsers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("AzureFileName")
-                        .IsRequired()
-                        .HasMaxLength(104)
-                        .HasColumnType("nvarchar(104)");
+                    b.HasOne("KnowledgeBase.Data.Models.User", "User")
+                        .WithMany("ProjectInteresteds")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("AzureStorageAbsolutePath")
-                        .IsRequired()
-                        .HasMaxLength(225)
-                        .HasColumnType("nvarchar(225)");
+                    b.Navigation("Project");
 
-                    b.HasDiscriminator().HasValue("AzureResource");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KnowledgeBase.Data.Models.CredentialsResource", b =>
+            modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
                 {
-                    b.HasBaseType("KnowledgeBase.Data.Models.Resource");
+                    b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
+                        .WithMany("ProjectTags")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                    b.HasOne("KnowledgeBase.Data.Models.Tag", "Tag")
+                        .WithMany("Projects")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Navigation("Project");
 
-                    b.Property<string>("Target")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasDiscriminator().HasValue("CredentialsResource");
-                });
-
-            modelBuilder.Entity("KnowledgeBase.Data.Models.NoteResource", b =>
-                {
-                    b.HasBaseType("KnowledgeBase.Data.Models.Resource");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasDiscriminator().HasValue("NoteResource");
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
@@ -542,6 +574,10 @@ namespace KnowledgeBase.Data.Migrations
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Project", b =>
                 {
+                    b.Navigation("InterestedUsers");
+
+                    b.Navigation("ProjectTags");
+
                     b.Navigation("Resources");
 
                     b.Navigation("UsersPermissions");
@@ -550,6 +586,11 @@ namespace KnowledgeBase.Data.Migrations
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Tag", b =>
+                {
+                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>

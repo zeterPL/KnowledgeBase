@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <Folder Include="Configurations\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 
   <ItemGroup>

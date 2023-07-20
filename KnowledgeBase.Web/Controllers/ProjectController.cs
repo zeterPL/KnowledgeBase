@@ -1,5 +1,7 @@
 ﻿using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Logic.ViewModels;
 using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
@@ -12,12 +14,17 @@ public class ProjectController : Controller
 	private readonly IProjectService _projectService;
 	public readonly ILogger<ProjectController> _logger;
     private readonly ITagService _tagService;
+    private readonly IUserService _userService;
+    private readonly IProjectInterestedUserService _projectInterestedUserService;
 
-	public ProjectController(IProjectService projectService, ILogger<ProjectController> logger, ITagService tagService)
+    public ProjectController(IProjectService projectService, ILogger<ProjectController> logger, 
+		ITagService tagService, IUserService userService, IProjectInterestedUserService projectInterestedUserService)
 	{
 		_projectService = projectService;
 		_logger = logger;
         _tagService = tagService;
+		_userService = userService;
+		_projectInterestedUserService = projectInterestedUserService;
     }
    
 
@@ -194,5 +201,55 @@ public class ProjectController : Controller
         TagDto tag = new TagDto { Id = TagId };
         _projectService.RemoveTagFromProject(tag, ProjectId);
         return RedirectToAction("ManageTags", new { id = ProjectId });
+    }
+
+	[HttpGet]
+	public IActionResult AssignUsers(Guid id)
+	{
+		var users = _userService.GetUsersNotInterestedInProject(id);
+		var addedUsers = _userService.GetInterestedUsersByProjectId(id);
+		ViewBag.Users = users;
+		ViewBag.AddedUsers = addedUsers;
+		ViewBag.ProjectId = id;
+		var selectedUsers = new List<Guid>();
+		return View(selectedUsers);
+	}
+
+	[HttpPost]
+	public IActionResult AssignUsers(List<Guid> selectedUsers, Guid id)
+	{
+		_projectInterestedUserService.AddInterestedUsersToSpecificProjectByUsersIds(selectedUsers, id);
+		return RedirectToAction("List");
+	}
+
+	[HttpGet]
+    public IActionResult EditInterestedUser(Guid userId, Guid projectId)
+	{
+	    var interested = _projectInterestedUserService.GetInterestedUserByUserIdAndProjectId(userId, projectId);
+		ViewBag.UserId = interested.UserId;
+		ViewBag.ProjectId = interested.ProjectId;
+		ViewBag.Id = interested.Id;
+		return View(interested);
+	}
+
+    [HttpPost]
+    public IActionResult EditInterestedUser(ProjectInterestedUserDto interested)
+    {
+        if(ModelState.IsValid)
+		{
+			_projectInterestedUserService.Update(interested);
+			return RedirectToAction("AssignUsers", new { id = interested.ProjectId });
+		}
+		return View(interested);
+    }
+
+    [HttpGet]
+    public IActionResult DeleteInterestedUser(Guid userId, Guid projectId)
+    {
+        var interested = _projectInterestedUserService.GetInterestedUserByUserIdAndProjectId(userId, projectId);
+
+		_projectInterestedUserService.Delete(interested);	
+
+		return RedirectToAction("AssignUsers", new { id = projectId });
     }
 }

@@ -1,0 +1,28 @@
+﻿@using KnowledgeBase.Logic.Dto;
+@{
+    List<Guid> selectedUsers = Model;
+}
+
+<h3>Add new users</h3>
+@using (Html.BeginForm("AssignUsers", "Project", new {id = ViewBag.ProjectId} , FormMethod.Post))
+{
+    @foreach(UserDto user in ViewBag.Users)
+    {
+        <div>
+            <input type="checkbox" name="selectedUsers" value="@user.Id" />
+            <label>@user.FirstName</label> <label>@user.LastName</label>
+        </div>       
+    }
+
+    <input class="btn btn-primary" type="submit"/>
+}
+<hr/>
+<h3>Already added users</h3>
+@foreach (UserDto user in ViewBag.AddedUsers)
+{
+    <div>       
+        <label>@user.FirstName</label> <label>@user.LastName</label>             
+        <a asp-action="EditInterestedUser" asp-route-userId = "@user.Id" asp-route-projectId = "@ViewBag.ProjectId" class="btn btn-primary">Edit</a>
+        <a asp-action="DeleteInterestedUser" asp-route-userId = "@user.Id" asp-route-projectId = "@ViewBag.ProjectId" class="btn btn-primary">Delete</a>
+    </div>
+}

@@ -9,12 +9,14 @@
     <div>
         @project.Id
         @project.Name
+        @project.CreationDate
         <a asp-action="Details" asp-route-id="@project.Id">details</a>
         <a asp-action="Edit" asp-route-id="@project.Id">edit</a>
         <a asp-action="Delete" asp-route-id="@project.Id">delete</a>
     </div>
 }
 <div>
-    <a asp-action="Find">Find Another Projects By Name</a>
-    <a asp-action="FindByTag">Find Projects By Tag Name</a>
+    <a asp-action="Find">Find Another Projects By Name</a><br/>
+    <a asp-action="FindByTag">Find Projects By Tag Name</a><br />
+    <a asp-action="FindByDate">Find Projects By Date</a><br />
 </div>

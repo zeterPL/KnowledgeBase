@@ -251,17 +251,19 @@ public class ProjectController : Controller
     {
         try
         {
-            _logger.LogInformation("Project Found");
-            string startYearMonthDay = startDate.ToString("yyyy-MM-dd");
-            string endYearMonthDay = endDate.ToString("yyyy-MM-dd");
-
+            DateTime startYearMonthDay = startDate.Date;
+            DateTime endYearMonthDay = endDate.Date;
+            if (startDate > endDate && (startDate != DateTime.MinValue && endDate != DateTime.MinValue))
+            {
+                throw new Exception("Invalid Input vaues(start Date > end Date)");
+            }
             var redableByUserAndFiltered = _projectService.GetAllProjectsByDate(startYearMonthDay, endYearMonthDay, User.GetUserId());
             return View(redableByUserAndFiltered);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
-            return NotFound("there is no project with this tagName");
+            return NotFound(ex.Message);
         }
     }
 

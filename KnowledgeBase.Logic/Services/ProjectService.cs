@@ -236,20 +236,16 @@ public class ProjectService : IProjectService
         return findproject.Select(p => _mapper.Map<ProjectDto>(p));
     }
 
-    public IEnumerable<ProjectDto> GetAllProjectsByDate(string startDate, string endDate, Guid userId)
+    public IEnumerable<ProjectDto> GetAllProjectsByDate(DateTime startDate, DateTime endDate, Guid userId)
     {
+        var projects = _projectRepository.GetAllReadableByUser(userId);
 
+        var filteredProjects = projects.Where(project =>
+            (startDate == DateTime.MinValue || project.CreationDate >= startDate) &&
+            (endDate == DateTime.MinValue || project.CreationDate <= endDate)
+        );
 
-
-
-
-
-
-
-
-
-       List<ProjectDto> pp = new List<ProjectDto> ();
-        return pp;
+        return filteredProjects.Select(p => _mapper.Map<ProjectDto>(p));
     }
     #endregion public methods
 }

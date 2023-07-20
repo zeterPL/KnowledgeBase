@@ -22,5 +22,5 @@ public interface IProjectService
 
     public void RemoveTagFromProject(TagDto tagDto, Guid projectId);
     public IEnumerable<ProjectDto> GetAllProjectsByTagName(TagDto tagDto, Guid userId);
-    public IEnumerable<ProjectDto> GetAllProjectsByDate(string startDate, string endDate, Guid userId);
+    public IEnumerable<ProjectDto> GetAllProjectsByDate(DateTime startDate, DateTime endDate, Guid userId);
 }

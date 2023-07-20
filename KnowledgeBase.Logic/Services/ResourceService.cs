@@ -4,7 +4,9 @@ using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.AzureServices;
 using KnowledgeBase.Logic.AzureServices.File;
-using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Resources;
+using KnowledgeBase.Logic.Dto.Resources.Interfaces;
+using KnowledgeBase.Logic.ResourceHandlers;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 
@@ -17,36 +19,32 @@ public class ResourceService : IResourceService
     private readonly IUserResourcePermissionRepository _permissionRepository;
     private readonly IMapper _mapper;
     private readonly IAzureStorageService _azureStorageService;
+    private readonly ResourceHandlersManager _resourceHandlers;
 
-    public ResourceService(IResourceRepository resourceRepository, IMapper mapper,
-        IAzureStorageService azureStorageService, IProjectRepository projectRepository,
+    public ResourceService(IResourceRepository resourceRepository,
+        IMapper mapper,
+        IProjectRepository projectRepository,
+        IAzureStorageService azureStorageService,
+        ResourceHandlersManager resourceHandlers,
         IUserResourcePermissionRepository permissionRepository)
     {
         _resourceRepository = resourceRepository;
         _mapper = mapper;
-        _azureStorageService = azureStorageService;
         _projectRepository = projectRepository;
+        _azureStorageService = azureStorageService;
+        _resourceHandlers = resourceHandlers;
         _permissionRepository = permissionRepository;
+    }
+
+    public T? Get<T>(Guid id) where T : ResourceDto
+    {
+        var resource = _resourceRepository.Get(id);
+        return _mapper.Map<T>(resource);
     }
 
     #region private methods
 
-    private async Task<ResourceDto> UploadFile(ResourceDto resourceDto, Guid projectId)
-    {
-        if (resourceDto.File == null)
-        {
-            throw new ArgumentException("File cant be null");
-        }
-
-        var uploadFile = new UploadAzureResourceFile(resourceDto.Name, projectId, resourceDto.File);
-        var azureResourceFile = await _azureStorageService.UploadFileAsync(uploadFile);
-
-        resourceDto.AzureStorageAbsolutePath = azureResourceFile.AzureStoragePath;
-        resourceDto.AzureFileName = azureResourceFile.AzureFileName;
-        return resourceDto;
-    }
-
-    private void addDefaultPermissions(Guid userId, Guid resourceId)
+    private void AddDefaultPermissions(Guid userId, Guid resourceId)
     {
         var list = new List<UserResourcePermission>();
         UserResourcePermission permission1 = new UserResourcePermission
@@ -91,32 +89,13 @@ public class ResourceService : IResourceService
 
     #region public methods
 
-    public async Task AddAsync(ResourceDto resourceDto)
-    {
-        var projectId = _projectRepository.Get(resourceDto.ProjectId)?.Id;
-        if (projectId == null)
-        {
-            throw new ArgumentException("Project assigned to resource doesn't exist");
-        }
-
-        var createdResourceDto = await UploadFile(resourceDto, projectId.ToGuid());
-
-        Resource resource = _mapper.Map<Resource>(createdResourceDto);
-        var newId = _resourceRepository.Add(resource);
-        if(newId == Guid.Empty)
-        {
-            throw new ArgumentException("Resource Id doesn't exist");
-        }
-        addDefaultPermissions(createdResourceDto.UserId, newId);
-    }
-
     public ResourceDto? Get(Guid id)
     {
         var resource = _resourceRepository.Get(id);
         return _mapper.Map<ResourceDto>(resource);
     }
 
-    public void SoftDelete(ResourceDto resourceDto)
+    public void SoftDelete(IResourceDto resourceDto)
     {
         var id = resourceDto.Id.ToGuid();
         if (id == Guid.Empty)
@@ -179,25 +158,22 @@ public class ResourceService : IResourceService
 
     public async Task<DownloadResourceDto?> DownloadAsync(Guid id)
     {
-        var resource = Get(id);
-        if (resource == null)
+        var resource = _resourceRepository.Get(id);
+        if (resource is not AzureResource azureResource)
         {
             return null;
         }
 
         var fileDto = new AzureResourceFile
         {
-            AzureStoragePath = resource.AzureStorageAbsolutePath,
+            AzureStoragePath = azureResource.AzureStorageAbsolutePath,
         };
 
         try
         {
             var file = await _azureStorageService.DownloadFileAsync(fileDto);
 
-            return new DownloadResourceDto(file.Stream, file.ContentType)
-            {
-                AzureFileName = resource.AzureFileName,
-            };
+            return new DownloadResourceDto(file.Stream, file.ContentType, azureResource.AzureFileName);
         }
         catch (FileNotFoundException)
         {
@@ -207,6 +183,50 @@ public class ResourceService : IResourceService
         {
             return null;
         }
+    }
+
+    public async Task UpdateAsync<T>(T resourceDto) where T : IUpdateResourceDto
+    {
+        var id = resourceDto.Id;
+        if (id == Guid.Empty)
+        {
+            return;
+        }
+
+        var resource = await _resourceRepository.GetResourceWithProjectAsync(id);
+        if (resource == null)
+        {
+            return;
+        }
+
+        resource.Name = resourceDto.Name;
+        resource.Description = resourceDto.Description;
+        resourceDto.ProjectId = resource.ProjectId;
+
+        resource = await _resourceHandlers.UpdateDetails(resourceDto, resource);
+        _resourceRepository.Update(resource);
+    }
+
+    public async Task AddAsync<T>(T resourceDto) where T : ICreateResourceDto
+    {
+        if (!_projectRepository.ProjectExists(resourceDto.ProjectId))
+        {
+            throw new ArgumentException("Project assigned to resource doesn't exist");
+        }
+
+        var resource = new Resource
+        {
+            Name = resourceDto.Name,
+            Description = resourceDto.Description,
+            Category = resourceDto.Category,
+            ProjectId = resourceDto.ProjectId,
+            UserId = resourceDto.UserId,
+            IsDeleted = false,
+        };
+
+        var newResource = await _resourceHandlers.UpdateDetails(resourceDto, resource);
+        _resourceRepository.Add(newResource);
+        AddDefaultPermissions(newResource.UserId, newResource.Id);
     }
 
     #endregion public methods

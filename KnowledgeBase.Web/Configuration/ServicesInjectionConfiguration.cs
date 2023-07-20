@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Logic.AzureServices;
+using KnowledgeBase.Logic.ResourceHandlers;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 
@@ -15,6 +16,10 @@ public static class ServicesInjectionConfiguration
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserResourcePermissionService, UserResourcePermissionService>();
+        services.AddScoped<IResourceHandler, AzureResourceHandler>();
+        services.AddScoped<IResourceHandler, NoteResourceHandler>();
+        services.AddScoped<IResourceHandler, CredentialsResourceHandler>();
+        services.AddScoped<ResourceHandlersManager>();
         services.AddScoped<ITagService, TagService>();
 
         return services;

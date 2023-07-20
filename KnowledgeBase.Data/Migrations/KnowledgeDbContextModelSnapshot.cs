@@ -95,16 +95,6 @@ namespace KnowledgeBase.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AzureFileName")
-                        .IsRequired()
-                        .HasMaxLength(104)
-                        .HasColumnType("nvarchar(104)");
-
-                    b.Property<string>("AzureStorageAbsolutePath")
-                        .IsRequired()
-                        .HasMaxLength(225)
-                        .HasColumnType("nvarchar(225)");
-
                     b.Property<string>("Category")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -125,6 +115,10 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ResourceType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -135,6 +129,10 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Resource");
+
+                    b.HasDiscriminator<string>("ResourceType").HasValue("Resource");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
@@ -159,19 +157,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5b87b3c7-b5c4-40d8-861c-9ecf361e9033"),
+                            Id = new Guid("2c65a49a-d32f-403b-85ec-0428253b37d1"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("acbe6901-c569-49be-999a-5f85ff15a905"),
+                            Id = new Guid("45ab3d63-9776-4af1-8b6c-613fa83c328d"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("87e5094e-7ab5-4e18-b5c9-b4bcdb05b22d"),
+                            Id = new Guid("c648c023-eece-4c71-9f84-1ba51f288d39"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -456,6 +454,57 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.AzureResource", b =>
+                {
+                    b.HasBaseType("KnowledgeBase.Data.Models.Resource");
+
+                    b.Property<string>("AzureFileName")
+                        .IsRequired()
+                        .HasMaxLength(104)
+                        .HasColumnType("nvarchar(104)");
+
+                    b.Property<string>("AzureStorageAbsolutePath")
+                        .IsRequired()
+                        .HasMaxLength(225)
+                        .HasColumnType("nvarchar(225)");
+
+                    b.HasDiscriminator().HasValue("AzureResource");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.CredentialsResource", b =>
+                {
+                    b.HasBaseType("KnowledgeBase.Data.Models.Resource");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Target")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasDiscriminator().HasValue("CredentialsResource");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.NoteResource", b =>
+                {
+                    b.HasBaseType("KnowledgeBase.Data.Models.Resource");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasDiscriminator().HasValue("NoteResource");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectInterestedUser", b =>

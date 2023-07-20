@@ -14,6 +14,7 @@ namespace KnowledgeBase.Data.Repositories
         public void AddRange(IList<UserResourcePermission> resourcePermissions)
         {
             _context.Set<UserResourcePermission>().AddRange(resourcePermissions);
+            _context.SaveChanges();
         }
 
         public bool CheckIfUserHasPermissionsToResource(Guid resourceId, Guid userId, ResourcePermissionName permissionName)

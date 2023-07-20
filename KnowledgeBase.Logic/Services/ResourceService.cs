@@ -150,7 +150,7 @@ public class ResourceService : IResourceService
         _resourceRepository.Update(resource);
     }
 
-    public IEnumerable<ResourceDto> GetAll()
+    public IEnumerable<IResourceDto> GetAll()
     {
         IEnumerable<Resource> resourceList = _resourceRepository.GetAll().Where(r => !r.IsDeleted);
         return resourceList.Select(r => _mapper.Map<ResourceDto>(r));
@@ -228,6 +228,7 @@ public class ResourceService : IResourceService
         _resourceRepository.Add(newResource);
         AddDefaultPermissions(newResource.UserId, newResource.Id);
     }
+
 
     #endregion public methods
 }

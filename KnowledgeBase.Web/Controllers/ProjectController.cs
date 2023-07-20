@@ -240,7 +240,30 @@ public class ProjectController : Controller
         }
     }
 
+    public IActionResult FindByDate()
+    {
+        return View();
+    }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult FoundProjectByDate(DateTime startDate, DateTime endDate)
+    {
+        try
+        {
+            _logger.LogInformation("Project Found");
+            string startYearMonthDay = startDate.ToString("yyyy-MM-dd");
+            string endYearMonthDay = endDate.ToString("yyyy-MM-dd");
+
+            var redableByUserAndFiltered = _projectService.GetAllProjectsByDate(startYearMonthDay, endYearMonthDay, User.GetUserId());
+            return View(redableByUserAndFiltered);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return NotFound("there is no project with this tagName");
+        }
+    }
 
 
 

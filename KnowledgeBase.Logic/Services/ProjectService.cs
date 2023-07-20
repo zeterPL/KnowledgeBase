@@ -234,7 +234,22 @@ public class ProjectService : IProjectService
             .Select(project => Get(project.ProjectId))
             .ToList();
         return findproject.Select(p => _mapper.Map<ProjectDto>(p));
+    }
 
+    public IEnumerable<ProjectDto> GetAllProjectsByDate(string startDate, string endDate, Guid userId)
+    {
+
+
+
+
+
+
+
+
+
+
+       List<ProjectDto> pp = new List<ProjectDto> ();
+        return pp;
     }
     #endregion public methods
 }

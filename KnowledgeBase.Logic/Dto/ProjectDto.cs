@@ -7,6 +7,7 @@ public class ProjectDto
 {
     public Guid? Id { get; set; }
     public string Name { get; set; }
+    public DateTime CreationDate { get; set; }
 
     [Required]
     public Guid? UserId { get; set; }

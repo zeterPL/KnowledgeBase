@@ -1,0 +1,14 @@
+﻿@model KnowledgeBase.Logic.Dto.ProjectDto;
+@{
+}
+@using (Html.BeginForm("FoundProjectByDate", "Project", FormMethod.Post))
+{
+
+<div>
+        Start Date:<br/>
+        <input type="date" name="startDate"/>
+        <input type="date" name="endDate" />
+
+        <a asp-route="FoundProjectByDate"><input type="submit" value="Save"/></a>
+</div>
+}

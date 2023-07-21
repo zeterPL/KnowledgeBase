@@ -31,7 +31,7 @@ namespace KnowledgeBase.Data.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 20, 9, 8, 31, 126, DateTimeKind.Local).AddTicks(2270));
+                        .HasDefaultValue(new DateTime(2023, 7, 21, 10, 5, 11, 753, DateTimeKind.Local).AddTicks(976));
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -49,7 +49,7 @@ namespace KnowledgeBase.Data.Migrations
                         new
                         {
                             Id = new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"),
-                            CreationDate = new DateTime(2023, 7, 20, 9, 8, 31, 126, DateTimeKind.Local).AddTicks(1544),
+                            CreationDate = new DateTime(2023, 7, 21, 10, 5, 11, 753, DateTimeKind.Local).AddTicks(727),
                             IsDeleted = false,
                             Name = "Deafult project"
                         });
@@ -163,19 +163,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2c65a49a-d32f-403b-85ec-0428253b37d1"),
+                            Id = new Guid("3f97df26-b352-4021-b8da-ebc7cff9b0c9"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("45ab3d63-9776-4af1-8b6c-613fa83c328d"),
+                            Id = new Guid("f95efe6a-9f54-4ebe-b17d-f7cbc6977a71"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("c648c023-eece-4c71-9f84-1ba51f288d39"),
+                            Id = new Guid("790ff1d6-0d9c-4966-b6f5-efa1aca66250"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });

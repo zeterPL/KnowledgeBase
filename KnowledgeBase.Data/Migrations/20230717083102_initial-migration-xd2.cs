@@ -8,11 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KnowledgeBase.Data.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:KnowledgeBase.Data/Migrations/20230720070831_datetimeInProjectWithDefaultValue.cs
-    public partial class datetimeInProjectWithDefaultValue : Migration
-========
     public partial class initialmigrationxd2 : Migration
->>>>>>>> test:KnowledgeBase.Data/Migrations/20230717083102_initial-migration-xd2.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,8 +33,7 @@ namespace KnowledgeBase.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 7, 20, 9, 8, 31, 126, DateTimeKind.Local).AddTicks(2270))
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,18 +51,6 @@ namespace KnowledgeBase.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Role", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tag",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tag", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -121,30 +104,6 @@ namespace KnowledgeBase.Data.Migrations
                         name: "FK_AspNetUsers_Role_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProjectTag",
-                columns: table => new
-                {
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProjectTag", x => new { x.ProjectId, x.TagId });
-                    table.ForeignKey(
-                        name: "FK_ProjectTag_Project_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Project",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProjectTag_Tag_TagId",
-                        column: x => x.TagId,
-                        principalTable: "Tag",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -318,23 +277,17 @@ namespace KnowledgeBase.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Project",
-                columns: new[] { "Id", "CreationDate", "IsDeleted", "Name" },
-                values: new object[] { new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"), new DateTime(2023, 7, 20, 9, 8, 31, 126, DateTimeKind.Local).AddTicks(1544), false, "Deafult project" });
+                columns: new[] { "Id", "IsDeleted", "Name" },
+                values: new object[] { new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"), false, "Deafult project" });
 
             migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-<<<<<<<< HEAD:KnowledgeBase.Data/Migrations/20230720070831_datetimeInProjectWithDefaultValue.cs
-                    { new Guid("43490f6a-a78c-4990-8980-af601e6b6aa7"), "SuperAdmin user role", "SuperAdmin" },
-                    { new Guid("5788d6ad-6ba1-4df3-bf9f-1b7f76fb7cae"), "Admin user role", "Admin" },
-                    { new Guid("8351e26d-7dc6-4343-9633-cee884c81f47"), "Basic user role", "Basic" }
-========
                     { new Guid("76690512-155d-4a50-a376-c682aa4cd066"), "Basic user role", "Basic" },
                     { new Guid("8559a4db-a374-4545-960b-600ae779133e"), "Admin user role", "Admin" },
                     { new Guid("bb1e8e41-26b2-4554-ad70-4e5a98d63254"), "SuperAdmin user role", "SuperAdmin" }
->>>>>>>> test:KnowledgeBase.Data/Migrations/20230717083102_initial-migration-xd2.cs
                 });
 
             migrationBuilder.CreateIndex(
@@ -380,11 +333,6 @@ namespace KnowledgeBase.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProjectTag_TagId",
-                table: "ProjectTag",
-                column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Resource_ProjectId",
@@ -436,15 +384,6 @@ namespace KnowledgeBase.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:KnowledgeBase.Data/Migrations/20230720070831_datetimeInProjectWithDefaultValue.cs
-                name: "ProjectTag");
-
-            migrationBuilder.DropTable(
-                name: "Resource");
-
-            migrationBuilder.DropTable(
-========
->>>>>>>> test:KnowledgeBase.Data/Migrations/20230717083102_initial-migration-xd2.cs
                 name: "UserProjectPermission");
 
             migrationBuilder.DropTable(
@@ -454,11 +393,7 @@ namespace KnowledgeBase.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:KnowledgeBase.Data/Migrations/20230720070831_datetimeInProjectWithDefaultValue.cs
-                name: "Tag");
-========
                 name: "Resource");
->>>>>>>> test:KnowledgeBase.Data/Migrations/20230717083102_initial-migration-xd2.cs
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

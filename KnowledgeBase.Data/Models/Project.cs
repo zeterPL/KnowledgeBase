@@ -11,4 +11,5 @@ public class Project : IDeletableEntity
     public DateTime CreationDate { get; set; }
     public virtual ICollection<UserProjectPermission> UsersPermissions { get; set; }
     public virtual ICollection<ProjectTag> ProjectTags { get; set; }
+    public virtual ICollection<ProjectInterestedUser> InterestedUsers { get; set; }
 }

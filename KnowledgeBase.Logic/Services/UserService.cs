@@ -1,5 +1,6 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
@@ -13,14 +14,17 @@ namespace KnowledgeBase.Logic.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IUserProjectPermissionRepository _permissionRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly IProjectInterestedUserRepository _projectInterestedUserRepository;
 
         public UserService(IUserRepository userRepository, IProjectRepository projectRepository,
-            IUserProjectPermissionRepository permissionRepository, IRoleRepository roleRepository)
+            IUserProjectPermissionRepository permissionRepository, IRoleRepository roleRepository,
+            IProjectInterestedUserRepository projectInterestedUserRepository)
         {
             _userRepository = userRepository;
             _projectRepository = projectRepository;
             _permissionRepository = permissionRepository;
             _roleRepository = roleRepository;
+            _projectInterestedUserRepository = projectInterestedUserRepository;
         }
 
         public void AddPermisionsToSpecificProject(Guid projectId, Guid userId)
@@ -181,6 +185,21 @@ namespace KnowledgeBase.Logic.Services
             var user = _userRepository.Get(id);
             if (user is null) return null;
             return user.ToUserDto();
+        }
+
+        public List<UserDto> GetInterestedUsersByProjectId(Guid projectId)
+        {
+            return _projectInterestedUserRepository.GetAll().Where(pu => pu.ProjectId == projectId)
+                .Select(pu => pu.User.ToUserDto()).ToList();
+        }
+
+        public IList<UserDto> GetUsersNotInterestedInProject(Guid projectId)
+        {
+            var interesteUsersIds = _projectInterestedUserRepository.GetAll()
+                .Where(pu => pu.ProjectId == projectId).Select(pu => pu.UserId);
+            var notInterestedUsers = _userRepository.GetAll().Where(u => !interesteUsersIds.Contains(u.Id))
+                .Select(u => u.ToUserDto()).ToList();    
+            return notInterestedUsers;
         }
 
         public bool SoftDelete(UserDto user)

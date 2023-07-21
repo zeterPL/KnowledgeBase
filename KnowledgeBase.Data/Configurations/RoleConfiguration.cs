@@ -14,6 +14,7 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
 		builder.Property(r => r.Description)
 			.HasMaxLength(50);
 
+
 		var roles = new Role[]
 		{
 			Create(UserRoles.Basic.ToString(), "Basic user role"),

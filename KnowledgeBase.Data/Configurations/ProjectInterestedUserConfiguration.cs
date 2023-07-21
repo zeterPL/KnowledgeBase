@@ -9,23 +9,22 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.Data.Configurations
 {
-    public class UserResourcePermissionConfiguration : IEntityTypeConfiguration<UserResourcePermission>
+    public class ProjectInterestedUserConfiguration : IEntityTypeConfiguration<ProjectInterestedUser>
     {
-        public void Configure(EntityTypeBuilder<UserResourcePermission> builder)
+        public void Configure(EntityTypeBuilder<ProjectInterestedUser> builder)
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Name)
+            builder.Property(x => x.Description)
                 .HasConversion<string>();
 
             builder.HasOne(x => x.User)
-                .WithMany(x => x.ResourcePermissions)
+                .WithMany(u => u.ProjectInteresteds)
                 .HasForeignKey(x => x.UserId);
 
-            builder.HasOne(x => x.Resource)
-                .WithMany(x => x.UserPermissions)
-                .HasForeignKey(x => x.ResourceId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.Project)
+                .WithMany(p => p.InterestedUsers)
+                .HasForeignKey(x => x.ProjectId);
         }
     }
 }

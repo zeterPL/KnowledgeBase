@@ -249,32 +249,6 @@ namespace KnowledgeBase.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "UserResourcePermission",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ResourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserResourcePermission", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserResourcePermission_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_UserResourcePermission_Resource_ResourceId",
-                        column: x => x.ResourceId,
-                        principalTable: "Resource",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
             migrationBuilder.InsertData(
                 table: "Project",
                 columns: new[] { "Id", "IsDeleted", "Name" },
@@ -353,17 +327,7 @@ namespace KnowledgeBase.Data.Migrations
                 name: "IX_UserProjectPermission_UserId",
                 table: "UserProjectPermission",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserResourcePermission_ResourceId",
-                table: "UserResourcePermission",
-                column: "ResourceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserResourcePermission_UserId",
-                table: "UserResourcePermission",
-                column: "UserId");
-        }
+         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -385,9 +349,6 @@ namespace KnowledgeBase.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserProjectPermission");
-
-            migrationBuilder.DropTable(
-                name: "UserResourcePermission");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KnowledgeBase.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class projectinteresteduser : Migration
+    public partial class projectinteresteduserResourcepermissions : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,23 +16,24 @@ namespace KnowledgeBase.Data.Migrations
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("6eefdab9-5ddc-4629-b53f-d497da886e0b"));
+                keyValue: new Guid("07e5c474-1395-4b16-840b-58b5a69fe53d"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("79f89f50-d520-49f1-bbdf-adb13a5f8a96"));
+                keyValue: new Guid("3632deb5-0642-4d30-b5d8-0a21028e1d1a"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("9abfb461-0a83-4094-8e36-171d84aa9d1e"));
+                keyValue: new Guid("ddd1b4a9-7db5-463d-af45-a166d97d9ed0"));
 
             migrationBuilder.CreateTable(
                 name: "ProjectInterestedUser",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -54,39 +55,28 @@ namespace KnowledgeBase.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tag",
+                name: "UserResourcePermission",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tag", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProjectTag",
-                columns: table => new
-                {
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProjectTag", x => new { x.ProjectId, x.TagId });
+                    table.PrimaryKey("PK_UserResourcePermission", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectTag_Project_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Project",
+                        name: "FK_UserResourcePermission_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectTag_Tag_TagId",
-                        column: x => x.TagId,
-                        principalTable: "Tag",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_UserResourcePermission_Resource_ResourceId",
+                        column: x => x.ResourceId,
+                        principalTable: "Resource",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -94,9 +84,9 @@ namespace KnowledgeBase.Data.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("4d4192d4-59ca-48a3-8f96-8508151ce5b5"), "SuperAdmin user role", "SuperAdmin" },
-                    { new Guid("811a8729-b3bc-4fbe-9b47-52ecabc2d09d"), "Basic user role", "Basic" },
-                    { new Guid("b35ebd88-dec8-4ef8-83dc-b74a8b2e4572"), "Admin user role", "Admin" }
+                    { new Guid("391bd4e4-7fac-485b-b716-cb9659a106b8"), "Admin user role", "Admin" },
+                    { new Guid("c3a3470a-bfa0-43b5-a960-6fba42901c42"), "SuperAdmin user role", "SuperAdmin" },
+                    { new Guid("d1065a82-edb7-4f0c-ba60-f7414c74a5ae"), "Basic user role", "Basic" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -110,9 +100,14 @@ namespace KnowledgeBase.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectTag_TagId",
-                table: "ProjectTag",
-                column: "TagId");
+                name: "IX_UserResourcePermission_ResourceId",
+                table: "UserResourcePermission",
+                column: "ResourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserResourcePermission_UserId",
+                table: "UserResourcePermission",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -122,34 +117,31 @@ namespace KnowledgeBase.Data.Migrations
                 name: "ProjectInterestedUser");
 
             migrationBuilder.DropTable(
-                name: "ProjectTag");
-
-            migrationBuilder.DropTable(
-                name: "Tag");
+                name: "UserResourcePermission");
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("4d4192d4-59ca-48a3-8f96-8508151ce5b5"));
+                keyValue: new Guid("391bd4e4-7fac-485b-b716-cb9659a106b8"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("811a8729-b3bc-4fbe-9b47-52ecabc2d09d"));
+                keyValue: new Guid("c3a3470a-bfa0-43b5-a960-6fba42901c42"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("b35ebd88-dec8-4ef8-83dc-b74a8b2e4572"));
+                keyValue: new Guid("d1065a82-edb7-4f0c-ba60-f7414c74a5ae"));
 
             migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("6eefdab9-5ddc-4629-b53f-d497da886e0b"), "Basic user role", "Basic" },
-                    { new Guid("79f89f50-d520-49f1-bbdf-adb13a5f8a96"), "Admin user role", "Admin" },
-                    { new Guid("9abfb461-0a83-4094-8e36-171d84aa9d1e"), "SuperAdmin user role", "SuperAdmin" }
+                    { new Guid("07e5c474-1395-4b16-840b-58b5a69fe53d"), "Basic user role", "Basic" },
+                    { new Guid("3632deb5-0642-4d30-b5d8-0a21028e1d1a"), "SuperAdmin user role", "SuperAdmin" },
+                    { new Guid("ddd1b4a9-7db5-463d-af45-a166d97d9ed0"), "Admin user role", "Admin" }
                 });
         }
     }

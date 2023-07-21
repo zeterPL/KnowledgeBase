@@ -24,7 +24,8 @@ namespace KnowledgeBase.Data.Configurations
 
             builder.HasOne(x => x.Resource)
                 .WithMany(x => x.UserPermissions)
-                .HasForeignKey(x => x.ResourceId);
+                .HasForeignKey(x => x.ResourceId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

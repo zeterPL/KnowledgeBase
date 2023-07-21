@@ -224,8 +224,6 @@ namespace KnowledgeBase.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.Navigation("ProjectInterestedUsers");
-
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUsers", (string)null);
@@ -554,8 +552,6 @@ namespace KnowledgeBase.Data.Migrations
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
-                    b.Navigation("ProjectInteresteds");
-
                     b.Navigation("ProjectsPermissions");
 
                     b.Navigation("Resources");

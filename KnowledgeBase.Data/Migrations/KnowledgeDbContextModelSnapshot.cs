@@ -163,19 +163,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3f97df26-b352-4021-b8da-ebc7cff9b0c9"),
+                            Id = new Guid("d1065a82-edb7-4f0c-ba60-f7414c74a5ae"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("f95efe6a-9f54-4ebe-b17d-f7cbc6977a71"),
+                            Id = new Guid("391bd4e4-7fac-485b-b716-cb9659a106b8"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("790ff1d6-0d9c-4966-b6f5-efa1aca66250"),
+                            Id = new Guid("c3a3470a-bfa0-43b5-a960-6fba42901c42"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -603,7 +603,7 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasOne("KnowledgeBase.Data.Models.Resource", "Resource")
                         .WithMany("UserPermissions")
                         .HasForeignKey("ResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("KnowledgeBase.Data.Models.User", "User")

@@ -209,7 +209,7 @@ public class ProjectController : Controller
         {
             _logger.LogInformation("Project Found");
             var projects = _projectService.GetAllReadableByUser(User.GetUserId()).Where(p => p.Name.Contains(project.Name));
-            return FoundProjects(projects);
+            return View(projects);
         }
         catch (Exception ex)
         {
@@ -231,7 +231,7 @@ public class ProjectController : Controller
         {
             _logger.LogInformation("Project Found");
             var redableByUserAndFiltered = _projectService.GetAllProjectsByTagName(tagDto, User.GetUserId());
-            return FoundProjects(redableByUserAndFiltered);
+            return View(redableByUserAndFiltered);
         }
         catch(Exception ex)
         {
@@ -256,7 +256,7 @@ public class ProjectController : Controller
                 throw new Exception("Invalid Input vaues(start Date > end Date)");
             }
             var redableByUserAndFiltered = _projectService.GetAllProjectsByDate(startDate.Date, endDate.Date, User.GetUserId());
-            return FoundProjects(redableByUserAndFiltered);
+            return View(redableByUserAndFiltered);
         }
         catch (Exception ex)
         {
@@ -266,7 +266,7 @@ public class ProjectController : Controller
     }
 
     
-    public IActionResult FoundProjects(IEnumerable<ProjectDto> projectsToDisplay)
+    public IActionResult FoundProject(IEnumerable<ProjectDto> projectsToDisplay)
     {
         return View(projectsToDisplay);
     }

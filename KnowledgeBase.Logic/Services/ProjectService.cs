@@ -217,7 +217,16 @@ public class ProjectService : IProjectService
 
     public IEnumerable<ProjectDto> GetAllProjectsByTagName(TagDto tagDto, Guid userId)
     {
-        var tagsSplitFromInput = tagDto.Name.Split(", ");
+        string[] tagsSplitFromInput;
+
+        if (tagDto.Name.Contains(", "))
+        {
+            tagsSplitFromInput = tagDto.Name.Split(", ");
+        }
+        else
+        {
+            tagsSplitFromInput = new string[] { tagDto.Name };
+        }
 
         var tags = _tagRepository.GetAll()
             .Where(tag => tagsSplitFromInput.Contains(tag.Name))

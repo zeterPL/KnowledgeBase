@@ -251,13 +251,11 @@ public class ProjectController : Controller
     {
         try
         {
-            DateTime startYearMonthDay = startDate.Date;
-            DateTime endYearMonthDay = endDate.Date;
-            if (startDate > endDate && (startDate != DateTime.MinValue && endDate != DateTime.MinValue))
+            if (startDate.Date > endDate.Date && (startDate.Date != DateTime.MinValue && endDate.Date != DateTime.MinValue))
             {
                 throw new Exception("Invalid Input vaues(start Date > end Date)");
             }
-            var redableByUserAndFiltered = _projectService.GetAllProjectsByDate(startYearMonthDay, endYearMonthDay, User.GetUserId());
+            var redableByUserAndFiltered = _projectService.GetAllProjectsByDate(startDate.Date, endDate.Date, User.GetUserId());
             return View(redableByUserAndFiltered);
         }
         catch (Exception ex)

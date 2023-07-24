@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
 
 namespace KnowledgeBase.Logic.Services.Interfaces;
 
@@ -23,4 +24,6 @@ public interface IProjectService
     public void RemoveTagFromProject(TagDto tagDto, Guid projectId);
     public IEnumerable<ProjectDto> GetAllProjectsByTagName(TagDto tagDto, Guid userId);
     public IEnumerable<ProjectDto> GetAllProjectsByDate(DateTime startDate, DateTime endDate, Guid userId);
+
+    public Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId);
 }

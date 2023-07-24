@@ -6,16 +6,16 @@ namespace KnowledgeBase.Data.Configurations;
 
 public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 {
-	public void Configure(EntityTypeBuilder<Project> builder)
-	{
-		builder.HasKey(p => p.Id);
+    public void Configure(EntityTypeBuilder<Project> builder)
+    {
+        builder.HasKey(p => p.Id);
 
-		builder.Property(p => p.Name)
-			.HasMaxLength(100);
+        builder.Property(p => p.Name)
+            .HasMaxLength(100);
 
         builder.HasMany(p => p.Resources)
             .WithOne(r => r.Project)
-            .HasForeignKey(r => r.ProjectId);     
+            .HasForeignKey(r => r.ProjectId);
 
 		var defaultProject = new Project
 		{
@@ -29,4 +29,10 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 		builder.Property(p => p.CreationDate)
 			.HasDefaultValue(DateTime.Now);
 	}
+        builder.Property(p => p.Description)
+            .HasMaxLength(500);
+
+        builder.Property(p => p.StartDate)
+            .HasPrecision(3);
+    }
 }

@@ -3,6 +3,8 @@ using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
+using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 
@@ -35,10 +37,7 @@ public class ProjectService : IProjectService
 
     private void SavePermissions(IEnumerable<UserProjectPermission> permissions)
     {
-        foreach (var permission in permissions)
-        {
-            _permissionRepository.Add(permission);
-        }
+        _permissionRepository.AddRange(permissions);
     }
 
     private static ICollection<ProjectPermissionName> DefaultCreatePermissions
@@ -83,6 +82,7 @@ public class ProjectService : IProjectService
             };
             permissions.Add(perm2);
         }
+
         if (roleName == UserRoles.Admin.ToString())
         {
             UserProjectPermission perm = new UserProjectPermission
@@ -101,6 +101,7 @@ public class ProjectService : IProjectService
             };
             permissions.Add(perm1);
         }
+
         _permissionRepository.AddRange(permissions);
     }
 
@@ -198,7 +199,6 @@ public class ProjectService : IProjectService
 
     public void AddTagToProject(TagDto tagDto, Guid projectId)
     {
-
         ProjectTag projectTag = new ProjectTag
         {
             ProjectId = projectId,
@@ -256,5 +256,51 @@ public class ProjectService : IProjectService
 
         return filteredProjects.Select(p => _mapper.Map<ProjectDto>(p));
     }
+    public async Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId)
+    {
+        using var stream = new MemoryStream();
+        await dto.File.CopyToAsync(stream);
+        stream.Position = 0;
+
+        IFileReader reader = new CsvFileReader();
+        var projectsDtos = reader.ReadProjects(stream).ToList();
+
+        var existingProjects = _projectRepository.ProjectsExists(projectsDtos.Select(p => p.Name)).ToList();
+
+        if (existingProjects.Any())
+        {
+            var dtos = existingProjects.Select(p => new ProjectDto
+            {
+                Name = p.Name,
+                Description = p.Description,
+                StartDate = p.StartDate,
+            });
+            throw new ProjectsExistsInDatabaseException(dtos);
+        }
+
+        var projects = projectsDtos.Select(p =>
+            new Project
+            {
+                Name = p.Name,
+                Description = p.Description,
+                StartDate = p.StartDate,
+                IsDeleted = false,
+            }).ToList();
+        await _projectRepository.AddRangeAsync(projects);
+
+        var permissions = projects.SelectMany(_ => DefaultCreatePermissions,
+            (project, permission) =>
+                new UserProjectPermission
+                {
+                    PermissionName = permission,
+                    UserId = userId,
+                    ProjectId = project.Id,
+                });
+
+        await _permissionRepository.AddRangeAsync(permissions);
+
+        return projects.Select(p => p.Id);
+    }
+
     #endregion public methods
 }

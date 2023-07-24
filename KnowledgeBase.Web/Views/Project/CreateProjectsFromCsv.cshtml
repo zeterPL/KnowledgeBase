@@ -1,6 +1,10 @@
 ﻿@using KnowledgeBase.Logic.Dto.Project;
 @model CreateProjectsFromFileDto;
 
+@{
+    var existingProjects = Model.ExistingProjects ?? new ProjectDto[] { };
+}
+
 @using (Html.BeginForm("CreateProjectsFromCsv", "Project", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="mb-3">
@@ -8,7 +12,26 @@
         @Html.TextBox("File", "", new { type = "file", @class = "form-control", @id = "File" })
         @Html.ValidationMessageFor(m => m.File, string.Empty, new { @class = "form-text text-danger" })
     </div>
-    <div>
-        <input class="btn btn-primary" type="submit" value="Upload" />
+    <div class="mb-3">
+        <input class="btn btn-primary" type="submit" value="Upload"/>
+    </div>
+}
+
+@if (existingProjects.Any())
+{
+    <div class="mb-3">
+        <h3 class="text-danger">
+            Projects with these names already exists
+        </h3>
+        <ul class="list-group list-group-flush">
+            @foreach (var project in existingProjects)
+            {
+                <li class="list-group-item">
+                    <div>Name: @project.Name</div>
+                    <div>Description: @project.Description</div>
+                    <div>Start date: @project.StartDate</div>
+                </li>
+            }
+        </ul>
     </div>
 }

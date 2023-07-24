@@ -1,5 +1,7 @@
-﻿using KnowledgeBase.Logic.Dto;
+﻿using CsvHelper;
+using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
+using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
@@ -258,13 +260,28 @@ public class ProjectController : Controller
     [HttpGet]
     public IActionResult CreateProjectsFromCsv()
     {
-        return View();
+        return View(new CreateProjectsFromFileDto());
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateProjectsFromCsv(CreateProjectsFromFileDto dto)
     {
-        await _projectService.AddProjectsFromFileAsync(dto, User.GetUserId());
+        try
+        {
+            await _projectService.AddProjectsFromFileAsync(dto, User.GetUserId());
+        }
+        catch (ProjectsExistsInDatabaseException e)
+        {
+            return View(new CreateProjectsFromFileDto
+            {
+                ExistingProjects = e.Projects
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest();
+        }
+
         return RedirectToAction("List");
     }
 }

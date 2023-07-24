@@ -10,5 +10,7 @@ public interface IProjectRepository : IGenericRepository<Project>
 
     public bool ProjectExists(Guid id);
 
+    public bool ProjectExists(string name);
+
     public Task AddRangeAsync(IEnumerable<Project> projects);
 }

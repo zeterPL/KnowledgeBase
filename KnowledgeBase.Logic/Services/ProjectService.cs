@@ -4,6 +4,7 @@ using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
+using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
 
@@ -81,6 +82,7 @@ public class ProjectService : IProjectService
             };
             permissions.Add(perm2);
         }
+
         if (roleName == UserRoles.Admin.ToString())
         {
             UserProjectPermission perm = new UserProjectPermission
@@ -99,6 +101,7 @@ public class ProjectService : IProjectService
             };
             permissions.Add(perm1);
         }
+
         _permissionRepository.AddRange(permissions);
     }
 
@@ -218,26 +221,40 @@ public class ProjectService : IProjectService
         stream.Position = 0;
 
         IFileReader reader = new CsvFileReader();
-        var projectsDtos = reader.ReadProjects(stream);
+        var projectsDtos = reader.ReadProjects(stream).ToList();
+
+        var existingProjects = projectsDtos
+            .Where(p => _projectRepository.ProjectExists(p.Name))
+            .ToList();
+        if (existingProjects.Any())
+        {
+            var dtos = existingProjects.Select(p => new ProjectDto
+            {
+                Name = p.Name,
+                Description = p.Description,
+                StartDate = p.StartDate,
+            });
+            throw new ProjectsExistsInDatabaseException(dtos);
+        }
 
         var projects = projectsDtos.Select(p =>
-        new Project
-        {
-            Name = p.Name,
-            Description = p.Description,
-            StartDate = p.StartDate,
-            IsDeleted = false,
-        }).ToList();
+            new Project
+            {
+                Name = p.Name,
+                Description = p.Description,
+                StartDate = p.StartDate,
+                IsDeleted = false,
+            }).ToList();
         await _projectRepository.AddRangeAsync(projects);
 
         var permissions = projects.SelectMany(_ => DefaultCreatePermissions,
             (project, permission) =>
-            new UserProjectPermission
-            {
-                PermissionName = permission,
-                UserId = userId,
-                ProjectId = project.Id,
-            });
+                new UserProjectPermission
+                {
+                    PermissionName = permission,
+                    UserId = userId,
+                    ProjectId = project.Id,
+                });
 
         await _permissionRepository.AddRangeAsync(permissions);
 

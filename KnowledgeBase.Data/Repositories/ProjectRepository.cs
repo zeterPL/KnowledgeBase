@@ -38,6 +38,11 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
         return GetSet().Any(p => p.Id == id && !p.IsDeleted);
     }
 
+    public bool ProjectExists(string name)
+    {
+        return GetSet().Any(p => p.Name == name);
+    }
+
     public async Task AddRangeAsync(IEnumerable<Project> projects)
     {
         await GetSet().AddRangeAsync(projects);

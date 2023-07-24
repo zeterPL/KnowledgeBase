@@ -1,5 +1,6 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
 using System;
 using System.Collections.Generic;
 using System.Linq;

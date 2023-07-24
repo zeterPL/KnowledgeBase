@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
 
 namespace KnowledgeBase.Logic.Services.Interfaces
 {
@@ -24,6 +25,6 @@ namespace KnowledgeBase.Logic.Services.Interfaces
 
         public IList<UserDto> GetUsersNotInterestedInProject(Guid projectId);
         public List<UserDto> GetInterestedUsersByProjectId(Guid projectId);
-        public List<ProjectDto> GetInerestedProjectsByUserId(Guid userId);
+        public List<ProjectDto>? GetInerestedProjectsByUserId(Guid userId);
     }
 }

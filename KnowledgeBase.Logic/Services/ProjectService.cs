@@ -121,7 +121,7 @@ public class ProjectService : IProjectService
     public Guid Add(ProjectDto projectDto)
     {
         var newProject = _mapper.Map<Project>(projectDto);
-        newProject.CreationDate = DateTime.Now;
+        newProject.StartDate = DateTime.Now;
         var newProjectId = _projectRepository.Add(newProject);
 
         // Default permissions
@@ -250,8 +250,8 @@ public class ProjectService : IProjectService
         var projects = _projectRepository.GetAllReadableByUser(userId);
 
         var filteredProjects = projects.Where(project =>
-            (startDate == DateTime.MinValue || project.CreationDate >= startDate) &&
-            (endDate == DateTime.MinValue || project.CreationDate <= endDate)
+            (startDate == DateTime.MinValue || project.StartDate >= startDate) &&
+            (endDate == DateTime.MinValue || project.StartDate <= endDate)
         );
 
         return filteredProjects.Select(p => _mapper.Map<ProjectDto>(p));

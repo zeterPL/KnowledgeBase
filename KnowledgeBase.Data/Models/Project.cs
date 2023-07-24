@@ -10,7 +10,6 @@ public class Project : IDeletableEntity
     public DateTime StartDate { get; set; }
     public virtual ICollection<Resource> Resources { get; set; }
     public bool IsDeleted { get; set; }
-    public DateTime CreationDate { get; set; }
     public virtual ICollection<UserProjectPermission> UsersPermissions { get; set; }
     public virtual ICollection<ProjectTag> ProjectTags { get; set; }
     public virtual ICollection<ProjectInterestedUser> InterestedUsers { get; set; }

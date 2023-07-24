@@ -25,13 +25,13 @@ namespace KnowledgeBase.Web.Controllers
             _projectService = projectService;
         }
 
-        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
+       // [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Index()
         {
             return RedirectToAction("List");
         }
 
-        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
+        //[Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult List()
         {
             var users = _userService.GetAllUsers();
@@ -57,7 +57,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
+      //  [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Create()
         {
             var roles = _roleService.GetAll();
@@ -66,7 +66,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
+        //[Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Create(UserDto user)
         {
             Guid newUserId;

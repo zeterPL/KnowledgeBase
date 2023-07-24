@@ -1,17 +1,24 @@
-﻿@model KnowledgeBase.Logic.Dto.ProjectDto;
+﻿@using KnowledgeBase.Logic.Dto.Project;
+@model ProjectDto;
 
 @using (Html.BeginForm("Create", "Project", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    <div>
-        @Html.LabelFor(project => project.Name)
-        @Html.EditorFor(project => project.Name)
-        @Html.ValidationMessageFor(project => project.Name)
+    <div class="mb-3">
+        @Html.LabelFor(project => project.Name, new { @class = "form-label" })
+        @Html.EditorFor(project => project.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(project => project.Name, string.Empty, new { @class = "form-text text-danger" })
     </div>
-    <div>
-       
+    <div class="mb-3">
+        @Html.LabelFor(project => project.Description, new { @class = "form-label" })
+        @Html.EditorFor(project => project.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(project => project.Description, string.Empty, new { @class = "form-text text-danger" })
     </div>
-    
+    <div class="mb-3">
+        @Html.LabelFor(project => project.StartDate, new { @class = "form-label" })
+        @Html.TextBoxFor(project =>project.StartDate, String.Format("{0:d}", Model.StartDate.ToShortDateString()), new { @class = "datefield", type = "date"  })
+        @Html.ValidationMessageFor(project => project.StartDate, string.Empty, new { @class = "form-text text-danger" })
+    </div>
     <div>
         <input type="submit" value="Save"/>
     </div>

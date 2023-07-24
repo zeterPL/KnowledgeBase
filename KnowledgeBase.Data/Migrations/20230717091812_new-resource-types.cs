@@ -16,17 +16,17 @@ namespace KnowledgeBase.Data.Migrations
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("6eefdab9-5ddc-4629-b53f-d497da886e0b"));
+                keyValue: new Guid("76690512-155d-4a50-a376-c682aa4cd066"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("79f89f50-d520-49f1-bbdf-adb13a5f8a96"));
+                keyValue: new Guid("8559a4db-a374-4545-960b-600ae779133e"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("9abfb461-0a83-4094-8e36-171d84aa9d1e"));
+                keyValue: new Guid("bb1e8e41-26b2-4554-ad70-4e5a98d63254"));
 
             migrationBuilder.AlterColumn<string>(
                 name: "AzureStorageAbsolutePath",

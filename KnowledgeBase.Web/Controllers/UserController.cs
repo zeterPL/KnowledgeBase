@@ -224,12 +224,17 @@ namespace KnowledgeBase.Web.Controllers
             UserAccountViewModel vm = new UserAccountViewModel();
             var user = _userService.GetById(userId);
             var role = _roleService.Get(user.RoleId);
-            if(user is null || role is null)
+            var permissions = _permissionService.GetPermissionsbyUserId(user.Id);
+            var interestedProjects = _userService.GetInerestedProjectsByUserId(user.Id);
+
+            if (user is null || role is null)
             {
                 return NotFound();
             }
             vm.User = user; 
             vm.Role = role;
+            vm.Permissions = permissions.ToList();
+            vm.InterestedProjects = interestedProjects;
 
             return View(vm);
         }

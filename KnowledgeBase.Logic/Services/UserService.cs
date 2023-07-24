@@ -5,6 +5,8 @@ using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 
 namespace KnowledgeBase.Logic.Services
 {
@@ -202,6 +204,15 @@ namespace KnowledgeBase.Logic.Services
             return notInterestedUsers;
         }
 
+        public List<ProjectDto>? GetInerestedProjectsByUserId(Guid userId)
+        {
+            var interestedByUser = _projectInterestedUserRepository.GetAll()
+                .Where(x => x.UserId == userId).Select(x => x.ProjectId);
+            var result = _projectRepository.GetAll().Where(x => interestedByUser.Contains(x.Id))
+                .Select(x => x.ToProjectDto()).ToList();
+            return result;
+        }
+
         public bool SoftDelete(UserDto user)
         {
             throw new NotImplementedException();
@@ -219,5 +230,6 @@ namespace KnowledgeBase.Logic.Services
             _userRepository.Update(user);
             return user.ToUserDto();
         }
+
     }
 }

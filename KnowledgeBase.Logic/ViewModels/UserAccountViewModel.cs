@@ -12,5 +12,7 @@ namespace KnowledgeBase.Logic.ViewModels
     {
         public UserDto User { get; set; }
         public RoleDto Role { get; set; }
+        public List<PermissionDto> Permissions { get; set; }
+        public List<ProjectDto> InterestedProjects { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
-using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Web.Controllers;

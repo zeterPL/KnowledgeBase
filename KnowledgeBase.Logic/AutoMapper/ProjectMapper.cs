@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using KnowledgeBase.Data.Models;
-using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
 
 namespace KnowledgeBase.Logic.AutoMapper;
 

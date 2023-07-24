@@ -16,17 +16,17 @@ namespace KnowledgeBase.Data.Migrations
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("07e5c474-1395-4b16-840b-58b5a69fe53d"));
+                keyValue: new Guid("809d55dc-266c-4171-adc5-81dd92d4d23a"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("3632deb5-0642-4d30-b5d8-0a21028e1d1a"));
+                keyValue: new Guid("f09c9f85-217a-450d-be6a-21cdbdae4621"));
 
             migrationBuilder.DeleteData(
                 table: "Role",
                 keyColumn: "Id",
-                keyValue: new Guid("ddd1b4a9-7db5-463d-af45-a166d97d9ed0"));
+                keyValue: new Guid("fd728481-ecbd-45f4-9ad2-03698c1bcb4c"));
 
             migrationBuilder.CreateTable(
                 name: "ProjectInterestedUser",

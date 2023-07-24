@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Logic.Dto.Project;
 
 namespace KnowledgeBase.Logic.Dto.Resources.Interfaces;
 

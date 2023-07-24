@@ -225,11 +225,12 @@ public class ProjectService : IProjectService
         {
             Name = p.Name,
             Description = p.Description,
+            StartDate = p.StartDate,
             IsDeleted = false,
         }).ToList();
         await _projectRepository.AddRangeAsync(projects);
 
-        var permissions = projects.SelectMany(project => DefaultCreatePermissions,
+        var permissions = projects.SelectMany(_ => DefaultCreatePermissions,
             (project, permission) =>
             new UserProjectPermission
             {

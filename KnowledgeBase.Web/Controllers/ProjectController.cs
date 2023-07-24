@@ -1,8 +1,6 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
-using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
-using KnowledgeBase.Logic.ViewModels;
 using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
@@ -18,14 +16,14 @@ public class ProjectController : Controller
     private readonly IUserService _userService;
     private readonly IProjectInterestedUserService _projectInterestedUserService;
 
-    public ProjectController(IProjectService projectService, ILogger<ProjectController> logger, 
-		ITagService tagService, IUserService userService, IProjectInterestedUserService projectInterestedUserService)
-	{
-		_projectService = projectService;
-		_logger = logger;
+    public ProjectController(IProjectService projectService, ILogger<ProjectController> logger,
+        ITagService tagService, IUserService userService, IProjectInterestedUserService projectInterestedUserService)
+    {
+        _projectService = projectService;
+        _logger = logger;
         _tagService = tagService;
-		_userService = userService;
-		_projectInterestedUserService = projectInterestedUserService;
+        _userService = userService;
+        _projectInterestedUserService = projectInterestedUserService;
     }
 
     public IActionResult Index()
@@ -72,6 +70,7 @@ public class ProjectController : Controller
             {
                 return View(project);
             }
+
             _projectService.Add(project);
             return RedirectToAction("List");
         }
@@ -186,8 +185,10 @@ public class ProjectController : Controller
                     var NewId = _tagService.Add(tag);
                     tag.Id = NewId;
                 }
+
                 _projectService.AddTagToProject(tag, addTagDto.ProjectId);
             }
+
             return RedirectToAction("ManageTags", new { id = addTagDto.ProjectId });
         }
 
@@ -203,44 +204,45 @@ public class ProjectController : Controller
         return RedirectToAction("ManageTags", new { id = ProjectId });
     }
 
-	[HttpGet]
-	public IActionResult AssignUsers(Guid id)
-	{
-		var users = _userService.GetUsersNotInterestedInProject(id);
-		var addedUsers = _userService.GetInterestedUsersByProjectId(id);
-		ViewBag.Users = users;
-		ViewBag.AddedUsers = addedUsers;
-		ViewBag.ProjectId = id;
-		var selectedUsers = new List<Guid>();
-		return View(selectedUsers);
-	}
+    [HttpGet]
+    public IActionResult AssignUsers(Guid id)
+    {
+        var users = _userService.GetUsersNotInterestedInProject(id);
+        var addedUsers = _userService.GetInterestedUsersByProjectId(id);
+        ViewBag.Users = users;
+        ViewBag.AddedUsers = addedUsers;
+        ViewBag.ProjectId = id;
+        var selectedUsers = new List<Guid>();
+        return View(selectedUsers);
+    }
 
-	[HttpPost]
-	public IActionResult AssignUsers(List<Guid> selectedUsers, Guid id)
-	{
-		_projectInterestedUserService.AddInterestedUsersToSpecificProjectByUsersIds(selectedUsers, id);
-		return RedirectToAction("List");
-	}
+    [HttpPost]
+    public IActionResult AssignUsers(List<Guid> selectedUsers, Guid id)
+    {
+        _projectInterestedUserService.AddInterestedUsersToSpecificProjectByUsersIds(selectedUsers, id);
+        return RedirectToAction("List");
+    }
 
-	[HttpGet]
+    [HttpGet]
     public IActionResult EditInterestedUser(Guid userId, Guid projectId)
-	{
-	    var interested = _projectInterestedUserService.GetInterestedUserByUserIdAndProjectId(userId, projectId);
-		ViewBag.UserId = interested.UserId;
-		ViewBag.ProjectId = interested.ProjectId;
-		ViewBag.Id = interested.Id;
-		return View(interested);
-	}
+    {
+        var interested = _projectInterestedUserService.GetInterestedUserByUserIdAndProjectId(userId, projectId);
+        ViewBag.UserId = interested.UserId;
+        ViewBag.ProjectId = interested.ProjectId;
+        ViewBag.Id = interested.Id;
+        return View(interested);
+    }
 
     [HttpPost]
     public IActionResult EditInterestedUser(ProjectInterestedUserDto interested)
     {
-        if(ModelState.IsValid)
-		{
-			_projectInterestedUserService.Update(interested);
-			return RedirectToAction("AssignUsers", new { id = interested.ProjectId });
-		}
-		return View(interested);
+        if (ModelState.IsValid)
+        {
+            _projectInterestedUserService.Update(interested);
+            return RedirectToAction("AssignUsers", new { id = interested.ProjectId });
+        }
+
+        return View(interested);
     }
 
     [HttpGet]
@@ -248,9 +250,9 @@ public class ProjectController : Controller
     {
         var interested = _projectInterestedUserService.GetInterestedUserByUserIdAndProjectId(userId, projectId);
 
-		_projectInterestedUserService.Delete(interested);	
+        _projectInterestedUserService.Delete(interested);
 
-		return RedirectToAction("AssignUsers", new { id = projectId });
+        return RedirectToAction("AssignUsers", new { id = projectId });
     }
 
     [HttpGet]

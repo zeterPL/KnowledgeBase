@@ -1,5 +1,6 @@
 ﻿using Humanizer;
 using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

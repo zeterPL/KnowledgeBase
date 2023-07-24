@@ -12,5 +12,8 @@ public interface IProjectRepository : IGenericRepository<Project>
 
     public bool ProjectExists(string name);
 
+    /// <returns>Projects that exist in database</returns>
+    public IEnumerable<Project> ProjectsExists(IEnumerable<string> names);
+
     public Task AddRangeAsync(IEnumerable<Project> projects);
 }

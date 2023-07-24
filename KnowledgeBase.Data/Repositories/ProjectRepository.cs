@@ -25,9 +25,9 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
         // Get all projects which user can read
         var projects = GetSet()
             .Join(userProjectPermissions,
-            project => project.Id,
-            permission => permission.ProjectId,
-            (project, permission) => project)
+                project => project.Id,
+                permission => permission.ProjectId,
+                (project, permission) => project)
             .Where(project => project.IsDeleted == false);
 
         return projects;
@@ -41,6 +41,12 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
     public bool ProjectExists(string name)
     {
         return GetSet().Any(p => p.Name == name);
+    }
+
+    public IEnumerable<Project> ProjectsExists(IEnumerable<string> names)
+    {
+        var existingProjects = GetSet().Where(p => names.Contains(p.Name));
+        return existingProjects;
     }
 
     public async Task AddRangeAsync(IEnumerable<Project> projects)

@@ -223,9 +223,8 @@ public class ProjectService : IProjectService
         IFileReader reader = new CsvFileReader();
         var projectsDtos = reader.ReadProjects(stream).ToList();
 
-        var existingProjects = projectsDtos
-            .Where(p => _projectRepository.ProjectExists(p.Name))
-            .ToList();
+        var existingProjects = _projectRepository.ProjectsExists(projectsDtos.Select(p => p.Name)).ToList();
+
         if (existingProjects.Any())
         {
             var dtos = existingProjects.Select(p => new ProjectDto

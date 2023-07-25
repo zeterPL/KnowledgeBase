@@ -28,6 +28,11 @@ namespace KnowledgeBase.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -36,17 +41,18 @@ namespace KnowledgeBase.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Project");
+                    b.HasIndex("OwnerId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"),
-                            IsDeleted = false,
-                            Name = "Deafult project"
-                        });
+                    b.ToTable("Project");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectInterestedUser", b =>
@@ -157,19 +163,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d1065a82-edb7-4f0c-ba60-f7414c74a5ae"),
+                            Id = new Guid("ecc3fda9-c37a-40f2-91a7-c4c79b749843"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("391bd4e4-7fac-485b-b716-cb9659a106b8"),
+                            Id = new Guid("0a005301-0d16-436e-a38a-f1eeb5097a0f"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("c3a3470a-bfa0-43b5-a960-6fba42901c42"),
+                            Id = new Guid("d261a088-45a3-4cb3-b9b4-ec0982a335c9"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -507,6 +513,17 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasDiscriminator().HasValue("NoteResource");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Project", b =>
+                {
+                    b.HasOne("KnowledgeBase.Data.Models.User", "Owner")
+                        .WithMany("ProjectsOwned")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectInterestedUser", b =>
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
@@ -691,6 +708,8 @@ namespace KnowledgeBase.Data.Migrations
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
                 {
                     b.Navigation("ProjectInteresteds");
+
+                    b.Navigation("ProjectsOwned");
 
                     b.Navigation("ProjectsPermissions");
 

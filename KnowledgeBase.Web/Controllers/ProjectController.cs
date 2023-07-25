@@ -291,4 +291,19 @@ public class ProjectController : Controller
 
         return RedirectToAction("List");
     }
+
+    [HttpGet]
+    public IActionResult RequestPermission()
+    {
+        return View(new RequestPermissionDto());
+    }
+
+    [HttpPost]
+    [Route("Project/RequestPermission/{projectId:guid}")]
+    public async Task<IActionResult> RequestPermission(Guid projectId, RequestPermissionDto requestPermissionDto)
+    {
+        requestPermissionDto.ProjectId = projectId;
+        await _projectService.RequestPermissionsAsync(requestPermissionDto);
+        return View();
+    }
 }

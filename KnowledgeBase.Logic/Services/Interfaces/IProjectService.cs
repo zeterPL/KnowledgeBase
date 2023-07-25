@@ -24,4 +24,6 @@ public interface IProjectService
     public void RemoveTagFromProject(TagDto tagDto, Guid projectId);
 
     public Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId);
+
+    public Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto);
 }

@@ -267,5 +267,10 @@ public class ProjectService : IProjectService
         return projects.Select(p => p.Id);
     }
 
+    public Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto)
+    {
+        throw new NotImplementedException();
+    }
+
     #endregion public methods
 }

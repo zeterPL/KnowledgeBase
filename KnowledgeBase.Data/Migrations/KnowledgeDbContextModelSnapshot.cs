@@ -28,10 +28,10 @@ namespace KnowledgeBase.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 21, 10, 5, 11, 753, DateTimeKind.Local).AddTicks(976));
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -41,15 +41,18 @@ namespace KnowledgeBase.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTime>("StartDate")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Project");
+                    b.ToTable("Project", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"),
-                            CreationDate = new DateTime(2023, 7, 21, 10, 5, 11, 753, DateTimeKind.Local).AddTicks(727),
                             IsDeleted = false,
                             Name = "Deafult project"
                         });
@@ -77,7 +80,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectInterestedUser");
+                    b.ToTable("ProjectInterestedUser", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
@@ -92,7 +95,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("ProjectTag");
+                    b.ToTable("ProjectTag", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
@@ -134,7 +137,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Resource");
+                    b.ToTable("Resource", (string)null);
 
                     b.HasDiscriminator<string>("ResourceType").HasValue("Resource");
 
@@ -158,7 +161,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
 
                     b.HasData(
                         new
@@ -193,7 +196,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tag", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
@@ -299,7 +302,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserProjectPermission");
+                    b.ToTable("UserProjectPermission", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
@@ -324,7 +327,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserResourcePermission");
+                    b.ToTable("UserResourcePermission", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>

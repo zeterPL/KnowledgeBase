@@ -17,15 +17,6 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .WithOne(r => r.Project)
             .HasForeignKey(r => r.ProjectId);
 
-		var defaultProject = new Project
-		{
-			Id = Guid.Parse("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"),
-			Name = "Deafult project",
-			IsDeleted = false,
-            StartDate = DateTime.Now,
-		};
-		builder.HasData(defaultProject);
-
 		builder.Property(p => p.StartDate)
 			.HasDefaultValue(DateTime.Now);
 	

@@ -336,15 +336,11 @@ public class ProjectController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult FoundProjectByDate(DateTime startDate, DateTime endDate)
+    public IActionResult FoundProjectByDate(ProjectDto project)
     {
         try
         {
-            if (startDate.Date > endDate.Date && (startDate.Date != DateTime.MinValue && endDate.Date != DateTime.MinValue))
-            {
-                throw new Exception("Invalid Input vaues(start Date > end Date)");
-            }
-            var redableByUserAndFiltered = _projectService.GetAllProjectsByDate(startDate.Date, endDate.Date, User.GetUserId());
+           var redableByUserAndFiltered = _projectService.GetAllProjectsByDate(project.DateFrom, project.DateTo, User.GetUserId());
             return View(redableByUserAndFiltered);
         }
         catch (Exception ex)

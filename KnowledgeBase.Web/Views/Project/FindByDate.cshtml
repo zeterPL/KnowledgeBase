@@ -5,17 +5,20 @@
 @using (Html.BeginForm("FoundProjectByDate", "Project", FormMethod.Post))
 {
     <h3>select a time frame for projects</h3>
+    
 <div>
         Start Date:<br/>
-        <input type="date" name="startDate"/>
+        <input class="form-control" asp-for="DateFrom" asp-format="{0:yyyy-MM-dd}" />
         <br/>
         <br />
 
         End Date:
         <br />
-        <input type="date" name="endDate" />
+        <input class="form-control" asp-for="DateTo" />
         <br />
         <br />
         <a asp-route="FoundProject"><input type="submit" value="Save" /></a>
 </div>
+
+    
 }

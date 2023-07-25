@@ -22,8 +22,8 @@ public interface IProjectService
     public void AddTagToProject(TagDto tagDto, Guid projectId);
 
     public void RemoveTagFromProject(TagDto tagDto, Guid projectId);
-    public IEnumerable<ProjectDto> GetAllProjectsByTagName(TagDto tagDto, Guid userId);
-    public IEnumerable<ProjectDto> GetAllProjectsByDate(DateTime startDate, DateTime endDate, Guid userId);
 
+    public IEnumerable<ProjectDto> GetAllProjectsByDate(DateTime? startDate, DateTime? endDate, Guid userId);
+    public IEnumerable<ProjectDto> GetAllProjectsByTagName(TagDto tagDto, Guid userId);
     public Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId);
 }

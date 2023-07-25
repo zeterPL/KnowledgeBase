@@ -7,6 +7,7 @@ using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using NLog.Filters;
 
 namespace KnowledgeBase.Logic.Services;
 
@@ -245,16 +246,28 @@ public class ProjectService : IProjectService
         return findproject.Select(p => _mapper.Map<ProjectDto>(p));
     }
 
-    public IEnumerable<ProjectDto> GetAllProjectsByDate(DateTime startDate, DateTime endDate, Guid userId)
+    public IEnumerable<ProjectDto>? GetAllProjectsByDate(DateTime? startDate, DateTime? endDate, Guid userId)
     {
         var projects = _projectRepository.GetAllReadableByUser(userId);
 
-        var filteredProjects = projects.Where(project =>
-            (startDate == DateTime.MinValue || project.StartDate >= startDate) &&
-            (endDate == DateTime.MinValue || project.StartDate <= endDate)
-        );
+        if (startDate.HasValue && endDate.HasValue)
+        {
+            projects = projects.Where(x => x.StartDate >= startDate && x.StartDate <= endDate);
+        }
+        else if (startDate.HasValue && endDate == null)
+        {
+            projects = projects.Where(x => x.StartDate >= startDate);
+        }
+        else if (startDate == null && endDate.HasValue)
+        {
+            projects = projects.Where(x => x.StartDate <= endDate);
+        }
+        else
+        {
+            return Enumerable.Empty<ProjectDto>();
+        }
 
-        return filteredProjects.Select(p => _mapper.Map<ProjectDto>(p));
+        return projects.Select(p => _mapper.Map<ProjectDto>(p));
     }
     public async Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId)
     {

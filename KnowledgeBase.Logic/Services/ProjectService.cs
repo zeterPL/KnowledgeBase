@@ -311,21 +311,18 @@ public class ProjectService : IProjectService
 
         if (project.Name != null)
         {
-             List<ProjectDto> findproject = _tagRepository.GetAll()
-            .Where(tag => tag.Name.Equals(project.Name))
-            .Select(tag => tag.Id)
-            .SelectMany(tagId => _projectTagRepository.GetByTagtId(tagId))
-            .Join(projects, project1 => project1.ProjectId, userProject => userProject.Id, (project1, userProject) => Get(project1.ProjectId))
-            .ToList();
+            List<ProjectDto> findproject = _tagRepository.GetAll()
+       .Where(tag => tag.Name.Equals(project.Name))
+       .Select(tag => tag.Id)
+       .SelectMany(tagId => _projectTagRepository.GetByTagtId(tagId))
+       .Join(projects, projectJoin => projectJoin.ProjectId, userProject => userProject.Id, (projectJoin, userProject) => Get(projectJoin.ProjectId))
+       .ToList();
 
-            projects = projects.Where(x => x.Name.Equals(project.Name) || x.Description.Equals(project.Name) || x.Id.Equals(findproject.FirstOrDefault().Id));
+            projects = projects.Where(x => x.Name.Equals(project.Name) || x.Description.Equals(project.Name) || findproject.Any(fp => x.Id.Equals(fp.Id)));
+
         }
+
         return projects.Select(p => _mapper.Map<ProjectDto>(p)).ToList();
     }
-
-
-
-
-
     #endregion public methods
 }

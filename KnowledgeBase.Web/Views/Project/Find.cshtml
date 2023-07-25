@@ -5,7 +5,7 @@
 {
 @Html.AntiForgeryToken()
 <div>
-        Enter the string that contains the name<br />
+        Enter name, description on Onetag name<br />
         @Html.EditorFor(Model => Model.Name)
         @Html.ValidationMessageFor(Model => Model.Name)
 
@@ -22,7 +22,7 @@
         <br />
         <br />
 
-        Enter the tag's name<br />
+        Enter the name of the tag, separating it with a space<br />
         @Html.EditorFor(Model => Model.Tag.Name)
         @Html.ValidationMessageFor(Model => Model.Tag.Name)<br /><br /><br />
         <a asp-route="FoundProject"><input type="submit" value="Find Projects" /></a>

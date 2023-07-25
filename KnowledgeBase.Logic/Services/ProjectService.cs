@@ -311,11 +311,16 @@ public class ProjectService : IProjectService
 
         if (project.Name != null)
         {
-            projects = projects.Where(x => x.Name.Equals(project.Name) || x.Description.Equals(project.Name));
+             List<ProjectDto> findproject = _tagRepository.GetAll()
+            .Where(tag => tag.Name.Equals(project.Name))
+            .Select(tag => tag.Id)
+            .SelectMany(tagId => _projectTagRepository.GetByTagtId(tagId))
+            .Join(projects, project1 => project1.ProjectId, userProject => userProject.Id, (project1, userProject) => Get(project1.ProjectId))
+            .ToList();
+
+            projects = projects.Where(x => x.Name.Equals(project.Name) || x.Description.Equals(project.Name) || x.Id.Equals(findproject.FirstOrDefault().Id));
         }
-
         return projects.Select(p => _mapper.Map<ProjectDto>(p)).ToList();
-
     }
 
 

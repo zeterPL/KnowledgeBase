@@ -5,22 +5,22 @@
     UserDto user = Model;
 }
 
-@using (Html.BeginForm("Edit", "User", FormMethod.Post))
+@using (Html.BeginForm("Edit", "User", FormMethod.Post, new {@class = "form"}))
 {
     @Html.AntiForgeryToken()
-    <div>
-        @Html.LabelFor(user => user.Email)
-        @Html.EditorFor(user => user.Email)
+    <div class="mb-3">
+        @Html.LabelFor(user => user.Email, new { @class = "form-label" })
+        @Html.TextBoxFor(user => user.Email, new { @class = "form-control" })
         @Html.ValidationMessageFor(user => user.Email)
     </div>
-    <div>
-        @Html.LabelFor(user => user.FirstName)
-        @Html.EditorFor(user => user.FirstName)
+    <div class="mb-3">
+        @Html.LabelFor(user => user.FirstName, new { @class = "form-label" })
+        @Html.TextBoxFor(user => user.FirstName, new { @class = "form-control" })
         @Html.ValidationMessageFor(user => user.FirstName)
     </div>
-    <div>
-        @Html.LabelFor(user => user.LastName)
-        @Html.EditorFor(user => user.LastName)
+    <div class="mb-3">
+        @Html.LabelFor(user => user.LastName, new { @class = "form-label" })
+        @Html.TextBoxFor(user => user.LastName, new { @class = "form-control" })
         @Html.ValidationMessageFor(user => user.LastName)
     </div>
 
@@ -28,6 +28,6 @@
    
 
     <div>
-        <input type="submit" value="Save" />
+        <input type="submit" value="Save" class="btn - btn-primary"/>
     </div>
 }

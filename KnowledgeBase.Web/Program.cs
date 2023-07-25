@@ -75,7 +75,8 @@ try
 
     app.MapControllerRoute(
         name: "default",
-        pattern: "{controller}/{action=Index}/{id?}");
+        pattern: "{controller}/{action=Index}/{id?}",
+        new { controller = "Home", action = "Index"});
 
     app.Run();
 }

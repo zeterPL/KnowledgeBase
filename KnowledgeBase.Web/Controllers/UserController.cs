@@ -230,7 +230,7 @@ namespace KnowledgeBase.Web.Controllers
             }
 
             var permissions = _permissionService.GetPermissionsbyUserId(user.Id);
-            var interestedProjects = _userService.GetInerestedProjectsByUserId(user.Id);
+            var interestedProjects = _userService.GetInterestedProjectsByUserId(user.Id);
            
             vm.User = user; 
             vm.Role = role;

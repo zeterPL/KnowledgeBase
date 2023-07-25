@@ -208,7 +208,7 @@ namespace KnowledgeBase.Logic.Services
             return notInterestedUsers;
         }
 
-        public IList<ProjectDto>? GetInerestedProjectsByUserId(Guid userId)
+        public IList<ProjectDto>? GetInterestedProjectsByUserId(Guid userId)
         {
             var interestedByUser = _projectInterestedUserRepository.GetAll()
                 .Where(x => x.UserId == userId).Select(x => x.ProjectId);

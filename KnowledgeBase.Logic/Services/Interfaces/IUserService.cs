@@ -27,6 +27,6 @@ namespace KnowledgeBase.Logic.Services.Interfaces
 
         public IList<UserDto> GetInterestedUsersByProjectId(Guid projectId);
 
-        public IList<ProjectDto>? GetInerestedProjectsByUserId(Guid userId);
+        public IList<ProjectDto>? GetInterestedProjectsByUserId(Guid userId);
     }
 }

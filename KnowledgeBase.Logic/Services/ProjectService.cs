@@ -7,7 +7,6 @@ using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
-using NLog.Filters;
 
 namespace KnowledgeBase.Logic.Services;
 
@@ -216,59 +215,7 @@ public class ProjectService : IProjectService
         _projectTagRepository.RemoveByTagAndProjectId(tagDto.Id, projectId);
     }
 
-    public IEnumerable<ProjectDto> GetAllProjectsByTagName(TagDto tagDto, Guid userId)
-    {
-        string[] tagsSplitFromInput;
 
-        if (tagDto.Name.Contains(", "))
-        {
-            tagsSplitFromInput = tagDto.Name.Split(", ");
-        }
-        else
-        {
-            tagsSplitFromInput = new string[] { tagDto.Name };
-        }
-
-        var tags = _tagRepository.GetAll()
-            .Where(tag => tagsSplitFromInput.Contains(tag.Name))
-            .ToList();
-
-        var tagsId = tags.Select(tag => tag.Id).ToList();
-
-        var projects = tagsId.SelectMany(t => _projectTagRepository.GetByTagtId(t)).ToList();
-
-        var allRedableByUser = _projectRepository.GetAllReadableByUser(userId);
-
-        var findproject = projects
-            .Where(project => allRedableByUser.Any(userProject => userProject.Id == project.ProjectId))
-            .Select(project => Get(project.ProjectId))
-            .ToList();
-        return findproject.Select(p => _mapper.Map<ProjectDto>(p));
-    }
-
-    public IEnumerable<ProjectDto>? GetAllProjectsByDate(DateTime? startDate, DateTime? endDate, Guid userId)
-    {
-        var projects = _projectRepository.GetAllReadableByUser(userId);
-
-        if (startDate.HasValue && endDate.HasValue)
-        {
-            projects = projects.Where(x => x.StartDate >= startDate && x.StartDate <= endDate);
-        }
-        else if (startDate.HasValue && endDate == null)
-        {
-            projects = projects.Where(x => x.StartDate >= startDate);
-        }
-        else if (startDate == null && endDate.HasValue)
-        {
-            projects = projects.Where(x => x.StartDate <= endDate);
-        }
-        else
-        {
-            return Enumerable.Empty<ProjectDto>();
-        }
-
-        return projects.Select(p => _mapper.Map<ProjectDto>(p));
-    }
     public async Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId)
     {
         using var stream = new MemoryStream();
@@ -314,6 +261,74 @@ public class ProjectService : IProjectService
 
         return projects.Select(p => p.Id);
     }
+
+
+    public IEnumerable<ProjectDto>? FindProjects(ProjectDto project, Guid userId)
+    {
+        var projects = _projectRepository.GetAllReadableByUser(userId);
+
+        if (project.Tag.Name != null)
+        {
+            string[] tagsSplitFromInput;
+
+            if (project.Tag.Name.Contains(" "))
+            {
+                tagsSplitFromInput = project.Tag.Name.Split(" ");
+            }
+            else
+            {
+                tagsSplitFromInput = new string[] { project.Tag.Name };
+            }
+
+            var tags = _tagRepository.GetAll()
+                .Where(tag => tagsSplitFromInput.Contains(tag.Name))
+                .ToList();
+
+            var tagsId = tags.Select(tag => tag.Id).ToList();
+
+            var projectsResult = tagsId.SelectMany(t => _projectTagRepository.GetByTagtId(t)).ToList();
+
+            var allRedableByUser = _projectRepository.GetAllReadableByUser(userId);
+
+            var findproject = projectsResult
+                .Where(project => allRedableByUser.Any(userProject => userProject.Id == project.ProjectId))
+                .Select(project => Get(project.ProjectId))
+                .ToList();
+
+            projects = findproject.Select(p => _projectRepository.Get((Guid)p.Id));
+        }
+
+        if (project.DateFrom != null || project.DateTo != null)
+        {
+            if (project.DateFrom.HasValue && project.DateTo.HasValue)
+            {
+                projects = projects.Where(x => x.StartDate >= project.DateTo && x.StartDate <= project.DateTo);
+            }
+            else if (project.DateFrom.HasValue && project.DateTo == null)
+            {
+                projects = projects.Where(x => x.StartDate >= project.DateFrom);
+            }
+            else if (project.DateFrom == null && project.DateTo.HasValue)
+            {
+                projects = projects.Where(x => x.StartDate <= project.DateTo);
+            }
+            else
+            {
+                return Enumerable.Empty<ProjectDto>();
+            }
+        }
+
+        if (project.Name != null)
+        {
+            projects = projects.Where(x => x.Name.Equals(project.Name) || x.Description.Equals(project.Name));
+        }
+
+        return projects.Select(p => _mapper.Map<ProjectDto>(p));
+    }
+
+
+
+
 
     #endregion public methods
 }

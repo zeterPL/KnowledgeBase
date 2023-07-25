@@ -5,9 +5,26 @@
 {
 @Html.AntiForgeryToken()
 <div>
-        Enter the string that contains the name
+        Enter the string that contains the name<br />
         @Html.EditorFor(Model => Model.Name)
         @Html.ValidationMessageFor(Model => Model.Name)
-        <a asp-route="FoundProject"><input type="submit" value="Find" /></a>
+
+        <br />
+        <br />
+        Start Date:<br />
+        <input class="form-control" asp-for="DateFrom" asp-format="{0:yyyy-MM-dd}" />
+        <br />
+        <br />
+
+        End Date:
+        <br />
+        <input class="form-control" asp-for="DateTo" />
+        <br />
+        <br />
+
+        Enter the tag's name<br />
+        @Html.EditorFor(Model => Model.Tag.Name)
+        @Html.ValidationMessageFor(Model => Model.Tag.Name)<br /><br /><br />
+        <a asp-route="FoundProject"><input type="submit" value="Find Projects" /></a>
     </div>
 }

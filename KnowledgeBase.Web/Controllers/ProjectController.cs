@@ -297,7 +297,7 @@ public class ProjectController : Controller
         try
         {
             _logger.LogInformation("Project Found");
-            var projects = _projectService.GetAllReadableByUser(User.GetUserId()).Where(p => p.Name.Contains(project.Name));
+            var projects = _projectService.FindProjects(project, User.GetUserId());
             return View(projects);
         }
         catch (Exception ex)
@@ -311,49 +311,4 @@ public class ProjectController : Controller
     {
         return View();
     }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult FoundProjectByTag(TagDto tagDto)
-    {
-        try
-        {
-            _logger.LogInformation("Project Found");
-            var redableByUserAndFiltered = _projectService.GetAllProjectsByTagName(tagDto, User.GetUserId());
-            return View(redableByUserAndFiltered);
-        }
-        catch(Exception ex)
-        {
-            _logger.LogError(ex.Message);
-            return NotFound("there is no project with this tagName");
-        }
-    }
-
-    public IActionResult FindByDate()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult FoundProjectByDate(ProjectDto project)
-    {
-        try
-        {
-           var redableByUserAndFiltered = _projectService.GetAllProjectsByDate(project.DateFrom, project.DateTo, User.GetUserId());
-            return View(redableByUserAndFiltered);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.Message);
-            return NotFound(ex.Message);
-        }
-    }
-
-    
-    public IActionResult FoundProject(IEnumerable<ProjectDto> projectsToDisplay)
-    {
-        return View(projectsToDisplay);
-    }
-
 }

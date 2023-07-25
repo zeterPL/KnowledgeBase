@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Logic.AzureServices;
+using KnowledgeBase.Logic.AzureServices.Interfaces;
 using KnowledgeBase.Logic.ResourceHandlers;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;

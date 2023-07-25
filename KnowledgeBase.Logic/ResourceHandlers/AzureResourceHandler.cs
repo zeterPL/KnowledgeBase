@@ -2,6 +2,7 @@
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Logic.AzureServices;
 using KnowledgeBase.Logic.AzureServices.File;
+using KnowledgeBase.Logic.AzureServices.Interfaces;
 using KnowledgeBase.Logic.Dto.Resources.AzureResource;
 using Microsoft.AspNetCore.Http;
 

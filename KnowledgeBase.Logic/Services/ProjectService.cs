@@ -263,22 +263,15 @@ public class ProjectService : IProjectService
     }
 
 
-    public IEnumerable<ProjectDto>? FindProjects(ProjectDto project, Guid userId)
+    public IEnumerable<ProjectDto> FindProjects(ProjectDto project, Guid userId)
     {
         var projects = _projectRepository.GetAllReadableByUser(userId);
 
         if (project.Tag.Name != null)
         {
-            string[] tagsSplitFromInput;
-
-            if (project.Tag.Name.Contains(" "))
-            {
-                tagsSplitFromInput = project.Tag.Name.Split(" ");
-            }
-            else
-            {
-                tagsSplitFromInput = new string[] { project.Tag.Name };
-            }
+            var tagsSplitFromInput = project.Tag.Name.Contains(" ")
+                ? project.Tag.Name.Split(" ")
+                : new string[] { project.Tag.Name };
 
             var tags = _tagRepository.GetAll()
                 .Where(tag => tagsSplitFromInput.Contains(tag.Name))
@@ -288,21 +281,23 @@ public class ProjectService : IProjectService
 
             var projectsResult = tagsId.SelectMany(t => _projectTagRepository.GetByTagtId(t)).ToList();
 
-            var allRedableByUser = _projectRepository.GetAllReadableByUser(userId);
+            var allReadableByUser = _projectRepository.GetAllReadableByUser(userId);
 
-            var findproject = projectsResult
-                .Where(project => allRedableByUser.Any(userProject => userProject.Id == project.ProjectId))
-                .Select(project => Get(project.ProjectId))
+            var findProjectIds = projectsResult
+                .Join(allReadableByUser,
+                    result => result.ProjectId,
+                    userProject => userProject.Id,
+                    (result, userProject) => result.ProjectId)
                 .ToList();
 
-            projects = findproject.Select(p => _projectRepository.Get((Guid)p.Id));
+            projects = projects.Where(project => findProjectIds.Contains(project.Id)).ToList();
         }
 
         if (project.DateFrom != null || project.DateTo != null)
         {
             if (project.DateFrom.HasValue && project.DateTo.HasValue)
             {
-                projects = projects.Where(x => x.StartDate >= project.DateTo && x.StartDate <= project.DateTo);
+                projects = projects.Where(x => x.StartDate >= project.DateFrom && x.StartDate <= project.DateTo);
             }
             else if (project.DateFrom.HasValue && project.DateTo == null)
             {
@@ -312,10 +307,6 @@ public class ProjectService : IProjectService
             {
                 projects = projects.Where(x => x.StartDate <= project.DateTo);
             }
-            else
-            {
-                return Enumerable.Empty<ProjectDto>();
-            }
         }
 
         if (project.Name != null)
@@ -323,7 +314,8 @@ public class ProjectService : IProjectService
             projects = projects.Where(x => x.Name.Equals(project.Name) || x.Description.Equals(project.Name));
         }
 
-        return projects.Select(p => _mapper.Map<ProjectDto>(p));
+        return projects.Select(p => _mapper.Map<ProjectDto>(p)).ToList();
+
     }
 
 

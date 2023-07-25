@@ -127,12 +127,12 @@ public class ProjectService : IProjectService
         var permissions = DefaultCreatePermissions.Select(p => new UserProjectPermission
         {
             PermissionName = p,
-            UserId = projectDto.UserId.ToGuid(),
+            UserId = projectDto.OwnerId.ToGuid(),
             ProjectId = newProject.Id,
         });
         SavePermissions(permissions);
 
-        AssignPermissionsToSuperUsers(newProjectId, projectDto.UserId.ToGuid());
+        AssignPermissionsToSuperUsers(newProjectId, projectDto.OwnerId.ToGuid());
 
         return newProject.Id;
     }
@@ -146,7 +146,13 @@ public class ProjectService : IProjectService
     public IEnumerable<ProjectDto> GetAll()
     {
         var projects = _projectRepository.GetAll().Where(p => !p.IsDeleted);
-        return projects.Select(p => _mapper.Map<ProjectDto>(p));
+        var dtos = projects.Select(p => _mapper.Map<ProjectDto>(p));
+        foreach (var dto in dtos)
+        {
+            var user = _userRepository.Get(dto.OwnerId.ToGuid());
+            dto.Owner = user.ToUserDto();
+        }
+        return dtos;
     }
 
     public Guid UpdateWithoutUserId(ProjectDto projectDto)
@@ -243,6 +249,7 @@ public class ProjectService : IProjectService
                 Description = p.Description,
                 StartDate = p.StartDate,
                 IsDeleted = false,
+                OwnerId = userId,
             }).ToList();
         await _projectRepository.AddRangeAsync(projects);
 

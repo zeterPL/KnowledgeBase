@@ -1,0 +1,49 @@
+﻿@using KnowledgeBase.Logic.Dto;
+@using KnowledgeBase.Logic.Dto.Project;
+@using KnowledgeBase.Logic.ViewModels
+@model KnowledgeBase.Logic.ViewModels.UserAccountViewModel
+
+<h1>
+    Your account
+</h1>
+<div>
+    <label><b>First name:</b></label>
+    <div>@Model.User.FirstName</div>
+
+    <label><b>Last name:</b></label>
+    <div>@Model.User.LastName</div>
+
+    <label><b>Email:</b></label>
+    <div>@Model.User.Email</div>
+
+    <label><b>Role:</b></label>
+    <div>@Model.Role.Name</div>
+
+    <a asp-action="Edit" asp-route-id="@Model.User.Id" class="btn btn-primary">Edit</a>
+</div>
+<hr/>
+<div>
+    <h3>Permissions: </h3>
+    @foreach(PermissionDto perm in @Model.Permissions)
+    {
+        <div>@perm.ProjectId @perm.PermissionName</div>
+    }
+</div>
+<hr />
+<div>
+    <h3>You are interested in projects:</h3>
+    @if(Model.InterestedProjects == null)
+    {
+        <div class="text-info">You do not have any interested projects</div>
+    }
+    else
+    {
+        <ul>
+            @foreach (ProjectDto project in @Model.InterestedProjects)
+            {
+                <li><a asp-controller="Project" asp-action="Details" asp-route-id="@project.Id">@project.Name</a></li>
+            }
+        </ul>
+    }
+    
+</div>

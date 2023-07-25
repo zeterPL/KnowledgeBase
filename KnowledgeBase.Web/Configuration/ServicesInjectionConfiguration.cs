@@ -10,10 +10,12 @@ public static class ServicesInjectionConfiguration
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddScoped<IAzureStorageService, AzureStorageService>();
+        services.AddScoped<IAzureServiceBusHandler, AzureServiceBusHandler>();
+        
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IResourceService, ResourceService>();
         services.AddScoped<IPermissionService, PermissionService>();
-        services.AddScoped<IAzureStorageService, AzureStorageService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITagService, TagService>();

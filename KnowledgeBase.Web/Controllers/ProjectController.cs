@@ -1,5 +1,4 @@
-﻿using CsvHelper;
-using KnowledgeBase.Logic.Dto;
+﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
@@ -303,7 +302,8 @@ public class ProjectController : Controller
     public async Task<IActionResult> RequestPermission(Guid projectId, RequestPermissionDto requestPermissionDto)
     {
         requestPermissionDto.ProjectId = projectId;
+        requestPermissionDto.SenderId = User.GetUserId();
         await _projectService.RequestPermissionsAsync(requestPermissionDto);
-        return View();
+        return View(requestPermissionDto);
     }
 }

@@ -2,11 +2,13 @@
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
+using KnowledgeBase.Logic.AzureServices.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using Newtonsoft.Json;
 
 namespace KnowledgeBase.Logic.Services;
 
@@ -19,10 +21,11 @@ public class ProjectService : IProjectService
     private readonly IRoleRepository _roleRepository;
     private readonly ITagRepository _tagRepository;
     private readonly IProjectTagRepository _projectTagRepository;
+    private readonly IAzureServiceBusHandler _serviceBusHandler;
 
     public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository,
         IUserRepository userRepository, IRoleRepository roleRepository, IMapper mapper, ITagRepository tagRepository,
-        IProjectTagRepository projectTagsRepository)
+        IProjectTagRepository projectTagsRepository, IAzureServiceBusHandler serviceBusHandler)
     {
         _projectRepository = projectRepository;
         _permissionRepository = permissionRepository;
@@ -31,6 +34,7 @@ public class ProjectService : IProjectService
         _roleRepository = roleRepository;
         _tagRepository = tagRepository;
         _projectTagRepository = projectTagsRepository;
+        _serviceBusHandler = serviceBusHandler;
     }
 
     #region private methods
@@ -152,6 +156,7 @@ public class ProjectService : IProjectService
             var user = _userRepository.Get(dto.OwnerId.ToGuid());
             dto.Owner = user.ToUserDto();
         }
+
         return dtos;
     }
 
@@ -267,9 +272,16 @@ public class ProjectService : IProjectService
         return projects.Select(p => p.Id);
     }
 
-    public Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto)
+    public async Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto)
     {
-        throw new NotImplementedException();
+        var ownerId = await _projectRepository.GetProjectOwnerId(requestPermissionDto.ProjectId);
+        var request = new ProjectPermissionRequest(
+            requestPermissionDto.SenderId,
+            ownerId,
+            requestPermissionDto.ProjectId,
+            requestPermissionDto.Permissions);
+        
+        await _serviceBusHandler.SendMessageAsync(request.ToJson());
     }
 
     #endregion public methods

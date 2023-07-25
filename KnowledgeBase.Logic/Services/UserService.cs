@@ -193,7 +193,7 @@ namespace KnowledgeBase.Logic.Services
             return user.ToUserDto();
         }
 
-        public List<UserDto> GetInterestedUsersByProjectId(Guid projectId)
+        public IList<UserDto> GetInterestedUsersByProjectId(Guid projectId)
         {
             return _projectInterestedUserRepository.GetAll().Where(pu => pu.ProjectId == projectId)
                 .Select(pu => pu.User.ToUserDto()).ToList();
@@ -208,7 +208,7 @@ namespace KnowledgeBase.Logic.Services
             return notInterestedUsers;
         }
 
-        public List<ProjectDto>? GetInerestedProjectsByUserId(Guid userId)
+        public IList<ProjectDto>? GetInerestedProjectsByUserId(Guid userId)
         {
             var interestedByUser = _projectInterestedUserRepository.GetAll()
                 .Where(x => x.UserId == userId).Select(x => x.ProjectId);

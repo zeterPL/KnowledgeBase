@@ -24,7 +24,9 @@ namespace KnowledgeBase.Logic.Services.Interfaces
         public void AddPermisionsToSpecificProject(Guid projectId, Guid userId);
 
         public IList<UserDto> GetUsersNotInterestedInProject(Guid projectId);
-        public List<UserDto> GetInterestedUsersByProjectId(Guid projectId);
-        public List<ProjectDto>? GetInerestedProjectsByUserId(Guid userId);
+
+        public IList<UserDto> GetInterestedUsersByProjectId(Guid projectId);
+
+        public IList<ProjectDto>? GetInerestedProjectsByUserId(Guid userId);
     }
 }

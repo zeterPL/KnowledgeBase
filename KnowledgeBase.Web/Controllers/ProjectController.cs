@@ -33,6 +33,13 @@ public class ProjectController : Controller
         return View();
     }
 
+    [HttpGet]
+    public IActionResult ListAll()
+    {
+        var projects = _projectService.GetAll();
+        return View(projects);
+    }
+
     public IActionResult List()
     {
         try
@@ -64,7 +71,7 @@ public class ProjectController : Controller
             _logger.LogInformation("creating project");
             var userId = User.GetUserId();
 
-            project.UserId = userId;
+            project.OwnerId = userId;
 
             ModelState.Clear();
             TryValidateModel(project);
@@ -105,7 +112,7 @@ public class ProjectController : Controller
     [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult Edit(ProjectDto project)
     {
-        project.UserId = Guid.NewGuid();
+        project.OwnerId = Guid.NewGuid();
         ModelState.Clear();
         TryValidateModel(project);
         if (!ModelState.IsValid)

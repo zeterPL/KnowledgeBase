@@ -163,6 +163,19 @@ public class ProjectService : IProjectService
         return dtos;
     }
 
+    public IEnumerable<ProjectDto> GetNotOwned(Guid userId)
+    {
+        var projects = _projectRepository.GetAll().Where(p => !p.IsDeleted && p.OwnerId != userId);
+        var dtos = projects.Select(p => _mapper.Map<ProjectDto>(p));
+        foreach (var dto in dtos)
+        {
+            var user = _userRepository.Get(dto.OwnerId.ToGuid());
+            dto.Owner = user.ToUserDto();
+        }
+
+        return dtos;
+    }
+
     public Guid UpdateWithoutUserId(ProjectDto projectDto)
     {
         var id = projectDto.Id.ToGuid();
@@ -278,6 +291,11 @@ public class ProjectService : IProjectService
     public async Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto)
     {
         var ownerId = await _projectRepository.GetProjectOwnerId(requestPermissionDto.ProjectId);
+        if (ownerId == requestPermissionDto.SenderId)
+        {
+            throw new Exception("Can't request permissions to your own project");
+        }
+
         var requestDto = new ProjectPermissionsRequestDto(
             requestPermissionDto.SenderId,
             ownerId,

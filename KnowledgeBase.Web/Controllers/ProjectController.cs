@@ -36,7 +36,7 @@ public class ProjectController : Controller
     [Authorize]
     public IActionResult ListAll()
     {
-        var projects = _projectService.GetAll();
+        var projects = _projectService.GetNotOwned(User.GetUserId());
         return View(projects);
     }
 

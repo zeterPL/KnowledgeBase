@@ -12,6 +12,7 @@ public interface IProjectService
     public void SoftDelete(ProjectDto project);
 
     public IEnumerable<ProjectDto> GetAll();
+    public IEnumerable<ProjectDto> GetNotOwned(Guid userId);
 
     public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId);
 

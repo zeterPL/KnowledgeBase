@@ -41,11 +41,11 @@ public class PermissionsRequestsService
         return result;
     }
 
-    public void ApproveProjectPermissionsRequests(Guid projectId, Guid senderId)
+    public void ApproveProjectPermissionsRequests(Guid projectId, Guid senderId, Guid receiverId)
     {
         var requests = _permissionRequestRepository
-            .GetRequestsReceivedByUser<ProjectPermissionRequest>(senderId)
-            .Where(p => p.ProjectId == projectId)
+            .GetRequestsSendByUser<ProjectPermissionRequest>(senderId)
+            .Where(p => p.ProjectId == projectId && p.ReceiverId == receiverId)
             .ToList();
 
         var newPermissions = requests.Select(r => new UserProjectPermission
@@ -54,14 +54,14 @@ public class PermissionsRequestsService
             UserId = senderId,
             ProjectId = projectId,
         });
-        
+
         _userProjectPermissionRepository.AddRange(newPermissions);
 
         foreach (var request in requests)
         {
             request.IsDeleted = true;
         }
-        
+
         _permissionRequestRepository.UpdateRange(requests);
     }
 }

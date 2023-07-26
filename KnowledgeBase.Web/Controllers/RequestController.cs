@@ -32,7 +32,7 @@ public class RequestController : Controller
     [HttpPost]
     public IActionResult ProjectPermissionsRequests(Guid projectId, Guid senderId)
     {
-        _permissionsRequestsService.ApproveProjectPermissionsRequests(projectId, senderId);
+        _permissionsRequestsService.ApproveProjectPermissionsRequests(projectId, senderId, User.GetUserId());
         return ProjectPermissionsRequests();
     }
 }

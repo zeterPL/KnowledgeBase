@@ -9,11 +9,9 @@ namespace KnowledgeBase.Logic.Dto.Project
 {
     public class ProjectSearchFilter
     {
-        public Guid? Id { get; set; }
         public string? Name { get; set; }
-        public string Description { get; set; }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
-        public List<int>? TagsName { get; set; }
+        public List<Guid>? TagsId { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿@model KnowledgeBase.Logic.Dto.Project.ProjectSearchFilter;
 @{
+
+    
 }
 @using (Html.BeginForm("FoundProjects", "Project", FormMethod.Post))
 {
@@ -22,8 +24,10 @@
         <br />
         <br />
 
-        Enter the name of the tag, separating it with a space<br />
-        <textarea cols="20" id="Description" name="TagsName" rows="2"></textarea>
-        <a asp-route="FilteredProjects"><input type="submit" value="Find Projects" /></a>
+        Select the name of the tag(Multiple Possible)<br />
+        <select size="3" style="width: 4vw;" asp-for="TagsId" asp-items="ViewBag.ItemsToSelect" multiple></select>
+        <br />
+        <br />
+        <a asp-route="FoundProjects"><input type="submit" value="Find Projects" /></a>
     </div>
 }

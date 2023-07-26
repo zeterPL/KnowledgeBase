@@ -7,6 +7,7 @@ using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
 
 namespace KnowledgeBase.Logic.Services;
@@ -264,15 +265,19 @@ public class ProjectService : IProjectService
     }
 
 
-    public IEnumerable<ProjectDto>? ProjectSearchFilter(string? query, List<int>? tagsId, DateTime? dateFrom, DateTime? dateTo, Guid userId)
+    public IEnumerable<ProjectDto>? ProjectSearchFilter(string? query, List<Guid>? tagsId, DateTime? dateFrom, DateTime? dateTo, Guid userId)
     {
+
         var projects = _projectRepository.GetAllReadableByUser(userId);
 
-        /*if (tagsName.Any())
+        if (!tagsId.IsNullOrEmpty())
         {
-            projects = projects.Where(project => findProjectIds.Contains(project.Id)).ToList();
-        }*/
+            var projectTags = _projectTagRepository.GetAll().Where(x => tagsId.Contains(x.TagId)).Select(x => x.ProjectId);
 
+            projects = projects.Where(x => projectTags.Contains(x.Id));
+
+        }
+        
         if (dateFrom.HasValue || dateTo.HasValue)
         {
             if (dateFrom.HasValue)
@@ -300,5 +305,18 @@ public class ProjectService : IProjectService
 
         return projects.Select(p => _mapper.Map<ProjectDto>(p)).ToList();
     }
+
+    public List<SelectListItem> GetAllTagsAsSelectItems(Guid userId)
+    {
+        var projects = _projectRepository.GetAllReadableByUser(userId).Select(x => x.Id);
+        var tags = _projectTagRepository.GetAll().Where(tag => projects.Contains(tag.ProjectId)).Select(x => x.TagId).ToList();
+        var tagsList = _tagRepository.GetAll().Where(tag => tags.Contains(tag.Id))
+                                            .Select(z => new SelectListItem { Text = z.Name, Value = z.Id.ToString() })
+                                            .ToList();
+        return tagsList;
+    }
+
+
+
     #endregion public methods
 }

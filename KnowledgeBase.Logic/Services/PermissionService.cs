@@ -23,7 +23,6 @@ public class PermissionService : IPermissionService
     {
         UserProjectPermission perm = new UserProjectPermission
         {
-            Id = permission.Id,
             UserId = permission.UserId,
             ProjectId = permission.ProjectId,
             PermissionName = permission.PermissionName,

@@ -50,4 +50,10 @@ public class PermissionRequestRepository : IPermissionRequestRepository
     {
         _context.Update(permissionRequest);
     }
+
+    public void UpdateRange(IEnumerable<IPermissionRequest> requests)
+    {
+        _context.UpdateRange(requests);
+        _context.SaveChanges();
+    }
 }

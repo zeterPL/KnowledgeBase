@@ -8,7 +8,6 @@ using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
-using ProjectPermissionRequest = KnowledgeBase.Logic.AzureServices.ProjectPermissionRequest;
 
 namespace KnowledgeBase.Logic.Services;
 
@@ -22,10 +21,12 @@ public class ProjectService : IProjectService
     private readonly ITagRepository _tagRepository;
     private readonly IProjectTagRepository _projectTagRepository;
     private readonly IAzureServiceBusHandler _serviceBusHandler;
+    private readonly IPermissionRequestRepository _permissionRequestRepository;
 
     public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository,
         IUserRepository userRepository, IRoleRepository roleRepository, IMapper mapper, ITagRepository tagRepository,
-        IProjectTagRepository projectTagsRepository, IAzureServiceBusHandler serviceBusHandler)
+        IProjectTagRepository projectTagsRepository, IAzureServiceBusHandler serviceBusHandler,
+        IPermissionRequestRepository permissionRequestRepository)
     {
         _projectRepository = projectRepository;
         _permissionRepository = permissionRepository;
@@ -35,6 +36,7 @@ public class ProjectService : IProjectService
         _tagRepository = tagRepository;
         _projectTagRepository = projectTagsRepository;
         _serviceBusHandler = serviceBusHandler;
+        _permissionRequestRepository = permissionRequestRepository;
     }
 
     #region private methods
@@ -275,13 +277,24 @@ public class ProjectService : IProjectService
     public async Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto)
     {
         var ownerId = await _projectRepository.GetProjectOwnerId(requestPermissionDto.ProjectId);
-        var request = new ProjectPermissionRequest(
+        var requestDto = new ProjectPermissionRequestDto(
             requestPermissionDto.SenderId,
             ownerId,
             requestPermissionDto.ProjectId,
             requestPermissionDto.Permissions);
 
-        await _serviceBusHandler.SendMessageAsync(request.ToJson());
+        await _serviceBusHandler.SendMessageAsync(requestDto.ToJson());
+        var requests = requestPermissionDto.Permissions.Select(
+            permission => new ProjectPermissionRequest
+            {
+                SenderId = requestPermissionDto.SenderId,
+                ReceiverId = ownerId,
+                ProjectId = requestPermissionDto.ProjectId,
+                RequestedPermission = permission,
+                TimeRequested = DateTime.Now,
+            });
+
+        await _permissionRequestRepository.AddRangeAsync(requests);
     }
 
     #endregion public methods

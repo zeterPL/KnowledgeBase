@@ -34,6 +34,7 @@ namespace KnowledgeBase.Tests.Services
 		private readonly Mock<ITagRepository> _tagRepository;
 		private readonly Mock<IProjectTagRepository> _projectTagRepository;
 		private readonly Mock<IAzureServiceBusHandler> _azureServiceBusHandler;
+		private readonly Mock<IPermissionRequestRepository> _permissionRequestRepository;
 		private readonly IProjectService _projectService;
 
 		public ProjectServiceTest()
@@ -46,11 +47,12 @@ namespace KnowledgeBase.Tests.Services
 			_tagRepository = new Mock<ITagRepository>();
 			_projectTagRepository = new Mock<IProjectTagRepository>();
 			_azureServiceBusHandler = new Mock<IAzureServiceBusHandler>();
+			_permissionRequestRepository = new Mock<IPermissionRequestRepository>();
 
 			_projectService = new ProjectService(_projectRepository.Object, _permissionRepository.Object,
 				_userRepository.Object, _roleRepository.Object,
 				_mapper.Object, _tagRepository.Object, _projectTagRepository.Object,
-				_azureServiceBusHandler.Object);
+				_azureServiceBusHandler.Object, _permissionRequestRepository.Object);
 		}
 
 		[Fact]

@@ -1,16 +1,16 @@
 ﻿using KnowledgeBase.Data.Models.Enums;
 using Newtonsoft.Json;
 
-namespace KnowledgeBase.Logic.AzureServices;
+namespace KnowledgeBase.Logic.Dto;
 
-public class ProjectPermissionRequest
+public class ProjectPermissionRequestDto
 {
     public Guid Sender { get; }
     public Guid Receiver { get; }
     public Guid ProjectId { get; }
     public IEnumerable<ProjectPermissionName> RequestedPermissions { get; }
 
-    public ProjectPermissionRequest(Guid sender, Guid receiver, Guid projectId,
+    public ProjectPermissionRequestDto(Guid sender, Guid receiver, Guid projectId,
         IEnumerable<ProjectPermissionName> requestedPermissions)
     {
         Sender = sender;

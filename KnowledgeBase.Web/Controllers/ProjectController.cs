@@ -33,6 +33,7 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
+    [Authorize]
     public IActionResult ListAll()
     {
         var projects = _projectService.GetAll();
@@ -292,12 +293,14 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
+    [Authorize]
     public IActionResult RequestPermission()
     {
         return View(new RequestPermissionDto());
     }
 
     [HttpPost]
+    [Authorize]
     [Route("Project/RequestPermission/{projectId:guid}")]
     public async Task<IActionResult> RequestPermission(Guid projectId, RequestPermissionDto requestPermissionDto)
     {

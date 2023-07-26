@@ -1,0 +1,19 @@
+﻿@model IEnumerable<KnowledgeBase.Logic.Dto.PermissionsRequests.ApproveProjectPermissionRequestDto>
+
+@foreach (var request in Model)
+{
+    <div>
+        <div>From: @request.Sender.FirstName @request.Sender.LastName @request.Sender.Email</div>
+        <div>Project: @request.Project</div>
+        <div>
+            Permissions:
+            @foreach (var permission in request.RequestedPermissions)
+            {
+                <div>
+                    @permission
+                </div>
+            }
+        </div>
+
+    </div>
+}

@@ -22,6 +22,8 @@ public static class ServicesInjectionConfiguration
         services.AddScoped<IProjectInterestedUserService, ProjectInterestedUserService>();
         services.AddScoped<IUserResourcePermissionService, UserResourcePermissionService>();
 
+        services.AddScoped<PermissionsRequestsService>();
+
         services.AddScoped<IResourceHandler, AzureResourceHandler>();
         services.AddScoped<IResourceHandler, NoteResourceHandler>();
         services.AddScoped<IResourceHandler, CredentialsResourceHandler>();

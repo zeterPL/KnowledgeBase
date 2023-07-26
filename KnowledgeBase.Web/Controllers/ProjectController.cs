@@ -297,7 +297,7 @@ public class ProjectController : Controller
         try
         {
             _logger.LogInformation("Project Found");
-            var projects = _projectService.FindProjects(project, User.GetUserId());
+            var projects = _projectService.ProjectSearchFilter(project, User.GetUserId());
             return View(projects);
         }
         catch (Exception ex)

@@ -263,7 +263,7 @@ public class ProjectService : IProjectService
     }
 
 
-    public IEnumerable<ProjectDto> FindProjects(ProjectDto project, Guid userId)
+    public IEnumerable<ProjectDto> ProjectSearchFilter(ProjectDto project, Guid userId)
     {
         var projects = _projectRepository.GetAllReadableByUser(userId);
 

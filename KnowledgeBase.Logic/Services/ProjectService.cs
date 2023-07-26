@@ -8,7 +8,7 @@ using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
-using Newtonsoft.Json;
+using ProjectPermissionRequest = KnowledgeBase.Logic.AzureServices.ProjectPermissionRequest;
 
 namespace KnowledgeBase.Logic.Services;
 
@@ -280,7 +280,7 @@ public class ProjectService : IProjectService
             ownerId,
             requestPermissionDto.ProjectId,
             requestPermissionDto.Permissions);
-        
+
         await _serviceBusHandler.SendMessageAsync(request.ToJson());
     }
 

@@ -1,7 +1,7 @@
 ﻿using KnowledgeBase.Data.Models.Enums;
 using Newtonsoft.Json;
 
-namespace KnowledgeBase.Logic.Dto;
+namespace KnowledgeBase.Logic.AzureServices;
 
 public class ProjectPermissionRequest
 {

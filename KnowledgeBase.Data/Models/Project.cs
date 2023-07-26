@@ -15,4 +15,5 @@ public class Project : IDeletableEntity
 	public virtual ICollection<ProjectInterestedUser> InterestedUsers { get; set; }
 	public Guid OwnerId { get; set; }
 	public virtual User Owner { get; set; }
+	public ICollection<ProjectPermissionRequest> ProjectPermissionRequests { get; set; }
 }

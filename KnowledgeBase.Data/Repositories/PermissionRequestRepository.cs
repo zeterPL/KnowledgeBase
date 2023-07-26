@@ -32,6 +32,18 @@ public class PermissionRequestRepository : IPermissionRequestRepository
         return permission;
     }
 
+    public IEnumerable<T> GetRequestsSendByUser<T>(Guid userId) where T : class, IPermissionRequest
+    {
+        var permissions = _context.Set<T>().Where(p => p.SenderId == userId);
+        return permissions;
+    }
+
+    public IEnumerable<T> GetRequestsReceivedByUser<T>(Guid userId) where T : class, IPermissionRequest
+    {
+        var permissions = _context.Set<T>().Where(p => p.ReceiverId == userId);
+        return permissions;
+    }
+
     public void Update(IPermissionRequest permissionRequest)
     {
         _context.Update(permissionRequest);

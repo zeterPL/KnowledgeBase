@@ -9,5 +9,9 @@ public interface IPermissionRequestRepository
 
     Task<T> GetAsync<T>(Guid id) where T : class, IPermissionRequest;
 
+    IEnumerable<T> GetRequestsSendByUser<T>(Guid userId) where T : class, IPermissionRequest;
+
+    IEnumerable<T> GetRequestsReceivedByUser<T>(Guid userId) where T : class, IPermissionRequest;
+
     void Update(IPermissionRequest permissionRequest);
 }

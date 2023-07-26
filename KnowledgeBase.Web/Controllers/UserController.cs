@@ -81,7 +81,7 @@ namespace KnowledgeBase.Web.Controllers
                 if (newUserId == Guid.Empty) return NotFound();
                 else _userService.AssignPermissionBasedOnUserRole(role, newUserId);
 
-                return RedirectToAction("List");
+                return RedirectToAction("Index", "Home");
             }
             var roles = _roleService.GetAll();
             ViewBag.RolesList = new SelectList(roles, "Id", "Name");

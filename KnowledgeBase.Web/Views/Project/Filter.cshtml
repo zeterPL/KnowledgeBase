@@ -1,7 +1,7 @@
 ﻿@model KnowledgeBase.Logic.Dto.Project.ProjectDto;
 @{
 }
-@using (Html.BeginForm("FoundProject", "Project", FormMethod.Post))
+@using (Html.BeginForm("FilteredProjects", "Project", FormMethod.Post))
 {
 @Html.AntiForgeryToken()
 <div>
@@ -24,6 +24,6 @@
 
         Enter the name of the tag, separating it with a space<br />
         <textarea cols="20" id="Description" name="TagsName" rows="2"></textarea>
-        <a asp-route="FoundProject"><input type="submit" value="Find Projects" /></a>
+        <a asp-route="FilteredProjects"><input type="submit" value="Find Projects" /></a>
     </div>
 }

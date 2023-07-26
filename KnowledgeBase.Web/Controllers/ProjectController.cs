@@ -285,18 +285,17 @@ public class ProjectController : Controller
         return RedirectToAction("List");
     }
 
-    public IActionResult Find()
+    public IActionResult Filter()
     {
         return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult FoundProject(ProjectDto project)
+    public IActionResult FilteredProjects(ProjectDto project)
     {
         try
         {
-            project.TagsName = project.TagsName[0].Split(" ").ToList();
             _logger.LogInformation("Project Found");
             var projects = _projectService.ProjectSearchFilter(project.Name, project.TagsName, project.DateFrom, project.DateTo, User.GetUserId());
             return View(projects);

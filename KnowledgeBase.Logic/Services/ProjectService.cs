@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KnowledgeBase.Data.Migrations;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
@@ -267,9 +268,11 @@ public class ProjectService : IProjectService
     public IEnumerable<ProjectDto>? ProjectSearchFilter(string? query, List<string>? tagsName, DateTime? dateFrom, DateTime? dateTo, Guid userId)
     {
         var projects = _projectRepository.GetAllReadableByUser(userId);
-
-        if (!tagsName.IsNullOrEmpty())
+        
+        if (!tagsName[0].IsNullOrEmpty())
         {
+            tagsName = tagsName[0].Split(" ").ToList();
+            
             var tags = _tagRepository.GetAll()
                 .Where(tag => tagsName.Contains(tag.Name))
                 .ToList();

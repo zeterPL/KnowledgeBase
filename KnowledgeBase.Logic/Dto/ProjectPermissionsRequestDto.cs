@@ -3,14 +3,14 @@ using Newtonsoft.Json;
 
 namespace KnowledgeBase.Logic.Dto;
 
-public class ProjectPermissionRequestDto
+public class ProjectPermissionsRequestDto
 {
     public Guid Sender { get; }
     public Guid Receiver { get; }
     public Guid ProjectId { get; }
     public IEnumerable<ProjectPermissionName> RequestedPermissions { get; }
 
-    public ProjectPermissionRequestDto(Guid sender, Guid receiver, Guid projectId,
+    public ProjectPermissionsRequestDto(Guid sender, Guid receiver, Guid projectId,
         IEnumerable<ProjectPermissionName> requestedPermissions)
     {
         Sender = sender;

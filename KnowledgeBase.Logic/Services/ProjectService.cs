@@ -277,7 +277,7 @@ public class ProjectService : IProjectService
     public async Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto)
     {
         var ownerId = await _projectRepository.GetProjectOwnerId(requestPermissionDto.ProjectId);
-        var requestDto = new ProjectPermissionRequestDto(
+        var requestDto = new ProjectPermissionsRequestDto(
             requestPermissionDto.SenderId,
             ownerId,
             requestPermissionDto.ProjectId,

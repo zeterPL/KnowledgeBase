@@ -4,6 +4,7 @@ using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.AzureServices.Interfaces;
 using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.PermissionsRequests;
 using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;

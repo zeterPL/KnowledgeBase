@@ -86,14 +86,25 @@ namespace KnowledgeBase.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ReceiverId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("RequestedPermission")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("TimeRequested")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
 
                     b.HasKey("Id");
 

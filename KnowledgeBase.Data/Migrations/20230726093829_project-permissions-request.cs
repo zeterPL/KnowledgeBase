@@ -18,7 +18,10 @@ namespace KnowledgeBase.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SenderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ReceiverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RequestedPermission = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TimeRequested = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

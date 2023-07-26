@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    [Migration("20230726072439_project-permissions-request")]
+    [Migration("20230726093829_project-permissions-request")]
     partial class projectpermissionsrequest
     {
         /// <inheritdoc />
@@ -89,14 +89,25 @@ namespace KnowledgeBase.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ReceiverId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("RequestedPermission")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("TimeRequested")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
 
                     b.HasKey("Id");
 

@@ -23,5 +23,11 @@ public class ProjectRequestConfiguration : IEntityTypeConfiguration<ProjectPermi
         builder.HasOne(r => r.Project)
             .WithMany(u => u.ProjectPermissionRequests)
             .HasForeignKey(r => r.ProjectId);
+
+        builder.Property(r => r.RequestedPermission)
+            .HasConversion<string>();
+
+        builder.Property(r => r.TimeRequested)
+            .HasPrecision(0);
     }
 }

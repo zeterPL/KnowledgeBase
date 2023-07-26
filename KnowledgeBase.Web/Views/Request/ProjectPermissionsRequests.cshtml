@@ -1,19 +1,27 @@
-﻿@model IEnumerable<KnowledgeBase.Logic.Dto.PermissionsRequests.ApproveProjectPermissionRequestDto>
+﻿@using KnowledgeBase.Logic.Dto.PermissionsRequests
+@model IEnumerable<ApproveProjectPermissionRequestDto>
 
 @foreach (var request in Model)
 {
-    <div>
-        <div>From: @request.Sender.FirstName @request.Sender.LastName @request.Sender.Email</div>
-        <div>Project: @request.Project</div>
-        <div>
-            Permissions:
+    <div class="card mb-3">
+        <div class="m-1">From: @request.Sender.FirstName @request.Sender.LastName @request.Sender.Email</div>
+        <div class="m-1">Project: @request.Project.Name</div>
+        <div class="m-1">Permissions:</div>
+        <ul class="m-1">
             @foreach (var permission in request.RequestedPermissions)
             {
-                <div>
+                <li>
                     @permission
-                </div>
+                </li>
+            }
+        </ul>
+        <div class="m-1">
+            @using (Html.BeginForm("ProjectPermissionsRequests", "Request", FormMethod.Post))
+            {
+                <input type="hidden" value="@request.Project.Id" name="projectId"/>
+                <input type="hidden" value="@request.Sender.Id" name="senderId"/>
+                <input type="submit" value="Allow" class="btn btn-primary"/>
             }
         </div>
-
     </div>
 }

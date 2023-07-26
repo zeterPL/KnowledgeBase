@@ -1,6 +1,4 @@
-﻿using KnowledgeBase.Logic.Dto;
-using KnowledgeBase.Logic.Dto.PermissionsRequests;
-using KnowledgeBase.Logic.Services;
+﻿using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,5 +27,11 @@ public class RequestController : Controller
         var userId = User.GetUserId();
         var requests = _permissionsRequestsService.GetProjectPermissionsRequestsSendToUser(userId);
         return View(requests);
+    }
+
+    [HttpPost]
+    public IActionResult ProjectPermissionsRequests(Guid projectId, Guid senderId)
+    {
+        return ProjectPermissionsRequests();
     }
 }

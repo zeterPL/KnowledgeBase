@@ -30,6 +30,7 @@ namespace KnowledgeBase.Logic.Services
                 IsOpen = projectIssueDto.IsOpen,
                 UserId = projectIssueDto.UserId,
                 ProjectId = projectIssueDto.ProjectId,
+                IssueType = projectIssueDto.IssueType,
             };
         }
 

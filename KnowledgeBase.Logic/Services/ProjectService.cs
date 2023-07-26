@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using KnowledgeBase.Data.Migrations;
 using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
@@ -265,45 +264,22 @@ public class ProjectService : IProjectService
     }
 
 
-    public IEnumerable<ProjectDto>? ProjectSearchFilter(string? query, List<string>? tagsName, DateTime? dateFrom, DateTime? dateTo, Guid userId)
+    public IEnumerable<ProjectDto>? ProjectSearchFilter(string? query, List<int>? tagsId, DateTime? dateFrom, DateTime? dateTo, Guid userId)
     {
         var projects = _projectRepository.GetAllReadableByUser(userId);
-        
-        if (!tagsName[0].IsNullOrEmpty())
+
+        /*if (tagsName.Any())
         {
-            tagsName = tagsName[0].Split(" ").ToList();
-            
-            var tags = _tagRepository.GetAll()
-                .Where(tag => tagsName.Contains(tag.Name))
-                .ToList();
-
-            var tagsId = tags.Select(tag => tag.Id).ToList();
-
-            var projectsResult = tagsId.SelectMany(t => _projectTagRepository.GetByTagtId(t)).ToList();
-
-            var allReadableByUser = _projectRepository.GetAllReadableByUser(userId);
-
-            var findProjectIds = projectsResult
-                .Join(allReadableByUser,
-                    result => result.ProjectId,
-                    userProject => userProject.Id,
-                    (result, userProject) => result.ProjectId)
-                .ToList();
-
             projects = projects.Where(project => findProjectIds.Contains(project.Id)).ToList();
-        }
+        }*/
 
         if (dateFrom.HasValue || dateTo.HasValue)
         {
-            if (dateFrom.HasValue && dateTo.HasValue)
-            {
-                projects = projects.Where(x => x.StartDate >= dateFrom && x.StartDate <= dateTo);
-            }
-            else if (dateFrom.HasValue && !dateTo.HasValue)
+            if (dateFrom.HasValue)
             {
                 projects = projects.Where(x => x.StartDate >= dateFrom);
             }
-            else if (!dateFrom.HasValue && dateTo.HasValue)
+            if (dateTo.HasValue)
             {
                 projects = projects.Where(x => x.StartDate <= dateTo);
             }
@@ -318,7 +294,7 @@ public class ProjectService : IProjectService
        .Join(projects, projectJoin => projectJoin.ProjectId, userProject => userProject.Id, (projectJoin, userProject) => Get(projectJoin.ProjectId))
        .ToList();
 
-            projects = projects.Where(x => x.Name.Equals(query) || x.Description.Equals(query) || findproject.Any(fp => x.Id.Equals(fp.Id)));
+            projects = projects.Where(x => x.Name.Contains(query) || x.Description.Contains(query) || findproject.Any(fp => x.Id.Equals(fp.Id)));
 
         }
 

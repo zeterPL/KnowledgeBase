@@ -1,7 +1,7 @@
-﻿@model KnowledgeBase.Logic.Dto.Project.ProjectDto;
+﻿@model KnowledgeBase.Logic.Dto.Project.ProjectSearchFilter;
 @{
 }
-@using (Html.BeginForm("FilteredProjects", "Project", FormMethod.Post))
+@using (Html.BeginForm("FoundProjects", "Project", FormMethod.Post))
 {
 @Html.AntiForgeryToken()
 <div>

@@ -285,14 +285,14 @@ public class ProjectController : Controller
         return RedirectToAction("List");
     }
 
-    public IActionResult Filter()
+    public IActionResult FindProjects()
     {
         return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult FilteredProjects(ProjectDto project)
+    public IActionResult FoundProjects(ProjectSearchFilter project)
     {
         try
         {

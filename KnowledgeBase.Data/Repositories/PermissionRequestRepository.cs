@@ -28,19 +28,21 @@ public class PermissionRequestRepository : IPermissionRequestRepository
 
     public async Task<T> GetAsync<T>(Guid id) where T : class, IPermissionRequest
     {
-        var permission = await _context.Set<T>().SingleAsync(e => e.Id == id);
+        var permission = await _context.Set<T>().SingleAsync(e => e.Id == id && !e.IsDeleted);
         return permission;
     }
 
     public IEnumerable<T> GetRequestsSendByUser<T>(Guid userId) where T : class, IPermissionRequest
     {
-        var permissions = _context.Set<T>().Where(p => p.SenderId == userId);
+        var permissions = _context.Set<T>().Where(p => p.SenderId == userId && !p.IsDeleted);
         return permissions;
     }
 
     public IEnumerable<T> GetRequestsReceivedByUser<T>(Guid userId) where T : class, IPermissionRequest
     {
-        var permissions = _context.Set<T>().Where(p => p.ReceiverId == userId);
+        var permissions = _context.Set<T>()
+            .Include(p => p.Sender)
+            .Where(p => p.ReceiverId == userId && !p.IsDeleted);
         return permissions;
     }
 

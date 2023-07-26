@@ -18,4 +18,5 @@ public interface IProjectRepository : IGenericRepository<Project>
     public Task AddRangeAsync(IEnumerable<Project> projects);
 
     public Task<Guid> GetProjectOwnerId(Guid projectId);
+    public IEnumerable<Project> GetProjects(IEnumerable<Guid> ids);
 }

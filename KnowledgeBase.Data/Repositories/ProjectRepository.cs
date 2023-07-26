@@ -61,4 +61,10 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
         var project = await GetSet().SingleAsync(p => p.Id == projectId);
         return project.OwnerId;
     }
+
+    public IEnumerable<Project> GetProjects(IEnumerable<Guid> ids)
+    {
+        var projects = GetSet().Where(p => ids.Contains(p.Id) && !p.IsDeleted);
+        return projects;
+    }
 }

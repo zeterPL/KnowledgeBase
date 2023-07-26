@@ -1,8 +1,9 @@
 ﻿using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Data.Models.Interfaces;
 
 namespace KnowledgeBase.Data.Models;
 
-public class ProjectPermissionRequest
+public class ProjectPermissionRequest : IPermissionRequest
 {
     public Guid Id { get; set; }
     public Guid SenderId { get; set; }

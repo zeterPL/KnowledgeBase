@@ -5,7 +5,7 @@ namespace KnowledgeBase.Logic.Dto.Project;
 public class ProjectDto
 {
     public Guid? Id { get; set; }
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [Required]
     public Guid? UserId { get; set; }
@@ -16,5 +16,5 @@ public class ProjectDto
 
     public DateTime? DateFrom { get; set; }
     public DateTime? DateTo { get; set; }
-    public TagDto? Tag { get; set; }
+    public List<string>? TagsName { get; set; }
 }

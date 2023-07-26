@@ -296,8 +296,9 @@ public class ProjectController : Controller
     {
         try
         {
+            project.TagsName = project.TagsName[0].Split(" ").ToList();
             _logger.LogInformation("Project Found");
-            var projects = _projectService.ProjectSearchFilter(project, User.GetUserId());
+            var projects = _projectService.ProjectSearchFilter(project.Name, project.TagsName, project.DateFrom, project.DateTo, User.GetUserId());
             return View(projects);
         }
         catch (Exception ex)

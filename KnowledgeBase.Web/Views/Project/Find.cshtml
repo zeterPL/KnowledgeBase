@@ -23,8 +23,7 @@
         <br />
 
         Enter the name of the tag, separating it with a space<br />
-        @Html.EditorFor(Model => Model.Tag.Name)
-        @Html.ValidationMessageFor(Model => Model.Tag.Name)<br /><br /><br />
+        <textarea cols="20" id="Description" name="TagsName" rows="2"></textarea>
         <a asp-route="FoundProject"><input type="submit" value="Find Projects" /></a>
     </div>
 }

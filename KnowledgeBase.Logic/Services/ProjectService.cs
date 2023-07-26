@@ -7,6 +7,7 @@ using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KnowledgeBase.Logic.Services;
 
@@ -263,18 +264,14 @@ public class ProjectService : IProjectService
     }
 
 
-    public IEnumerable<ProjectDto> ProjectSearchFilter(ProjectDto project, Guid userId)
+    public IEnumerable<ProjectDto>? ProjectSearchFilter(string? query, List<string>? tagsName, DateTime? dateFrom, DateTime? dateTo, Guid userId)
     {
         var projects = _projectRepository.GetAllReadableByUser(userId);
 
-        if (project.Tag.Name != null)
+        if (!tagsName.IsNullOrEmpty())
         {
-            var tagsSplitFromInput = project.Tag.Name.Contains(" ")
-                ? project.Tag.Name.Split(" ")
-                : new string[] { project.Tag.Name };
-
             var tags = _tagRepository.GetAll()
-                .Where(tag => tagsSplitFromInput.Contains(tag.Name))
+                .Where(tag => tagsName.Contains(tag.Name))
                 .ToList();
 
             var tagsId = tags.Select(tag => tag.Id).ToList();
@@ -293,32 +290,32 @@ public class ProjectService : IProjectService
             projects = projects.Where(project => findProjectIds.Contains(project.Id)).ToList();
         }
 
-        if (project.DateFrom != null || project.DateTo != null)
+        if (dateFrom.HasValue || dateTo.HasValue)
         {
-            if (project.DateFrom.HasValue && project.DateTo.HasValue)
+            if (dateFrom.HasValue && dateTo.HasValue)
             {
-                projects = projects.Where(x => x.StartDate >= project.DateFrom && x.StartDate <= project.DateTo);
+                projects = projects.Where(x => x.StartDate >= dateFrom && x.StartDate <= dateTo);
             }
-            else if (project.DateFrom.HasValue && project.DateTo == null)
+            else if (dateFrom.HasValue && !dateTo.HasValue)
             {
-                projects = projects.Where(x => x.StartDate >= project.DateFrom);
+                projects = projects.Where(x => x.StartDate >= dateFrom);
             }
-            else if (project.DateFrom == null && project.DateTo.HasValue)
+            else if (!dateFrom.HasValue && dateTo.HasValue)
             {
-                projects = projects.Where(x => x.StartDate <= project.DateTo);
+                projects = projects.Where(x => x.StartDate <= dateTo);
             }
         }
 
-        if (project.Name != null)
+        if (!query.IsNullOrEmpty())
         {
             List<ProjectDto> findproject = _tagRepository.GetAll()
-       .Where(tag => tag.Name.Equals(project.Name))
+       .Where(tag => tag.Name.Equals(query))
        .Select(tag => tag.Id)
        .SelectMany(tagId => _projectTagRepository.GetByTagtId(tagId))
        .Join(projects, projectJoin => projectJoin.ProjectId, userProject => userProject.Id, (projectJoin, userProject) => Get(projectJoin.ProjectId))
        .ToList();
 
-            projects = projects.Where(x => x.Name.Equals(project.Name) || x.Description.Equals(project.Name) || findproject.Any(fp => x.Id.Equals(fp.Id)));
+            projects = projects.Where(x => x.Name.Equals(query) || x.Description.Equals(query) || findproject.Any(fp => x.Id.Equals(fp.Id)));
 
         }
 

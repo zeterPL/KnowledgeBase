@@ -14,7 +14,7 @@ namespace KnowledgeBase.Logic.Services
             _reportRepository = reportRepository;
         }
 
-        private ReportProjectIssue toReportProjectIssue(ReportProjectIssueDto projectIssueDto)
+        private ReportProjectIssue ToReportProjectIssue(ReportProjectIssueDto projectIssueDto)
         {
             return new ReportProjectIssue
             {
@@ -78,13 +78,13 @@ namespace KnowledgeBase.Logic.Services
 
         public void Update(ReportProjectIssueDto reportDto)
         {
-            var tmp = toReportProjectIssue(reportDto);
+            var tmp = ToReportProjectIssue(reportDto);
             _reportRepository.Update(tmp);
         }
 
         public void Create(ReportProjectIssueDto reportProjectIssueDto)
         {
-            var tmp = toReportProjectIssue(reportProjectIssueDto);
+            var tmp = ToReportProjectIssue(reportProjectIssueDto);
             _reportRepository.Add(tmp);
         }
 

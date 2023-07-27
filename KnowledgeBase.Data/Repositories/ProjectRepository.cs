@@ -67,4 +67,10 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
         var projects = GetSet().Where(p => ids.Contains(p.Id) && !p.IsDeleted);
         return projects;
     }
+
+    public Project? GetProjectWithOwner(Guid id)
+    {
+        var project = GetSet().Include(p => p.Owner).Single(p => p.Id == id);
+        return project;
+    }
 }

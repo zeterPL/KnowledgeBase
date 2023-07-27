@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Data.Models;
+﻿using System.Collections;
+using KnowledgeBase.Data.Models;
 
 namespace KnowledgeBase.Data.Repositories.Interfaces;
 
@@ -18,5 +19,8 @@ public interface IProjectRepository : IGenericRepository<Project>
     public Task AddRangeAsync(IEnumerable<Project> projects);
 
     public Task<Guid> GetProjectOwnerId(Guid projectId);
+
     public IEnumerable<Project> GetProjects(IEnumerable<Guid> ids);
+
+    public Project? GetProjectWithOwner(Guid id);
 }

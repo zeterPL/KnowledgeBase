@@ -5,17 +5,17 @@ namespace KnowledgeBase.Logic.Dto.PermissionsRequests;
 
 public class ProjectPermissionsRequestDto
 {
-    public Guid SenderId { get; }
-    public Guid ReceiverId { get; }
-    public Guid ProjectId { get; }
+    public string SenderName { get; }
+    public string ReceiverEmail { get; }
+    public string ProjectName { get; }
     public IEnumerable<ProjectPermissionName> RequestedPermissions { get; }
 
-    public ProjectPermissionsRequestDto(Guid senderId, Guid receiverId, Guid projectId,
+    public ProjectPermissionsRequestDto(string senderName, string receiverEmail, string projectName,
         IEnumerable<ProjectPermissionName> requestedPermissions)
     {
-        SenderId = senderId;
-        ReceiverId = receiverId;
-        ProjectId = projectId;
+        SenderName = senderName;
+        ReceiverEmail = receiverEmail;
+        ProjectName = projectName;
         RequestedPermissions = requestedPermissions;
     }
 

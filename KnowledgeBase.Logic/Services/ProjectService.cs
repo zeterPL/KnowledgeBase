@@ -290,16 +290,27 @@ public class ProjectService : IProjectService
 
     public async Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto)
     {
-        var ownerId = await _projectRepository.GetProjectOwnerId(requestPermissionDto.ProjectId);
-        if (ownerId == requestPermissionDto.SenderId)
+        var project = _projectRepository.GetProjectWithOwner(requestPermissionDto.ProjectId);
+        if (project is null)
+        {
+            throw new Exception("Project doesn't exist");
+        }
+
+        if (project.OwnerId == requestPermissionDto.SenderId)
         {
             throw new Exception("Can't request permissions to your own project");
         }
 
+        var sender = _userRepository.Get(requestPermissionDto.SenderId);
+        if (sender is null)
+        {
+            throw new Exception("Sender doesn't exist");
+        }
+
         var requestDto = new ProjectPermissionsRequestDto(
-            requestPermissionDto.SenderId,
-            ownerId,
-            requestPermissionDto.ProjectId,
+            $"{sender.FirstName} {sender.LastName}",
+            project.Owner.Email,
+            project.Name,
             requestPermissionDto.Permissions);
 
         await _serviceBusHandler.SendMessageAsync(requestDto.ToJson());
@@ -307,7 +318,7 @@ public class ProjectService : IProjectService
             permission => new ProjectPermissionRequest
             {
                 SenderId = requestPermissionDto.SenderId,
-                ReceiverId = ownerId,
+                ReceiverId = project.OwnerId,
                 ProjectId = requestPermissionDto.ProjectId,
                 RequestedPermission = permission,
                 TimeRequested = DateTime.Now,

@@ -28,4 +28,6 @@ public interface IProjectService
     public Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId);
 
     public Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto);
+
+    public IEnumerable<ProjectPermissionName> GetAvailableUserProjectPermissions(Guid projectId, Guid userId);
 }

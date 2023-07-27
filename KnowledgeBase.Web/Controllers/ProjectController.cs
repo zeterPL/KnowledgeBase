@@ -294,9 +294,15 @@ public class ProjectController : Controller
 
     [HttpGet]
     [Authorize]
-    public IActionResult RequestPermission()
+    [Route("Project/RequestPermission/{projectId:guid}")]
+    public IActionResult RequestPermission(Guid projectId)
     {
-        return View(new RequestPermissionDto());
+        var availablePermissions = _projectService.GetAvailableUserProjectPermissions(projectId, User.GetUserId());
+
+        return View(new RequestPermissionDto
+        {
+            AvailablePermissions = availablePermissions,
+        });
     }
 
     [HttpPost]
@@ -307,6 +313,6 @@ public class ProjectController : Controller
         requestPermissionDto.ProjectId = projectId;
         requestPermissionDto.SenderId = User.GetUserId();
         await _projectService.RequestPermissionsAsync(requestPermissionDto);
-        return View(requestPermissionDto);
+        return RedirectToAction("ListAll");
     }
 }

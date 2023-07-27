@@ -1,7 +1,7 @@
 ﻿@using KnowledgeBase.Logic.Dto.Project;
 @model ProjectDto;
 
-@using (Html.BeginForm("Create", "Project", FormMethod.Post))
+@using (Html.BeginForm("Create", "Project", FormMethod.Post, new {@class="form"}))
 {
     @Html.AntiForgeryToken()
     <div class="mb-3">
@@ -16,10 +16,10 @@
     </div>
     <div class="mb-3">
         @Html.LabelFor(project => project.StartDate, new { @class = "form-label" })
-        @Html.TextBoxFor(project =>project.StartDate, String.Format("{0:d}", Model.StartDate.ToShortDateString()), new { @class = "datefield", type = "date"  })
+        @Html.TextBoxFor(project =>project.StartDate, String.Format("{0:d}", Model.StartDate.ToShortDateString()), new { @class = "datefield", @type = "date"  })
         @Html.ValidationMessageFor(project => project.StartDate, string.Empty, new { @class = "form-text text-danger" })
     </div>
     <div>
-        <input type="submit" value="Save"/>
+        <input type="submit" value="Save" class="btn btn-primary"/>
     </div>
 }

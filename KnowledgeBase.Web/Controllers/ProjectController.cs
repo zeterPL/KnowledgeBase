@@ -148,6 +148,9 @@ public class ProjectController : Controller
         {
             _logger.LogInformation("Detailing project");
             ProjectDto? project = _projectService.Get(id);
+            var openedIssuesCount = _reportService.GetOpenedByProjectId(id).Count;
+            ViewBag.Count = openedIssuesCount;
+
             return View(project);
         }
         catch (Exception ex)

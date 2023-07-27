@@ -332,9 +332,17 @@ public class ProjectController : Controller
     [HttpGet]
     public IActionResult ReportsList(Guid id)
     {
-        var reports = _reportService.GeByProjectId(id);
+        var reports = _reportService.GetOpenedByProjectId(id);
         if(reports is null) return NotFound();
         ViewBag.ProjectId = id;
         return View(reports);
+    }
+
+    [HttpGet]
+    public IActionResult ArchiveReports(Guid id)
+    {
+        var archiveReports = _reportService.GetClosedByProjectId(id);   
+        if(archiveReports is null) return NotFound();   
+        return View(archiveReports);
     }
 }

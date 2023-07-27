@@ -47,7 +47,7 @@ namespace KnowledgeBase.Logic.Services
             _reportRepository.Remove(report);
         }
 
-        public IList<ReportProjectIssueDto> GeByProjectId(Guid projectId)
+        public IList<ReportProjectIssueDto> GetAllByProjectId(Guid projectId)
         {
             var result = _reportRepository.GetAll().Where(x => x.ProjectId == projectId);
             if (!result.Any()) return null;
@@ -85,6 +85,30 @@ namespace KnowledgeBase.Logic.Services
         {
             var tmp = toReportProjectIssue(reportProjectIssueDto);
             _reportRepository.Add(tmp);
+        }
+
+        public IList<ReportProjectIssueDto> GetAllOpened()
+        {
+            return _reportRepository.GetAll().Where(x => x.IsOpen)
+                .Select(x => x.toReportProjectIssueDto()).ToList();
+        }
+
+        public IList<ReportProjectIssueDto> GetAllClosed()
+        {
+            return _reportRepository.GetAll().Where(x => !x.IsOpen)
+                .Select(x => x.toReportProjectIssueDto()).ToList();
+        }
+
+        public IList<ReportProjectIssueDto> GetOpenedByProjectId(Guid projectId)
+        {
+            return _reportRepository.GetAll().Where(x => x.ProjectId == projectId && x.IsOpen)
+                .Select(x=>x.toReportProjectIssueDto()).ToList();  
+        }
+
+        public IList<ReportProjectIssueDto> GetClosedByProjectId(Guid projectId)
+        {
+            return _reportRepository.GetAll().Where(x => x.ProjectId == projectId && !x.IsOpen)
+                .Select(x => x.toReportProjectIssueDto()).ToList();
         }
     }
 }

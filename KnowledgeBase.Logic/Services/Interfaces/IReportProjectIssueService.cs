@@ -10,8 +10,12 @@ namespace KnowledgeBase.Logic.Services.Interfaces
     public interface IReportProjectIssueService
     {
         public IList<ReportProjectIssueDto> GetAll();
+        public IList<ReportProjectIssueDto> GetAllOpened();
+        public IList<ReportProjectIssueDto> GetAllClosed();
         public ReportProjectIssueDto Get(Guid id);
-        public IList<ReportProjectIssueDto> GeByProjectId(Guid projectId);
+        public IList<ReportProjectIssueDto> GetAllByProjectId(Guid projectId);
+        public IList<ReportProjectIssueDto> GetOpenedByProjectId(Guid projectId);
+        public IList<ReportProjectIssueDto> GetClosedByProjectId(Guid projectId);
         public void Create(ReportProjectIssueDto reportProjectIssueDto);
         public void Close(Guid id);
         public void ReOpen(Guid id);

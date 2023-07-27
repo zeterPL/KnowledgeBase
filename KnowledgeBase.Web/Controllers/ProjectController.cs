@@ -380,6 +380,12 @@ public class ProjectController : Controller
     {
         var report = _reportService.Get(id);
         if (report is null) return NotFound();
+        var user = _userService.GetById(report.UserId);
+        if (user is null) return NotFound();
+
+        ViewBag.UserFirstName = user.FirstName;
+        ViewBag.UserLastName = user.LastName;
+        ViewBag.UserId = user.Id;
         return View(report);
     }
 

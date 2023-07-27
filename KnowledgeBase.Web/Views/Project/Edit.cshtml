@@ -5,13 +5,18 @@
     ProjectDto project = Model;
 }
 
-@using (Html.BeginForm("Edit", "Project", FormMethod.Post))
+@using (Html.BeginForm("Edit", "Project", FormMethod.Post, new { @class = "form" }))
 {
     @Html.AntiForgeryToken()
     <div>
-        @Html.LabelFor(project => project.Name)
-        @Html.EditorFor(project => project.Name)
+        @Html.LabelFor(project => project.Name, new { @class = "form-label" })
+        @Html.EditorFor(project => project.Name, new { @class = "form-control" })
         @Html.ValidationMessageFor(project => project.Name)
+    </div>
+    <div>
+        @Html.LabelFor(project => project.Description, new { @class = "form-label" })
+        @Html.EditorFor(project => project.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(project => project.Description)
     </div>
     <div>
         <input type="submit" value="Save"/>

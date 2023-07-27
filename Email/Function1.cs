@@ -25,7 +25,7 @@ namespace Email
 			mailMessage.Body = messageReceived.PermissionsToString(messageReceived.RequestedPermissions, messageReceived.SenderName);
 
 			SmtpClient smtpClient = new SmtpClient();
-			smtpClient.Host = "smtp.gmail.com";
+			smtpClient.Host = "";
 			smtpClient.Port = 587;
 			smtpClient.UseDefaultCredentials = false;
 			smtpClient.Credentials = new NetworkCredential("", "");

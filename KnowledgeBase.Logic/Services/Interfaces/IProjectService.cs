@@ -24,6 +24,6 @@ public interface IProjectService
 
     public void RemoveTagFromProject(TagDto tagDto, Guid projectId);
     public List<SelectListItem> GetAllTagsAsSelectItems(Guid userId);
-    public IEnumerable<ProjectDto>? ProjectSearchFilter(string? Query, List<Guid>? tagsName, DateTime? dateFrom, DateTime? dateTo, Guid userId);
+    public IEnumerable<ProjectDto>? FindProjects(string? Query, List<Guid>? tagsName, DateTime? dateFrom, DateTime? dateTo, Guid userId);
     public Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId);
 }

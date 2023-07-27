@@ -295,12 +295,12 @@ public class ProjectController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult FoundProjects(ProjectSearchFilter project)
+    public IActionResult FindProject(ProjectSearchFilter project)
     {
         try
         {
             _logger.LogInformation("Project Found");
-            var projects = _projectService.ProjectSearchFilter(project.Name, project.TagsId, project.DateFrom, project.DateTo, User.GetUserId());
+            var projects = _projectService.FindProjects(project.Name, project.TagsId, project.DateFrom, project.DateTo, User.GetUserId());
             return View(projects);
         }
         catch (Exception ex)

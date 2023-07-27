@@ -3,7 +3,7 @@
 
     
 }
-@using (Html.BeginForm("FoundProjects", "Project", FormMethod.Post))
+@using (Html.BeginForm("FindProject", "Project", FormMethod.Post))
 {
 @Html.AntiForgeryToken()
 <div>
@@ -28,6 +28,6 @@
         <select size="3" style="width: 4vw;" asp-for="TagsId" asp-items="ViewBag.ItemsToSelect" multiple></select>
         <br />
         <br />
-        <a asp-route="FoundProjects"><input type="submit" value="Find Projects" /></a>
+        <a asp-route="FindProject"><input type="submit" value="Find Projects" /></a>
     </div>
 }

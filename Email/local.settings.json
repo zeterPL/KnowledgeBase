@@ -1,0 +1,11 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+    },
+    "ConnectionStrings": {
+        "common_services_messaebus": "Endpoint=sb://praktykinet2023.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=1/+f0etZ3bMqu+8M1AhOdorKQ7sTOwwDu+ASbFpAlQs="
+    }
+
+}

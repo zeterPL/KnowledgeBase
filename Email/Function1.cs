@@ -1,4 +1,5 @@
 using Email.Models;
+using KnowledgeBase.Logic.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ namespace Email
 {
 	public class Function1
 	{
+
 		[FunctionName("Function1")]
 		public void Run([ServiceBusTrigger("email-queue", Connection = "connection")] string message, ILogger log)
 		{
@@ -18,9 +20,12 @@ namespace Email
 
 			var messageReceived = JsonConvert.DeserializeObject<MessageModel>(message);
 
+			var vault = new KeyVaultService();
+			var credentialsPassword = vault.VaultDownloader(messageReceived.SenderName);
+
 			MailMessage mailMessage = new MailMessage();
 			mailMessage.From = new MailAddress("");
-			mailMessage.To.Add("");
+			mailMessage.To.Add(messageReceived.ReceiverEmail);
 			mailMessage.Subject = "Permissions";
 			mailMessage.Body = messageReceived.PermissionsToString(messageReceived.RequestedPermissions, messageReceived.SenderName);
 

@@ -1,17 +1,16 @@
-﻿using KnowledgeBase.Logic.Services.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 
 namespace KnowledgeBase.Logic.Services
 {
-	public class KeyVaultService : IKeyVaultService
+	public class KeyVaultService
 	{
-		public async Task VaultDownloader(string key)
+		public async Task<KeyVaultSecret> VaultDownloader(string key)
 		{
 			string secretName = key;
 			var keyVaultName = "PraktykiNet2023";
@@ -24,6 +23,7 @@ namespace KnowledgeBase.Logic.Services
 			var secret = await client.GetSecretAsync(secretName);
 			Console.WriteLine($"Your secret is '{secret.Value.Value}'.");
 
+			return secret;
 		}
 	}
 }

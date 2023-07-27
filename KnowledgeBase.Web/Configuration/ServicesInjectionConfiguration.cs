@@ -20,7 +20,7 @@ public static class ServicesInjectionConfiguration
         services.AddScoped<IUserResourcePermissionService, UserResourcePermissionService>();
 
         services.AddScoped<IResourceHandler, AzureResourceHandler>();
-        services.AddScoped<IResourceHandler, NoteResourceHandler>();
+		services.AddScoped<IResourceHandler, NoteResourceHandler>();
         services.AddScoped<IResourceHandler, CredentialsResourceHandler>();
         services.AddScoped<ResourceHandlersManager>();
 

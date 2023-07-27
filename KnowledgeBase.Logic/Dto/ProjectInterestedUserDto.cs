@@ -17,7 +17,7 @@ namespace KnowledgeBase.Logic.Dto
 
     public static class ProjectInterestedUserEstensions
     {
-        public static ProjectInterestedUserDto toProjectInterestedUserDto
+        public static ProjectInterestedUserDto ToProjectInterestedUserDto
             (this ProjectInterestedUser projectInterestedUser)
         {
             return new ProjectInterestedUserDto

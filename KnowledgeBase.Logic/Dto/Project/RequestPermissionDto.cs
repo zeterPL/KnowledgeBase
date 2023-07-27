@@ -7,5 +7,5 @@ public class RequestPermissionDto
     public Guid ProjectId { get; set; }
     public Guid SenderId { get; set; }
     public IEnumerable<ProjectPermissionName> AvailablePermissions { get; init; } = Enum.GetValues<ProjectPermissionName>();
-    public IEnumerable<ProjectPermissionName> Permissions { get; set; }
+    public IEnumerable<ProjectPermissionName>? Permissions { get; set; }
 }

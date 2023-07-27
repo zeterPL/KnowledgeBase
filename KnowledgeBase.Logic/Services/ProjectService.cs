@@ -112,7 +112,8 @@ public class ProjectService : IProjectService
 		var allUsers = _userRepository.GetAll();
 		foreach (var user in allUsers)
 		{
-			AddPermisionsToSpecificProject((Guid)projectId, userId);
+			if(user.Id != userId)
+				AddPermisionsToSpecificProject((Guid)projectId, user.Id);
 		}
 	}
 

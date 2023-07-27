@@ -3,6 +3,10 @@
 @{
     IEnumerable<ProjectDto> projects = Model;
 }
+<div class="">
+	<a asp-action="FindProjects" class="btn btn-secondary">Filter Projects</a> | Sorting TODO
+</div>
+<hr/>
 <table class="table">
 	<tr>	   
 	   <th>Name</th>
@@ -27,7 +31,3 @@
 		</tr>
 	}
 </table>
-
-<div>
-	<a asp-action="FindProjects">Filter Projects</a>
-</div>

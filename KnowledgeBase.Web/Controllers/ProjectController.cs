@@ -371,4 +371,13 @@ public class ProjectController : Controller
         _reportService.ReOpen(id);
         return RedirectToAction("ReportsList", new { id = report.ProjectId });
     }
+
+    [HttpGet]
+    public IActionResult DeleteReport(Guid id)
+    {
+        var report = _reportService.Get(id);
+        if (report is null) return NotFound();
+        _reportService.Delete(id);
+        return RedirectToAction("ArchiveReports", new { id = report.ProjectId });
+    }
 }

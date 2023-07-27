@@ -12,6 +12,7 @@ public class User : IdentityUser<Guid>
     public virtual ICollection<UserProjectPermission> ProjectsPermissions { get; set; }
     public virtual ICollection<ProjectInterestedUser> ProjectInteresteds { get; set; }
     public virtual ICollection<UserResourcePermission> ResourcePermissions { get; set; }
+    public virtual ICollection<ReportProjectIssue> ReportProjectsIssues { get; set; }
     public virtual ICollection<Project> ProjectsOwned { get; set; }
     public virtual ICollection<ProjectPermissionRequest> ProjectPermissionRequestsSended { get; set; }
     public virtual ICollection<ProjectPermissionRequest> ProjectPermissionRequestsReceived{ get; set; }

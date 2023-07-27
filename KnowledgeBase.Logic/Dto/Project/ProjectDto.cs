@@ -5,7 +5,7 @@ namespace KnowledgeBase.Logic.Dto.Project;
 public class ProjectDto
 {
     public Guid? Id { get; set; }
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [Required]
     public Guid? OwnerId { get; set; }

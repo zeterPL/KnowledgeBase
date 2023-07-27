@@ -17,11 +17,12 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 			.WithOne(r => r.Project)
 			.HasForeignKey(r => r.ProjectId);
 
-		builder.Property(p => p.Description)
-			.HasMaxLength(500);
-
 		builder.Property(p => p.StartDate)
-			.HasPrecision(3);
+			.HasPrecision(3)
+			.HasDefaultValue(DateTime.Now);
+	
+        builder.Property(p => p.Description)
+            .HasMaxLength(500);
 
 		builder.HasOne(p => p.Owner)
 			.WithMany(p => p.ProjectsOwned)

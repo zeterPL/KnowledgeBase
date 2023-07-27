@@ -10,7 +10,6 @@ namespace KnowledgeBase.Data.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-
         public virtual ICollection<ProjectTag> Projects { get; set; }
     }
 }

@@ -21,6 +21,7 @@ public static class ServicesInjectionConfiguration
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<IProjectInterestedUserService, ProjectInterestedUserService>();
         services.AddScoped<IUserResourcePermissionService, UserResourcePermissionService>();
+        services.AddScoped<IReportProjectIssueService, ReportProjectIssueService>();
 
         services.AddScoped<PermissionsRequestsService>();
 

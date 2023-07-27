@@ -1,11 +1,15 @@
-﻿using KnowledgeBase.Logic.Dto;
+using CsvHelper;
+using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Logic.ViewModels;
 using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KnowledgeBase.Web.Controllers;
 
@@ -16,12 +20,14 @@ public class ProjectController : Controller
     private readonly ITagService _tagService;
     private readonly IUserService _userService;
     private readonly IProjectInterestedUserService _projectInterestedUserService;
+    private readonly IReportProjectIssueService _reportService;
     private readonly IPermissionService _permissionService;
 
     public ProjectController(IProjectService projectService,
         ILogger<ProjectController> logger,
         ITagService tagService, IUserService userService,
         IProjectInterestedUserService projectInterestedUserService,
+        IReportProjectIssueService reportService,
         IPermissionService permissionService)
     {
         _projectService = projectService;
@@ -29,6 +35,7 @@ public class ProjectController : Controller
         _tagService = tagService;
         _userService = userService;
         _projectInterestedUserService = projectInterestedUserService;
+        _reportService = reportService;
         _permissionService = permissionService;
     }
 
@@ -295,6 +302,146 @@ public class ProjectController : Controller
         }
 
         return RedirectToAction("List");
+    }
+
+    public IActionResult FindProjects()
+    {
+
+        ViewBag.ItemsToSelect = _projectService.GetAllTagsAsSelectItems(User.GetUserId());
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult FindProject(ProjectSearchFilter project)
+    {
+        try
+        {
+            _logger.LogInformation("Project Found");
+            var projects = _projectService.FindProjects(project.Name, project.TagsId, project.DateFrom, project.DateTo, User.GetUserId());
+            return View(projects);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return NotFound("there is no project");
+        }
+    }
+
+    public IActionResult FindByTag()
+    {
+        return View();
+    }
+
+
+    [HttpGet]
+    public IActionResult AddReport(Guid id)
+    {
+        var project = _projectService.Get(id);
+        if (project is null) 
+            return NotFound();
+
+        ReportProjectIssueDto report = new ReportProjectIssueDto();
+        ViewBag.ProjectName = project.Name;
+        ViewBag.ProjectId = id;
+
+        return View(report);
+    }
+
+    [HttpPost]
+    public IActionResult AddReport(ReportProjectIssueDto report, Guid id)
+    {
+        report.Id = Guid.Empty;
+        var userId = User.GetUserId();
+        report.UserId = userId;
+        report.ProjectId = id;
+
+        var type = Request.Form["type"];
+        if (type == "Help") report.IssueType = ReportProjectIssuesTypes.Help;
+        else if (type == "BugReport") report.IssueType = ReportProjectIssuesTypes.BugReport;
+        else if (type == "Info") report.IssueType = ReportProjectIssuesTypes.Info;
+
+        report.IsOpen = true;
+        report.CreatedDate = DateTime.Now;
+
+        if (ModelState.IsValid)
+        {
+            _reportService.Create(report);
+            return RedirectToAction("ReportsList", new { id = report.ProjectId });
+        }
+
+        return View(report);
+    }
+
+    [HttpGet]
+    public IActionResult ReportsList(Guid id)
+    {
+        var reports = _reportService.GetOpenedByProjectId(id);
+        if(reports is null) return NotFound();
+        ViewBag.ProjectId = id;
+
+        return View(reports);
+    }
+
+    [HttpGet]
+    public IActionResult ArchiveReports(Guid id)
+    {
+        var archiveReports = _reportService.GetClosedByProjectId(id);   
+        if(archiveReports is null) return NotFound();   
+
+        return View(archiveReports);
+    }
+
+    [HttpGet]
+    public IActionResult ReportDetails(Guid id)
+    {
+        var report = _reportService.Get(id);
+
+        if (report is null)
+            return NotFound();
+        var user = _userService.GetById(report.UserId);
+        if (user is null)
+            return NotFound();
+
+        ViewBag.UserFirstName = user.FirstName;
+        ViewBag.UserLastName = user.LastName;
+        ViewBag.UserId = user.Id;
+
+        return View(report);
+    }
+
+    [HttpGet]
+    public IActionResult CloseReport(Guid id) 
+    {
+        var report = _reportService.Get(id);
+        if(report is null) 
+            return NotFound();
+        else
+            _reportService.Close(id);
+
+        return RedirectToAction("ReportsList", new { id = report.ProjectId });
+    }
+
+    [HttpGet]
+    public IActionResult ReopenReport(Guid id)
+    {
+        var report = _reportService.Get(id);
+        if (report is null) 
+            return NotFound();
+        else
+            _reportService.ReOpen(id);
+
+        return RedirectToAction("ReportsList", new { id = report.ProjectId });
+    }
+
+    [HttpGet]
+    public IActionResult DeleteReport(Guid id)
+    {
+        var report = _reportService.Get(id);
+        if (report is null) return NotFound();
+        _reportService.Delete(id);
+
+        return RedirectToAction("ArchiveReports", new { id = report.ProjectId });
     }
 
     [HttpGet]

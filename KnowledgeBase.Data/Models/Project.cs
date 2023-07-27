@@ -13,6 +13,7 @@ public class Project : IDeletableEntity
 	public virtual ICollection<UserProjectPermission> UsersPermissions { get; set; }
 	public virtual ICollection<ProjectTag> ProjectTags { get; set; }
 	public virtual ICollection<ProjectInterestedUser> InterestedUsers { get; set; }
+    public virtual ICollection<ReportProjectIssue> ReportedIssues { get; set; }
 	public Guid OwnerId { get; set; }
 	public virtual User Owner { get; set; }
 	public ICollection<ProjectPermissionRequest> ProjectPermissionRequests { get; set; }

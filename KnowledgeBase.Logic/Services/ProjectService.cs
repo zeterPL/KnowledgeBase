@@ -9,6 +9,8 @@ using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Shared;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KnowledgeBase.Logic.Services;
 
@@ -24,9 +26,14 @@ public class ProjectService : IProjectService
     private readonly IAzureServiceBusHandler _serviceBusHandler;
     private readonly IPermissionRequestRepository _permissionRequestRepository;
 
-    public ProjectService(IProjectRepository projectRepository, IUserProjectPermissionRepository permissionRepository,
-        IUserRepository userRepository, IRoleRepository roleRepository, IMapper mapper, ITagRepository tagRepository,
-        IProjectTagRepository projectTagsRepository, IAzureServiceBusHandler serviceBusHandler,
+    public ProjectService(IProjectRepository projectRepository,
+        IUserProjectPermissionRepository permissionRepository,
+        IUserRepository userRepository,
+        IRoleRepository roleRepository,
+        IMapper mapper,
+        ITagRepository tagRepository,
+        IProjectTagRepository projectTagsRepository, 
+        IAzureServiceBusHandler serviceBusHandler,
         IPermissionRequestRepository permissionRequestRepository)
     {
         _projectRepository = projectRepository;
@@ -128,6 +135,7 @@ public class ProjectService : IProjectService
     public Guid Add(ProjectDto projectDto)
     {
         var newProject = _mapper.Map<Project>(projectDto);
+        newProject.StartDate = DateTime.Now;
         var newProjectId = _projectRepository.Add(newProject);
 
         // Default permissions
@@ -241,6 +249,7 @@ public class ProjectService : IProjectService
         _projectTagRepository.RemoveByTagAndProjectId(tagDto.Id, projectId);
     }
 
+
     public async Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId)
     {
         using var stream = new MemoryStream();
@@ -287,6 +296,59 @@ public class ProjectService : IProjectService
 
         return projects.Select(p => p.Id);
     }
+
+
+    public IEnumerable<ProjectDto>? FindProjects(string? query, List<Guid>? tagsId, DateTime? dateFrom,
+        DateTime? dateTo, Guid userId)
+    {
+        var projects = _projectRepository.GetAllReadableByUser(userId);
+
+        if (!tagsId.IsNullOrEmpty())
+        {
+            var projectTags = _projectTagRepository.GetAll().Where(x => tagsId.Contains(x.TagId))
+                .Select(x => x.ProjectId);
+
+            projects = projects.Where(x => projectTags.Contains(x.Id));
+        }
+
+        if (dateFrom.HasValue)
+        {
+            projects = projects.Where(x => x.StartDate >= dateFrom);
+        }
+
+        if (dateTo.HasValue)
+        {
+            projects = projects.Where(x => x.StartDate <= dateTo);
+        }
+
+        if (!query.IsNullOrEmpty())
+        {
+            List<ProjectDto> findproject = _tagRepository.GetAll()
+                .Where(tag => tag.Name.Equals(query))
+                .Select(tag => tag.Id)
+                .SelectMany(tagId => _projectTagRepository.GetByTagtId(tagId))
+                .Join(projects, projectJoin => projectJoin.ProjectId, userProject => userProject.Id,
+                    (projectJoin, userProject) => Get(projectJoin.ProjectId))
+                .ToList();
+
+            projects = projects.Where(x =>
+                x.Name.Contains(query) || x.Description.Contains(query) || findproject.Any(fp => x.Id.Equals(fp.Id)));
+        }
+
+        return projects.Select(p => _mapper.Map<ProjectDto>(p)).ToList();
+    }
+
+    public List<SelectListItem> GetAllTagsAsSelectItems(Guid userId)
+    {
+        var projects = _projectRepository.GetAllReadableByUser(userId).Select(x => x.Id);
+        var tags = _projectTagRepository.GetAll().Where(tag => projects.Contains(tag.ProjectId)).Select(x => x.TagId)
+            .ToList();
+        var tagsList = _tagRepository.GetAll().Where(tag => tags.Contains(tag.Id))
+            .Select(z => new SelectListItem { Text = z.Name, Value = z.Id.ToString() })
+            .ToList();
+        return tagsList;
+    }
+
 
     public async Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto)
     {

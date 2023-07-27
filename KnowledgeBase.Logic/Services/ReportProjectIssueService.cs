@@ -2,11 +2,6 @@
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KnowledgeBase.Logic.Services
 {
@@ -52,14 +47,14 @@ namespace KnowledgeBase.Logic.Services
             var result = _reportRepository.GetAll().Where(x => x.ProjectId == projectId);
             if (!result.Any())
                 return null;
-            else 
+            else
                 return result.Select(x => x.toReportProjectIssueDto()).ToList();
         }
 
         public ReportProjectIssueDto Get(Guid id)
         {
             var result = _reportRepository.Get(id);
-            if (result is null) 
+            if (result is null)
                 return null;
             else
                 return result.toReportProjectIssueDto();
@@ -70,7 +65,7 @@ namespace KnowledgeBase.Logic.Services
             var result = _reportRepository.GetAll();
             if (!result.Any())
                 return null;
-            else 
+            else
                 return result.Select(x => x.toReportProjectIssueDto()).ToList();
         }
 
@@ -113,8 +108,8 @@ namespace KnowledgeBase.Logic.Services
         {
             return _reportRepository.GetAll()
                 .Where(x => x.ProjectId == projectId && x.IsOpen)
-                .Select(x=>x.toReportProjectIssueDto())
-                .ToList();  
+                .Select(x => x.toReportProjectIssueDto())
+                .ToList();
         }
 
         public IList<ReportProjectIssueDto> GetClosedByProjectId(Guid projectId)

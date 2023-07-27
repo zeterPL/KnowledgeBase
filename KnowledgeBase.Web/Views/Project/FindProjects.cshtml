@@ -1,0 +1,33 @@
+﻿@model KnowledgeBase.Logic.Dto.Project.ProjectSearchFilter;
+@{
+
+    
+}
+@using (Html.BeginForm("FindProject", "Project", FormMethod.Post))
+{
+@Html.AntiForgeryToken()
+<div>
+        Enter name, description on Onetag name<br />
+        @Html.EditorFor(Model => Model.Name)
+        @Html.ValidationMessageFor(Model => Model.Name)
+
+        <br />
+        <br />
+        Start Date:<br />
+        <input class="form-control" asp-for="DateFrom" asp-format="{0:yyyy-MM-dd}" />
+        <br />
+        <br />
+
+        End Date:
+        <br />
+        <input class="form-control" asp-for="DateTo" />
+        <br />
+        <br />
+
+        Select the name of the tag(Multiple Possible)<br />
+        <select size="3" style="width: 4vw;" asp-for="TagsId" asp-items="ViewBag.ItemsToSelect" multiple></select>
+        <br />
+        <br />
+        <a asp-route="FindProject"><input type="submit" value="Find Projects" /></a>
+    </div>
+}

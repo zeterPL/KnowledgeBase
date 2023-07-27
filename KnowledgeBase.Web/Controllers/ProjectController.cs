@@ -7,6 +7,7 @@ using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KnowledgeBase.Web.Controllers;
 
@@ -283,5 +284,34 @@ public class ProjectController : Controller
         }
 
         return RedirectToAction("List");
+    }
+
+    public IActionResult FindProjects()
+    {
+
+        ViewBag.ItemsToSelect = _projectService.GetAllTagsAsSelectItems(User.GetUserId());
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult FindProject(ProjectSearchFilter project)
+    {
+        try
+        {
+            _logger.LogInformation("Project Found");
+            var projects = _projectService.FindProjects(project.Name, project.TagsId, project.DateFrom, project.DateTo, User.GetUserId());
+            return View(projects);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return NotFound("there is no project");
+        }
+    }
+
+    public IActionResult FindByTag()
+    {
+        return View();
     }
 }

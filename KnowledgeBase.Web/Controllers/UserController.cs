@@ -58,7 +58,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Policy = UserRolesTypes.SuperAdmin)]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Create()
         {
             var roles = _roleService.GetAll();
@@ -67,7 +67,7 @@ namespace KnowledgeBase.Web.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Policy = UserRolesTypes.SuperAdmin)]
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult Create(UserDto user)
         {
             Guid newUserId;

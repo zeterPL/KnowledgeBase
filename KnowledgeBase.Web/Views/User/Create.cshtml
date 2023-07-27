@@ -1,37 +1,38 @@
 ﻿@model KnowledgeBase.Logic.Dto.UserDto;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@using (Html.BeginForm("Create", "User", FormMethod.Post))
+@using (Html.BeginForm("Create", "User", FormMethod.Post, new { @class = "form" }))
 {
     @Html.AntiForgeryToken()
-    <div>
-        @Html.LabelFor(user => user.Email)
-        @Html.EditorFor(user => user.Email)
+    <div class="mb-3">
+        @Html.LabelFor(user => user.Email, new { @class = "form-label" })
+        @Html.TextBoxFor(user => user.Email, new {@class = "form-control"})
         @Html.ValidationMessageFor(user => user.Email)
     </div>
-    <div>
-        @Html.LabelFor(user => user.FirstName)
-        @Html.EditorFor(user => user.FirstName)
+    <div class="mb-3">
+        @Html.LabelFor(user => user.FirstName, new { @class = "form-label" })
+        @Html.TextBoxFor(user => user.FirstName, new {@class = "form-control"})
         @Html.ValidationMessageFor(user => user.FirstName)
     </div>
-    <div>
-        @Html.LabelFor(user => user.LastName)
-        @Html.EditorFor(user => user.LastName)
+    <div class="mb-3">
+        @Html.LabelFor(user => user.LastName, new { @class = "form-label" })
+        @Html.TextBoxFor(user => user.LastName, new {@class = "form-control"})
         @Html.ValidationMessageFor(user => user.LastName)
-    </div> 
-    <div>
-        @Html.LabelFor(user => user.Password)
-        @Html.EditorFor(user => user.Password, "password")
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(user => user.Password, new { @class = "form-label" })
+        @Html.TextBoxFor(user => user.Password, "password", new {@class = "form-control"})
         @Html.ValidationMessageFor(user => user.Password)
     </div>
-    <div>
-        @Html.DropDownList("Roles", ViewBag.RolesList as SelectList, "--Select Item--");
+    <div class="mb-3">
+        <label class="form-label">Role</label>
+        @Html.DropDownList("Roles", ViewBag.RolesList as SelectList, "--Select Item--", new {@class = "form-select"})
     </div>
    
    
 
 
     <div>
-        <input type="submit" value="Save" />
+        <input type="submit" value="Add" class="btn btn-primary"/>
     </div>
 }

@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
 
 namespace KnowledgeBase.Logic.Services.Interfaces
 {
@@ -23,6 +24,9 @@ namespace KnowledgeBase.Logic.Services.Interfaces
         public void AddPermisionsToSpecificProject(Guid projectId, Guid userId);
 
         public IList<UserDto> GetUsersNotInterestedInProject(Guid projectId);
-        public List<UserDto> GetInterestedUsersByProjectId(Guid projectId);
+
+        public IList<UserDto> GetInterestedUsersByProjectId(Guid projectId);
+
+        public IList<ProjectDto>? GetInterestedProjectsByUserId(Guid userId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Logic.ViewModels;
+using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -214,6 +215,29 @@ namespace KnowledgeBase.Web.Controllers
             _userService.Delete(user);
 
             return RedirectToAction("List");
+        }
+
+        [Authorize]
+        public IActionResult UserAccount()
+        {
+            var userId = HttpContext.User.GetUserId();
+            UserAccountViewModel vm = new UserAccountViewModel();
+            var user = _userService.GetById(userId);
+            var role = _roleService.Get(user.RoleId);
+            if (user is null || role is null)
+            {
+                return NotFound();
+            }
+
+            var permissions = _permissionService.GetPermissionsbyUserId(user.Id);
+            var interestedProjects = _userService.GetInterestedProjectsByUserId(user.Id);
+           
+            vm.User = user; 
+            vm.Role = role;
+            vm.Permissions = permissions.ToList();
+            vm.InterestedProjects = interestedProjects.ToList();
+
+            return View(vm);
         }
     }
 }

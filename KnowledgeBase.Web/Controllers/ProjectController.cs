@@ -16,15 +16,20 @@ public class ProjectController : Controller
     private readonly ITagService _tagService;
     private readonly IUserService _userService;
     private readonly IProjectInterestedUserService _projectInterestedUserService;
+    private readonly IPermissionService _permissionService;
 
-    public ProjectController(IProjectService projectService, ILogger<ProjectController> logger,
-        ITagService tagService, IUserService userService, IProjectInterestedUserService projectInterestedUserService)
+    public ProjectController(IProjectService projectService,
+        ILogger<ProjectController> logger,
+        ITagService tagService, IUserService userService,
+        IProjectInterestedUserService projectInterestedUserService,
+        IPermissionService permissionService)
     {
         _projectService = projectService;
         _logger = logger;
         _tagService = tagService;
         _userService = userService;
         _projectInterestedUserService = projectInterestedUserService;
+        _permissionService = permissionService;
     }
 
     public IActionResult Index()

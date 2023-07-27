@@ -307,13 +307,6 @@ public class ProjectService : IProjectService
             throw new Exception("Sender doesn't exist");
         }
 
-        var requestDto = new ProjectPermissionsRequestDto(
-            $"{sender.FirstName} {sender.LastName}",
-            project.Owner.Email,
-            project.Name,
-            requestPermissionDto.Permissions);
-
-        await _serviceBusHandler.SendMessageAsync(requestDto.ToJson());
         var requests = requestPermissionDto.Permissions.Select(
             permission => new ProjectPermissionRequest
             {
@@ -322,9 +315,40 @@ public class ProjectService : IProjectService
                 ProjectId = requestPermissionDto.ProjectId,
                 RequestedPermission = permission,
                 TimeRequested = DateTime.Now,
-            });
+            }).ToList();
+
+        // Remove requests which already exist in database
+        var existingRequests =
+            _permissionRequestRepository.ProjectPermissionRequestsExists(
+                requests.Select(r => r.RequestedPermission),
+                requestPermissionDto.ProjectId,
+                requestPermissionDto.SenderId);
+
+        requests.RemoveAll(request =>
+            existingRequests.Any(existingRequest =>
+                existingRequest.RequestedPermission == request.RequestedPermission));
 
         await _permissionRequestRepository.AddRangeAsync(requests);
+
+        // Send message to service bus
+        var requestDto = new ProjectPermissionsRequestDto(
+            $"{sender.FirstName} {sender.LastName}",
+            project.Owner.Email,
+            project.Name,
+            requestPermissionDto.Permissions);
+
+        await _serviceBusHandler.SendMessageAsync(requestDto.ToJson());
+    }
+
+    public IEnumerable<ProjectPermissionName> GetAvailableUserProjectPermissions(Guid projectId, Guid userId)
+    {
+        var userProjectPermissions = _permissionRepository.GetAll()
+            .Where(p => p.UserId == userId)
+            .Select(p => p.PermissionName);
+        var availablePermissions = Enum.GetValues<ProjectPermissionName>().ToList();
+        availablePermissions.RemoveAll(p => userProjectPermissions.Contains(p));
+
+        return availablePermissions;
     }
 
     #endregion public methods

@@ -1,4 +1,6 @@
-﻿using KnowledgeBase.Data.Models.Interfaces;
+﻿using KnowledgeBase.Data.Models;
+using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Data.Models.Interfaces;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -55,5 +57,17 @@ public class PermissionRequestRepository : IPermissionRequestRepository
     {
         _context.UpdateRange(requests);
         _context.SaveChanges();
+    }
+
+    public IEnumerable<ProjectPermissionRequest> ProjectPermissionRequestsExists(
+        IEnumerable<ProjectPermissionName> requestedPermissions, Guid projectId, Guid senderId)
+    {
+        var existingRequests = _context.Set<ProjectPermissionRequest>()
+            .Where(r =>
+                r.SenderId == senderId &&
+                r.ProjectId == projectId &&
+                requestedPermissions.Contains(r.RequestedPermission));
+
+        return existingRequests;
     }
 }

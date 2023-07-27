@@ -1,6 +1,62 @@
-﻿@*
+﻿@using KnowledgeBase.Logic.Dto;
+@using KnowledgeBase.Data.Models.Enums;
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    List<ReportProjectIssueDto> reports = Model;
 }
-archive
+
+<a asp-action="AddReport" asp-route-id="@ViewBag.ProjectId" class="btn btn-primary">Report Issue</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Date</th>
+            <th scope="col">Type</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ReportProjectIssueDto report in reports)
+        {
+            if (report.IssueType == ReportProjectIssuesTypes.Info)
+            {
+                <tr class="table-info">
+                    <td>@report.Title</td>
+                    <td>@report.CreatedDate</td>
+                    <td>@report.IssueType.ToString()</td>
+                    <td>
+                        <a asp-action="ReportDetails" asp-route-id="@report.Id" class="btn btn-primary">Show</a>
+                        <a asp-action="DeleteReport" asp-route-id="@report.Id" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+            else if (report.IssueType == ReportProjectIssuesTypes.Help)
+            {
+                <tr class="table-secondary">
+                    <td>@report.Title</td>
+                    <td>@report.CreatedDate</td>
+                    <td>@report.IssueType.ToString()</td>
+                    <td>
+                        <a asp-action="ReportDetails" asp-route-id="@report.Id" class="btn btn-primary">Show</a>
+                        <a asp-action="DeleteReport" asp-route-id="@report.Id" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+            else if (report.IssueType == ReportProjectIssuesTypes.BugReport)
+            {
+                <tr class="table-danger">
+                    <td>@report.Title</td>
+                    <td>@report.CreatedDate</td>
+                    <td>@report.IssueType.ToString()</td>
+                    <td>
+                        <a asp-action="ReportDetails" asp-route-id="@report.Id" class="btn btn-primary">Show</a>
+                        <a asp-action="DeleteReport" asp-route-id="@report.Id" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

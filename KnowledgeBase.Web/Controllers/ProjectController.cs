@@ -345,4 +345,12 @@ public class ProjectController : Controller
         if(archiveReports is null) return NotFound();   
         return View(archiveReports);
     }
+
+    [HttpGet]
+    public IActionResult ReportDetails(Guid id)
+    {
+        var report = _reportService.Get(id);
+        if (report is null) return NotFound();
+        return View(report);
+    }
 }

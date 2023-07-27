@@ -353,4 +353,22 @@ public class ProjectController : Controller
         if (report is null) return NotFound();
         return View(report);
     }
+
+    [HttpGet]
+    public IActionResult CloseReport(Guid id) 
+    {
+        var report = _reportService.Get(id);
+        if(report is null) return NotFound();
+        _reportService.Close(id);
+        return RedirectToAction("ReportsList", new { id = report.ProjectId });
+    }
+
+    [HttpGet]
+    public IActionResult ReopenReport(Guid id)
+    {
+        var report = _reportService.Get(id);
+        if (report is null) return NotFound();
+        _reportService.ReOpen(id);
+        return RedirectToAction("ReportsList", new { id = report.ProjectId });
+    }
 }

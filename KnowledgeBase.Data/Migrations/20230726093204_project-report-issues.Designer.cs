@@ -4,6 +4,7 @@ using KnowledgeBase.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KnowledgeBase.Data.Migrations
 {
     [DbContext(typeof(KnowledgeDbContext))]
-    partial class KnowledgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230726093204_project-report-issues")]
+    partial class projectreportissues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,7 +75,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectInterestedUser", (string)null);
+                    b.ToTable("ProjectInterestedUser");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
@@ -87,7 +90,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("ProjectTag", (string)null);
+                    b.ToTable("ProjectTag");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.ReportProjectIssue", b =>
@@ -168,7 +171,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Resource", (string)null);
+                    b.ToTable("Resource");
 
                     b.HasDiscriminator<string>("ResourceType").HasValue("Resource");
 
@@ -192,7 +195,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Role", (string)null);
+                    b.ToTable("Role");
 
                     b.HasData(
                         new
@@ -227,7 +230,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tag", (string)null);
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
@@ -333,7 +336,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserProjectPermission", (string)null);
+                    b.ToTable("UserProjectPermission");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
@@ -358,7 +361,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserResourcePermission", (string)null);
+                    b.ToTable("UserResourcePermission");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>

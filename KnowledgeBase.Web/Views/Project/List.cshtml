@@ -13,6 +13,7 @@
 		<th>edit</th>
 		<th>delete</th>
 		<th>Assign users</th>
+		<th>Reports</th>
 
 	</tr>
 
@@ -28,6 +29,7 @@
 			<td><a asp-action="Edit" asp-route-id="@project.Id">edit</a></td>
 			<td><a asp-action="Delete" asp-route-id="@project.Id">delete</a></td>
 			<td><a asp-action="AssignUsers" asp-route-id="@project.Id">Assign users</a></td>
+			<td><a asp-action="ReportsList" asp-route-id="@project.Id">Reported issues</a></td>
         
 		</tr>
 	}

@@ -325,7 +325,8 @@ public class ProjectController : Controller
     public IActionResult AddReport(Guid id)
     {
         var project = _projectService.Get(id);
-        if (project is null) return NotFound();
+        if (project is null) 
+            return NotFound();
 
         ReportProjectIssueDto report = new ReportProjectIssueDto();
         ViewBag.ProjectName = project.Name;
@@ -355,6 +356,7 @@ public class ProjectController : Controller
             _reportService.Create(report);
             return RedirectToAction("ReportsList", new { id = report.ProjectId });
         }
+
         return View(report);
     }
 
@@ -364,6 +366,7 @@ public class ProjectController : Controller
         var reports = _reportService.GetOpenedByProjectId(id);
         if(reports is null) return NotFound();
         ViewBag.ProjectId = id;
+
         return View(reports);
     }
 
@@ -372,6 +375,7 @@ public class ProjectController : Controller
     {
         var archiveReports = _reportService.GetClosedByProjectId(id);   
         if(archiveReports is null) return NotFound();   
+
         return View(archiveReports);
     }
 
@@ -379,13 +383,17 @@ public class ProjectController : Controller
     public IActionResult ReportDetails(Guid id)
     {
         var report = _reportService.Get(id);
-        if (report is null) return NotFound();
+
+        if (report is null)
+            return NotFound();
         var user = _userService.GetById(report.UserId);
-        if (user is null) return NotFound();
+        if (user is null)
+            return NotFound();
 
         ViewBag.UserFirstName = user.FirstName;
         ViewBag.UserLastName = user.LastName;
         ViewBag.UserId = user.Id;
+
         return View(report);
     }
 
@@ -393,8 +401,11 @@ public class ProjectController : Controller
     public IActionResult CloseReport(Guid id) 
     {
         var report = _reportService.Get(id);
-        if(report is null) return NotFound();
-        _reportService.Close(id);
+        if(report is null) 
+            return NotFound();
+        else
+            _reportService.Close(id);
+
         return RedirectToAction("ReportsList", new { id = report.ProjectId });
     }
 
@@ -402,8 +413,11 @@ public class ProjectController : Controller
     public IActionResult ReopenReport(Guid id)
     {
         var report = _reportService.Get(id);
-        if (report is null) return NotFound();
-        _reportService.ReOpen(id);
+        if (report is null) 
+            return NotFound();
+        else
+            _reportService.ReOpen(id);
+
         return RedirectToAction("ReportsList", new { id = report.ProjectId });
     }
 
@@ -413,6 +427,7 @@ public class ProjectController : Controller
         var report = _reportService.Get(id);
         if (report is null) return NotFound();
         _reportService.Delete(id);
+
         return RedirectToAction("ArchiveReports", new { id = report.ProjectId });
     }
 }

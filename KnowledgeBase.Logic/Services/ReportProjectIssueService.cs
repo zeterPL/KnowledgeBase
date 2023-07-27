@@ -50,22 +50,28 @@ namespace KnowledgeBase.Logic.Services
         public IList<ReportProjectIssueDto> GetAllByProjectId(Guid projectId)
         {
             var result = _reportRepository.GetAll().Where(x => x.ProjectId == projectId);
-            if (!result.Any()) return null;
-            else return result.Select(x => x.toReportProjectIssueDto()).ToList();
+            if (!result.Any())
+                return null;
+            else 
+                return result.Select(x => x.toReportProjectIssueDto()).ToList();
         }
 
         public ReportProjectIssueDto Get(Guid id)
         {
             var result = _reportRepository.Get(id);
-            if (result is null) return null;
-            else return result.toReportProjectIssueDto();
+            if (result is null) 
+                return null;
+            else
+                return result.toReportProjectIssueDto();
         }
 
         public IList<ReportProjectIssueDto> GetAll()
         {
             var result = _reportRepository.GetAll();
-            if (!result.Any()) return null;
-            else return result.Select(x => x.toReportProjectIssueDto()).ToList();
+            if (!result.Any())
+                return null;
+            else 
+                return result.Select(x => x.toReportProjectIssueDto()).ToList();
         }
 
         public void ReOpen(Guid id)
@@ -89,26 +95,34 @@ namespace KnowledgeBase.Logic.Services
 
         public IList<ReportProjectIssueDto> GetAllOpened()
         {
-            return _reportRepository.GetAll().Where(x => x.IsOpen)
-                .Select(x => x.toReportProjectIssueDto()).ToList();
+            return _reportRepository.GetAll()
+                .Where(x => x.IsOpen)
+                .Select(x => x.toReportProjectIssueDto())
+                .ToList();
         }
 
         public IList<ReportProjectIssueDto> GetAllClosed()
         {
-            return _reportRepository.GetAll().Where(x => !x.IsOpen)
-                .Select(x => x.toReportProjectIssueDto()).ToList();
+            return _reportRepository.GetAll()
+                .Where(x => !x.IsOpen)
+                .Select(x => x.toReportProjectIssueDto())
+                .ToList();
         }
 
         public IList<ReportProjectIssueDto> GetOpenedByProjectId(Guid projectId)
         {
-            return _reportRepository.GetAll().Where(x => x.ProjectId == projectId && x.IsOpen)
-                .Select(x=>x.toReportProjectIssueDto()).ToList();  
+            return _reportRepository.GetAll()
+                .Where(x => x.ProjectId == projectId && x.IsOpen)
+                .Select(x=>x.toReportProjectIssueDto())
+                .ToList();  
         }
 
         public IList<ReportProjectIssueDto> GetClosedByProjectId(Guid projectId)
         {
-            return _reportRepository.GetAll().Where(x => x.ProjectId == projectId && !x.IsOpen)
-                .Select(x => x.toReportProjectIssueDto()).ToList();
+            return _reportRepository.GetAll()
+                .Where(x => x.ProjectId == projectId && !x.IsOpen)
+                .Select(x => x.toReportProjectIssueDto())
+                .ToList();
         }
     }
 }

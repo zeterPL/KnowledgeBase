@@ -1,19 +1,19 @@
-﻿@using KnowledgeBase.Logic.Dto.Project;
+﻿﻿@using KnowledgeBase.Logic.Dto.Project;
 @model IEnumerable<ProjectDto>
 @{
     IEnumerable<ProjectDto> projects = Model;
 }
+
 <table style="border: 1px solid black">
 	<tr>
-	   <th>Id</th>
-	   <th>Name</th>
-	   <th>Date Of Creation</th>
-	   <th>Description</th>
+		<th>Id</th>
+		<th>Name</th>
+		<th>Date Of Creation</th>
+		<th>Description</th>
 		<th>details</th>
 		<th>edit</th>
 		<th>delete</th>
 		<th>Assign users</th>
-		<th>Reports</th>
 
 	</tr>
 
@@ -29,12 +29,9 @@
 			<td><a asp-action="Edit" asp-route-id="@project.Id">edit</a></td>
 			<td><a asp-action="Delete" asp-route-id="@project.Id">delete</a></td>
 			<td><a asp-action="AssignUsers" asp-route-id="@project.Id">Assign users</a></td>
-			<td><a asp-action="ReportsList" asp-route-id="@project.Id">Reported issues</a></td>
-        
+
 		</tr>
 	}
 </table>
-
-    <div>
-	<a asp-action="FindProjects">Filter Projects</a>
-    </div>
+    <a asp-action="FindProjects">Find Another Projects By Name</a><br />
+</div>

@@ -72,7 +72,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectInterestedUser");
+                    b.ToTable("ProjectInterestedUser", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
@@ -87,7 +87,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("ProjectTag");
+                    b.ToTable("ProjectTag", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.ReportProjectIssue", b =>
@@ -168,7 +168,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Resource");
+                    b.ToTable("Resource", (string)null);
 
                     b.HasDiscriminator<string>("ResourceType").HasValue("Resource");
 
@@ -192,7 +192,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
 
                     b.HasData(
                         new
@@ -227,7 +227,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tag", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.User", b =>
@@ -333,7 +333,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserProjectPermission");
+                    b.ToTable("UserProjectPermission", (string)null);
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserResourcePermission", b =>
@@ -358,7 +358,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserResourcePermission");
+                    b.ToTable("UserResourcePermission", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>

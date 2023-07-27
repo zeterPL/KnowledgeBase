@@ -17,6 +17,9 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .WithOne(r => r.Project)
             .HasForeignKey(r => r.ProjectId);
 
+		builder.Property(p => p.StartDate)
+			.HasDefaultValue(DateTime.Now);
+	
         builder.Property(p => p.Description)
             .HasMaxLength(500);
 

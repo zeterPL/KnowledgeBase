@@ -13,6 +13,7 @@ public interface IProjectService
     public Guid UpdateWithoutUserId(ProjectDto project);
 
     public void SoftDelete(ProjectDto project);
+    public void Delete(ProjectDto project);
 
     public IEnumerable<ProjectDto> GetAll();
     public IEnumerable<ProjectDto> GetNotOwned(Guid userId);
@@ -33,4 +34,5 @@ public interface IProjectService
     public Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto);
 
     public IEnumerable<ProjectPermissionName> GetAvailableUserProjectPermissions(Guid projectId, Guid userId);
+    public IList<ProjectDto> GetArchivedProjects();
 }

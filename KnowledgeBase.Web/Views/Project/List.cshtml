@@ -1,10 +1,16 @@
 ﻿@using KnowledgeBase.Logic.Dto.Project;
+@using KnowledgeBase.Logic.Sorting;
 @model IEnumerable<ProjectDto>
 @{
     IEnumerable<ProjectDto> projects = Model;
 }
 <div class="">
-	<a asp-action="FindProjects" class="btn btn-secondary">Filter Projects</a> | Sorting TODO
+	<a asp-action="FindProjects" class="btn btn-secondary">Filter Projects</a> 
+	| Sorting
+	<a asp-action="List" asp-route-sortingType="@ProjectSortingTypes.NameAsc" class="btn btn-warning">Name asc</a>
+	<a asp-action="List" asp-route-sortingType="@ProjectSortingTypes.NameDesc" class="btn btn-warning">Name desc</a>
+	<a asp-action="List" asp-route-sortingType="@ProjectSortingTypes.DateAsc" class="btn btn-warning">Date asc</a>
+	<a asp-action="List" asp-route-sortingType="@ProjectSortingTypes.DateDesc" class="btn btn-warning">Date desc</a>
 </div>
 <hr/>
 <table class="table">

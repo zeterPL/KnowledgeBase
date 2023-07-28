@@ -4,6 +4,7 @@ using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Logic.Sorting;
 using KnowledgeBase.Logic.ViewModels;
 using KnowledgeBase.Shared;
 using KnowledgeBase.Web.Authorization;
@@ -39,12 +40,12 @@ public class ProjectController : Controller
         return View();
     }
 
-    public IActionResult List()
+    public IActionResult List(ProjectSortingTypes sortingType = ProjectSortingTypes.None)
     {
         try
         {
-            _logger.LogInformation("getting all projects");
-            IEnumerable<ProjectDto> projects = _projectService.GetAllReadableByUser(User.GetUserId());
+            _logger.LogInformation($"getting all projects sorted by {sortingType.ToString()}");
+            IEnumerable<ProjectDto> projects = _projectService.GetAllReadableByUser(User.GetUserId(), sortingType);
             return View(projects.ToList());
         }
         catch (Exception ex)

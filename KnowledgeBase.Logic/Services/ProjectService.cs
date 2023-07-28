@@ -6,6 +6,7 @@ using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Exceptions;
 using KnowledgeBase.Logic.Services.Interfaces;
+using KnowledgeBase.Logic.Sorting;
 using KnowledgeBase.Shared;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
@@ -112,7 +113,7 @@ public class ProjectService : IProjectService
 		var allUsers = _userRepository.GetAll();
 		foreach (var user in allUsers)
 		{
-			if(user.Id != userId)
+			if (user.Id != userId)
 				AddPermisionsToSpecificProject((Guid)projectId, user.Id);
 		}
 	}
@@ -189,10 +190,30 @@ public class ProjectService : IProjectService
 		_projectRepository.SoftDelete(project);
 	}
 
-	public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId)
+	public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId, ProjectSortingTypes sortingType = ProjectSortingTypes.None)
 	{
-		var projects = _projectRepository.GetAllReadableByUser(userId);
-		return projects.Select(p => _mapper.Map<ProjectDto>(p));
+		if (sortingType == ProjectSortingTypes.NameAsc)
+		{
+			var projects = _projectRepository.GetAllReadableByUser(userId).OrderBy(x => x.Name);
+			return projects.Select(p => _mapper.Map<ProjectDto>(p));
+		}
+		else if (sortingType == ProjectSortingTypes.NameDesc)
+		{
+			var projects = _projectRepository.GetAllReadableByUser(userId).OrderByDescending(x => x.Name);
+			return projects.Select(p => _mapper.Map<ProjectDto>(p));
+		}
+		else if (sortingType == ProjectSortingTypes.DateAsc)
+		{
+			var projects = _projectRepository.GetAllReadableByUser(userId).OrderBy(x => x.StartDate);
+			return projects.Select(p => _mapper.Map<ProjectDto>(p));
+		}
+		else if (sortingType == ProjectSortingTypes.DateDesc)
+		{
+			var projects = _projectRepository.GetAllReadableByUser(userId).OrderByDescending(x => x.StartDate);
+		}
+
+		return _projectRepository.GetAllReadableByUser(userId)
+			.Select(p => _mapper.Map<ProjectDto>(p));
 	}
 
 	public IList<TagDto> GetAllTagsByProjectId(Guid projectId)
@@ -217,7 +238,6 @@ public class ProjectService : IProjectService
 
 		_projectTagRepository.RemoveByTagAndProjectId(tagDto.Id, projectId);
 	}
-
 
 	public async Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId)
 	{
@@ -265,10 +285,8 @@ public class ProjectService : IProjectService
 		return projects.Select(p => p.Id);
 	}
 
-
 	public IEnumerable<ProjectDto>? FindProjects(string? query, List<Guid>? tagsId, DateTime? dateFrom, DateTime? dateTo, Guid userId)
 	{
-
 		var projects = _projectRepository.GetAllReadableByUser(userId);
 
 		if (!tagsId.IsNullOrEmpty())
@@ -276,7 +294,6 @@ public class ProjectService : IProjectService
 			var projectTags = _projectTagRepository.GetAll().Where(x => tagsId.Contains(x.TagId)).Select(x => x.ProjectId);
 
 			projects = projects.Where(x => projectTags.Contains(x.Id));
-
 		}
 
 		if (dateFrom.HasValue)
@@ -298,7 +315,6 @@ public class ProjectService : IProjectService
 	   .ToList();
 
 			projects = projects.Where(x => x.Name.Contains(query) || x.Description.Contains(query) || findproject.Any(fp => x.Id.Equals(fp.Id)));
-
 		}
 
 		return projects.Select(p => _mapper.Map<ProjectDto>(p)).ToList();
@@ -313,8 +329,6 @@ public class ProjectService : IProjectService
 											.ToList();
 		return tagsList;
 	}
-
-
 
 	#endregion public methods
 }

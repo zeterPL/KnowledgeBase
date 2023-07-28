@@ -1,29 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using Azure.Identity;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
+using System;
+using System.Threading.Tasks;
 
 namespace KnowledgeBase.Logic.Services
 {
 	public class KeyVaultService
 	{
-		public async Task<KeyVaultSecret> VaultDownloader(string key)
+		public async Task<string> VaultDownloader(string key)
 		{
-			string secretName = key;
-			var keyVaultName = "PraktykiNet2023";
-
-			var kvUri = $"https://{keyVaultName}.vault.azure.net";
-
+			var kvUri = $"https://praktykinet2023.vault.azure.net/";
 			var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
 
-			Console.WriteLine($"Retrieving your secret from {keyVaultName}.");
-			var secret = await client.GetSecretAsync(secretName);
-			Console.WriteLine($"Your secret is '{secret.Value.Value}'.");
-
-			return secret;
+			var secret = client.GetSecret($"{key}").Value;
+			return secret.Value;
 		}
 	}
 }

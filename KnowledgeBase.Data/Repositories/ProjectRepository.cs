@@ -72,5 +72,5 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
     {
         var project = GetSet().Include(p => p.Owner).Single(p => p.Id == id);
         return project;
-    }
+    } 
 }

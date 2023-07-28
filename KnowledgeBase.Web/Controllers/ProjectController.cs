@@ -155,6 +155,31 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
+    public IActionResult ProjectsArchive()
+    {
+        var projects = _projectService.GetArchivedProjects();
+        return View(projects);
+    }
+
+    [HttpGet]
+    public IActionResult HardDelete(Guid id)
+    {
+        var project = _projectService.Get(id);
+
+        if (project is null)
+            return NotFound();
+        else
+            return View(project);
+    }
+
+    [HttpPost]
+    public IActionResult HardDelete(ProjectDto project)
+    {
+        _projectService.Delete(project);
+        return RedirectToAction("ProjectsArchive");
+    }
+
+    [HttpGet]
     [Authorize(Policy = ProjectPermission.CanReadProject)]
     public IActionResult Details(Guid id)
     {

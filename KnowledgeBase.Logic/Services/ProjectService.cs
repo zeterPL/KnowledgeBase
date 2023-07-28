@@ -434,5 +434,27 @@ public class ProjectService : IProjectService
         return availablePermissions;
     }
 
+    public void Delete(ProjectDto project)
+    {
+        var tmp = _projectRepository.Get(project.Id.ToGuid());
+        _projectRepository.Remove(tmp);
+    }
+
+    public IList<ProjectDto> GetArchivedProjects()
+    {
+        var tmp = _projectRepository.GetAll()
+            .Where(x => x.IsDeleted);
+
+        if(tmp is null)
+        {
+            return null;
+        }
+        else
+        {
+            return tmp.Select(x => _mapper.Map<ProjectDto>(x))
+                .ToList();
+        }
+    }
+
     #endregion public methods
 }

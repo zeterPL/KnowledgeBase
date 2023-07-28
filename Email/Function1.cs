@@ -18,6 +18,7 @@ namespace Email
 		{
 
 			log.LogInformation($"C# ServiceBus queue trigger function processed message: {message}");
+
 			var messageReceived = JsonConvert.DeserializeObject<MessageModel>(message);
 
 			var vault = new KeyVaultService();

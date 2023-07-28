@@ -1,6 +1,7 @@
 ﻿using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
+using KnowledgeBase.Logic.Sorting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KnowledgeBase.Logic.Services.Interfaces;
@@ -16,7 +17,7 @@ public interface IProjectService
     public IEnumerable<ProjectDto> GetAll();
     public IEnumerable<ProjectDto> GetNotOwned(Guid userId);
 
-    public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId);
+    public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId, ProjectSortingTypes sortType = ProjectSortingTypes.None);
 
     public ProjectDto? Get(Guid id);
 

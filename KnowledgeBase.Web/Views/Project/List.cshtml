@@ -1,40 +1,40 @@
 ﻿@using KnowledgeBase.Logic.Dto.Project;
+@using KnowledgeBase.Logic.Sorting;
 @model IEnumerable<ProjectDto>
 @{
     IEnumerable<ProjectDto> projects = Model;
 }
-<table style="border: 1px solid black">
-	<tr>
-	   <th>Id</th>
+<div class="">
+	<a asp-action="FindProjects" class="btn btn-secondary">Filter Projects</a> 
+	| Sorting
+	<a asp-action="List" asp-route-sortingType="@ProjectSortingTypes.NameAsc" class="btn btn-warning">Name asc</a>
+	<a asp-action="List" asp-route-sortingType="@ProjectSortingTypes.NameDesc" class="btn btn-warning">Name desc</a>
+	<a asp-action="List" asp-route-sortingType="@ProjectSortingTypes.DateAsc" class="btn btn-warning">Date asc</a>
+	<a asp-action="List" asp-route-sortingType="@ProjectSortingTypes.DateDesc" class="btn btn-warning">Date desc</a>
+	<a asp-action="List" asp-route-sortingType="@ProjectSortingTypes.None" class="btn btn-secondary">Reset</a>
+</div>
+<hr/>
+<table class="table">
+	<tr>	   
 	   <th>Name</th>
 	   <th>Date Of Creation</th>
 	   <th>Description</th>
-		<th>details</th>
-		<th>edit</th>
-		<th>delete</th>
-		<th>Assign users</th>
-		<th>Reports</th>
-
+	   <th>Actions</th>
 	</tr>
-
 
 	@foreach (ProjectDto project in projects)
 	{
-		<tr>
-			<td>@project.Id</td>
+		<tr>			
 			<td>@project.Name</td>
 			<td>@project.StartDate</td>
 			<td>@project.Description</td>
-			<td><a asp-action="Details" asp-route-id="@project.Id">details</a></td>
-			<td><a asp-action="Edit" asp-route-id="@project.Id">edit</a></td>
-			<td><a asp-action="Delete" asp-route-id="@project.Id">delete</a></td>
-			<td><a asp-action="AssignUsers" asp-route-id="@project.Id">Assign users</a></td>
-			<td><a asp-action="ReportsList" asp-route-id="@project.Id">Reported issues</a></td>
-        
+			<td>
+				<a asp-action="Details" asp-route-id="@project.Id" class="btn btn-primary">Details</a>
+				<a asp-action="Edit" asp-route-id="@project.Id" class="btn btn-primary">Edit</a>
+				<a asp-action="Delete" asp-route-id="@project.Id" class="btn btn-danger">Delete</a>
+				<a asp-action="AssignUsers" asp-route-id="@project.Id" class="btn btn-secondary">Assign users</a>
+				<a asp-action="ReportsList" asp-route-id="@project.Id" class="btn btn-warning">Reported issues</a>
+			</td>       
 		</tr>
 	}
 </table>
-
-    <div>
-	<a asp-action="FindProjects">Filter Projects</a>
-    </div>

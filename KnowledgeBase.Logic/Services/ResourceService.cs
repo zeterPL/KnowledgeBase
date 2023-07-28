@@ -4,6 +4,7 @@ using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.AzureServices;
 using KnowledgeBase.Logic.AzureServices.File;
+using KnowledgeBase.Logic.AzureServices.Interfaces;
 using KnowledgeBase.Logic.Dto.Resources;
 using KnowledgeBase.Logic.Dto.Resources.Interfaces;
 using KnowledgeBase.Logic.ResourceHandlers;

@@ -41,7 +41,7 @@ namespace KnowledgeBase.Web.Controllers.ApiControllers
             }
         }
 
-        [Route("ProjectAPI/UserId={id}")]
+        [Route("ProjectAPI/OwnerId={id}")]
         [HttpGet]
         public IActionResult GetByUser([FromQuery] string userId)
         {

@@ -1,4 +1,4 @@
-﻿using CsvHelper;
+using CsvHelper;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
@@ -21,10 +21,14 @@ public class ProjectController : Controller
     private readonly IUserService _userService;
     private readonly IProjectInterestedUserService _projectInterestedUserService;
     private readonly IReportProjectIssueService _reportService;
+    private readonly IPermissionService _permissionService;
 
-    public ProjectController(IProjectService projectService, ILogger<ProjectController> logger,
-        ITagService tagService, IUserService userService, IProjectInterestedUserService projectInterestedUserService,
-        IReportProjectIssueService reportService)
+    public ProjectController(IProjectService projectService,
+        ILogger<ProjectController> logger,
+        ITagService tagService, IUserService userService,
+        IProjectInterestedUserService projectInterestedUserService,
+        IReportProjectIssueService reportService,
+        IPermissionService permissionService)
     {
         _projectService = projectService;
         _logger = logger;
@@ -32,11 +36,20 @@ public class ProjectController : Controller
         _userService = userService;
         _projectInterestedUserService = projectInterestedUserService;
         _reportService = reportService;
+        _permissionService = permissionService;
     }
 
     public IActionResult Index()
     {
         return View();
+    }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult ListAll()
+    {
+        var projects = _projectService.GetNotOwned(User.GetUserId());
+        return View(projects);
     }
 
     public IActionResult List()
@@ -70,7 +83,7 @@ public class ProjectController : Controller
             _logger.LogInformation("creating project");
             var userId = User.GetUserId();
 
-            project.UserId = userId;
+            project.OwnerId = userId;
 
             ModelState.Clear();
             TryValidateModel(project);
@@ -111,7 +124,7 @@ public class ProjectController : Controller
     [Authorize(Policy = ProjectPermission.CanEditProject)]
     public IActionResult Edit(ProjectDto project)
     {
-        project.UserId = Guid.NewGuid();
+        project.OwnerId = Guid.NewGuid();
         ModelState.Clear();
         TryValidateModel(project);
         if (!ModelState.IsValid)
@@ -293,7 +306,6 @@ public class ProjectController : Controller
 
     public IActionResult FindProjects()
     {
-
         ViewBag.ItemsToSelect = _projectService.GetAllTagsAsSelectItems(User.GetUserId());
         return View();
     }
@@ -305,7 +317,8 @@ public class ProjectController : Controller
         try
         {
             _logger.LogInformation("Project Found");
-            var projects = _projectService.FindProjects(project.Name, project.TagsId, project.DateFrom, project.DateTo, User.GetUserId());
+            var projects = _projectService.FindProjects(project.Name, project.TagsId, project.DateFrom, project.DateTo,
+                User.GetUserId());
             return View(projects);
         }
         catch (Exception ex)
@@ -325,7 +338,7 @@ public class ProjectController : Controller
     public IActionResult AddReport(Guid id)
     {
         var project = _projectService.Get(id);
-        if (project is null) 
+        if (project is null)
             return NotFound();
 
         ReportProjectIssueDto report = new ReportProjectIssueDto();
@@ -364,7 +377,7 @@ public class ProjectController : Controller
     public IActionResult ReportsList(Guid id)
     {
         var reports = _reportService.GetOpenedByProjectId(id);
-        if(reports is null) return NotFound();
+        if (reports is null) return NotFound();
         ViewBag.ProjectId = id;
 
         return View(reports);
@@ -373,8 +386,8 @@ public class ProjectController : Controller
     [HttpGet]
     public IActionResult ArchiveReports(Guid id)
     {
-        var archiveReports = _reportService.GetClosedByProjectId(id);   
-        if(archiveReports is null) return NotFound();   
+        var archiveReports = _reportService.GetClosedByProjectId(id);
+        if (archiveReports is null) return NotFound();
 
         return View(archiveReports);
     }
@@ -398,10 +411,10 @@ public class ProjectController : Controller
     }
 
     [HttpGet]
-    public IActionResult CloseReport(Guid id) 
+    public IActionResult CloseReport(Guid id)
     {
         var report = _reportService.Get(id);
-        if(report is null) 
+        if (report is null)
             return NotFound();
         else
             _reportService.Close(id);
@@ -413,7 +426,7 @@ public class ProjectController : Controller
     public IActionResult ReopenReport(Guid id)
     {
         var report = _reportService.Get(id);
-        if (report is null) 
+        if (report is null)
             return NotFound();
         else
             _reportService.ReOpen(id);
@@ -429,5 +442,35 @@ public class ProjectController : Controller
         _reportService.Delete(id);
 
         return RedirectToAction("ArchiveReports", new { id = report.ProjectId });
+    }
+
+    [HttpGet]
+    [Authorize]
+    [Route("Project/RequestPermission/{projectId:guid}")]
+    public IActionResult RequestPermission(Guid projectId)
+    {
+        var availablePermissions = _projectService.GetAvailableUserProjectPermissions(projectId, User.GetUserId());
+
+        return View(new RequestPermissionDto
+        {
+            AvailablePermissions = availablePermissions,
+        });
+    }
+
+    [HttpPost]
+    [Authorize]
+    [Route("Project/RequestPermission/{projectId:guid}")]
+    public async Task<IActionResult> RequestPermission(Guid projectId, RequestPermissionDto requestPermissionDto)
+    {
+        if (requestPermissionDto.Permissions == null)
+        {
+            return RequestPermission(projectId);
+        }
+
+        requestPermissionDto.ProjectId = projectId;
+        requestPermissionDto.SenderId = User.GetUserId();
+        await _projectService.RequestPermissionsAsync(requestPermissionDto);
+        
+        return RedirectToAction("ListAll");
     }
 }

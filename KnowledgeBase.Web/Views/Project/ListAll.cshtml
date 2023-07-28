@@ -1,0 +1,20 @@
+﻿@using KnowledgeBase.Logic.Dto.Project;
+@model IEnumerable<ProjectDto>
+
+@{
+	var projects = Model;
+}
+
+<div class="container">
+	<ul class="list-group list-group-flush">
+		@foreach (var project in projects)
+		{
+			<li class="list-group-item">
+				<div>Name: @project.Name</div>
+				<div>Description: @project.Description</div>
+				<div>Owner: @project.Owner.FirstName @project.Owner.LastName</div>
+				<a class="btn btn-primary" asp-action="RequestPermission" asp-route-id="@project.Id" role="button">Request permission</a>
+			</li>
+		}
+	</ul>
+</div>

@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using KnowledgeBase.Logic.AzureServices.File;
+using KnowledgeBase.Logic.AzureServices.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace KnowledgeBase.Logic.AzureServices;

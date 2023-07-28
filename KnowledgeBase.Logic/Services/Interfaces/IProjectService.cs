@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Logic.Dto;
+﻿using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Logic.Dto;
 using KnowledgeBase.Logic.Dto.Project;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -13,6 +14,7 @@ public interface IProjectService
     public void SoftDelete(ProjectDto project);
 
     public IEnumerable<ProjectDto> GetAll();
+    public IEnumerable<ProjectDto> GetNotOwned(Guid userId);
 
     public IEnumerable<ProjectDto> GetAllReadableByUser(Guid userId);
 
@@ -26,4 +28,8 @@ public interface IProjectService
     public List<SelectListItem> GetAllTagsAsSelectItems(Guid userId);
     public IEnumerable<ProjectDto>? FindProjects(string? Query, List<Guid>? tagsName, DateTime? dateFrom, DateTime? dateTo, Guid userId);
     public Task<IEnumerable<Guid>> AddProjectsFromFileAsync(CreateProjectsFromFileDto dto, Guid userId);
+
+    public Task RequestPermissionsAsync(RequestPermissionDto requestPermissionDto);
+
+    public IEnumerable<ProjectPermissionName> GetAvailableUserProjectPermissions(Guid projectId, Guid userId);
 }

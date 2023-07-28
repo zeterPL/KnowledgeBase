@@ -1,6 +1,7 @@
 ﻿using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace KnowledgeBase.Data.Repositories;
 
@@ -54,4 +55,22 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
         await GetSet().AddRangeAsync(projects);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<Guid> GetProjectOwnerId(Guid projectId)
+    {
+        var project = await GetSet().SingleAsync(p => p.Id == projectId);
+        return project.OwnerId;
+    }
+
+    public IEnumerable<Project> GetProjects(IEnumerable<Guid> ids)
+    {
+        var projects = GetSet().Where(p => ids.Contains(p.Id) && !p.IsDeleted);
+        return projects;
+    }
+
+    public Project? GetProjectWithOwner(Guid id)
+    {
+        var project = GetSet().Include(p => p.Owner).Single(p => p.Id == id);
+        return project;
+    } 
 }

@@ -1,15 +1,37 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@using KnowledgeBase.Logic.Dto
+﻿@using KnowledgeBase.Logic.Dto
 @{
     List<TagDto> tags = Model;
 }
 <div>
-    <a asp-action="AddTags" asp-route-id="@ViewBag.projectId">Add tags to project</a>
+    <a asp-action="AddTags" asp-route-id="@ViewBag.projectId" class="btn btn-primary">Add tags</a>
 
-    @foreach (TagDto tag in tags)
+    <h4>Project tags</h4>
+    @if(tags.Count == 0 || tags is null)
     {
-        <div>@tag.Name <a asp-action="DeleteTag" asp-route-TagId="@tag.Id" asp-route-ProjectId="@ViewBag.ProjectId" class="btn btn-danger">Delete</a> </div>
+        <label>No tags</label>
     }
+    else
+    {
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (TagDto tag in tags)
+                {
+                    <tr>
+                        <td>#@tag.Name</td>
+                        <td>
+                            <a asp-action="DeleteTag" asp-route-TagId="@tag.Id" asp-route-ProjectId="@ViewBag.ProjectId" class="btn btn-danger">Delete</a>
+                        </td>
+                         
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    
 </div>

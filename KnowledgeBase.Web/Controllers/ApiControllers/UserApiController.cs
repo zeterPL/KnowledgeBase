@@ -29,7 +29,7 @@ namespace KnowledgeBase.Web.Controllers.ApiControllers
             return _userService.GetAllUsers();
         }
 
-        [Route("/UserController/UserId=")]
+        [Route("/UserController/OwnerId=")]
         [HttpGet]
         public IActionResult Get([FromQuery] string id)
         {
@@ -44,7 +44,7 @@ namespace KnowledgeBase.Web.Controllers.ApiControllers
         }
 
 
-        [Route("/UserController/Permissions/UserId={Id}")]
+        [Route("/UserController/Permissions/OwnerId={Id}")]
         [HttpGet]
         public IActionResult GetPermissionsByUser([FromQuery] string Id)
         {

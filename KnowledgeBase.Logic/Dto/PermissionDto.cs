@@ -17,7 +17,6 @@ namespace KnowledgeBase.Logic.Dto
         {
             return new PermissionDto
             {
-                Id = perimission.Id,
                 ProjectId = perimission.ProjectId,
                 UserId = perimission.UserId,
                 PermissionName = perimission.PermissionName,

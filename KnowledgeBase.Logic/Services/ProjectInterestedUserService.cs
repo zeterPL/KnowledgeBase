@@ -45,7 +45,7 @@ namespace KnowledgeBase.Logic.Services
         public ProjectInterestedUserDto? GetInterestedUserByUserIdAndProjectId(Guid userId, Guid projectId)
         {
             var interested = _projectInterestedUserRepository.GetAll().Where(pu => pu.UserId == userId && pu.ProjectId == projectId)
-                .Select(pu => pu.toProjectInterestedUserDto()).FirstOrDefault();
+                .Select(pu => pu.ToProjectInterestedUserDto()).FirstOrDefault();
             if (interested == null) return null;
             return interested;
         }

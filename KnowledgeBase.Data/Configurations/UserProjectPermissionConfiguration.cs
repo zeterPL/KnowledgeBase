@@ -8,7 +8,7 @@ public class UserProjectPermissionConfiguration : IEntityTypeConfiguration<UserP
 {
     public void Configure(EntityTypeBuilder<UserProjectPermission> builder)
     {
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => new { x.ProjectId, x.UserId, x.PermissionName });
 
         builder.Property(x => x.PermissionName)
             .HasConversion<string>();

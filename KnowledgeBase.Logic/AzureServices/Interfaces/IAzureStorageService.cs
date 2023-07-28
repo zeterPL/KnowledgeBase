@@ -1,6 +1,6 @@
 ﻿using KnowledgeBase.Logic.AzureServices.File;
 
-namespace KnowledgeBase.Logic.AzureServices;
+namespace KnowledgeBase.Logic.AzureServices.Interfaces;
 
 public interface IAzureStorageService
 {

@@ -28,6 +28,11 @@ namespace KnowledgeBase.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -36,17 +41,20 @@ namespace KnowledgeBase.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartDate")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)")
+                        .HasDefaultValue(new DateTime(2023, 7, 27, 12, 18, 40, 339, DateTimeKind.Local).AddTicks(8668));
+
                     b.HasKey("Id");
 
-                    b.ToTable("Project");
+                    b.HasIndex("OwnerId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("8f94efce-fa7a-47d8-98e6-08db7ede4d7b"),
-                            IsDeleted = false,
-                            Name = "Deafult project"
-                        });
+                    b.ToTable("Project");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectInterestedUser", b =>
@@ -74,6 +82,43 @@ namespace KnowledgeBase.Data.Migrations
                     b.ToTable("ProjectInterestedUser");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectPermissionRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReceiverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RequestedPermission")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("TimeRequested")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("ProjectPermissionRequest");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
                 {
                     b.Property<Guid>("ProjectId")
@@ -87,6 +132,45 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("ProjectTag");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.ReportProjectIssue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("IssueType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReportProjectIssue");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
@@ -157,19 +241,19 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d1065a82-edb7-4f0c-ba60-f7414c74a5ae"),
+                            Id = new Guid("00000001-0000-0000-0000-000000000000"),
                             Description = "Basic user role",
                             Name = "Basic"
                         },
                         new
                         {
-                            Id = new Guid("391bd4e4-7fac-485b-b716-cb9659a106b8"),
+                            Id = new Guid("00000002-0000-0000-0000-000000000000"),
                             Description = "Admin user role",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("c3a3470a-bfa0-43b5-a960-6fba42901c42"),
+                            Id = new Guid("00000003-0000-0000-0000-000000000000"),
                             Description = "SuperAdmin user role",
                             Name = "SuperAdmin"
                         });
@@ -273,23 +357,16 @@ namespace KnowledgeBase.Data.Migrations
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.UserProjectPermission", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("PermissionName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.Property<string>("PermissionName")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("ProjectId");
+                    b.HasKey("ProjectId", "UserId", "PermissionName");
 
                     b.HasIndex("UserId");
 
@@ -507,6 +584,17 @@ namespace KnowledgeBase.Data.Migrations
                     b.HasDiscriminator().HasValue("NoteResource");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.Project", b =>
+                {
+                    b.HasOne("KnowledgeBase.Data.Models.User", "Owner")
+                        .WithMany("ProjectsOwned")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectInterestedUser", b =>
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
@@ -526,6 +614,33 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectPermissionRequest", b =>
+                {
+                    b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
+                        .WithMany("ProjectPermissionRequests")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KnowledgeBase.Data.Models.User", "Receiver")
+                        .WithMany("ProjectPermissionRequestsReceived")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("KnowledgeBase.Data.Models.User", "Sender")
+                        .WithMany("ProjectPermissionRequestsSended")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("KnowledgeBase.Data.Models.ProjectTag", b =>
                 {
                     b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
@@ -543,6 +658,25 @@ namespace KnowledgeBase.Data.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("KnowledgeBase.Data.Models.ReportProjectIssue", b =>
+                {
+                    b.HasOne("KnowledgeBase.Data.Models.Project", "Project")
+                        .WithMany("ReportedIssues")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KnowledgeBase.Data.Models.User", "User")
+                        .WithMany("ReportProjectsIssues")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Resource", b =>
@@ -666,7 +800,11 @@ namespace KnowledgeBase.Data.Migrations
                 {
                     b.Navigation("InterestedUsers");
 
+                    b.Navigation("ProjectPermissionRequests");
+
                     b.Navigation("ProjectTags");
+
+                    b.Navigation("ReportedIssues");
 
                     b.Navigation("Resources");
 
@@ -692,7 +830,15 @@ namespace KnowledgeBase.Data.Migrations
                 {
                     b.Navigation("ProjectInteresteds");
 
+                    b.Navigation("ProjectPermissionRequestsReceived");
+
+                    b.Navigation("ProjectPermissionRequestsSended");
+
+                    b.Navigation("ProjectsOwned");
+
                     b.Navigation("ProjectsPermissions");
+
+                    b.Navigation("ReportProjectsIssues");
 
                     b.Navigation("ResourcePermissions");
 

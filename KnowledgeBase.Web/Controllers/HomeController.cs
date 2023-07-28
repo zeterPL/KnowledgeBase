@@ -9,10 +9,16 @@ namespace KnowledgeBase.Web.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            if (!User.Identity.IsAuthenticated || User is null)
+                return View();
+            else return RedirectToAction("MainPage");
         }
 
-
+        [Authorize]
+        public IActionResult MainPage()
+        {
+            return View();
+        }
 
         [Authorize(Policy = UserRolesTypes.SuperAdmin)]
         public IActionResult AdminPanel()

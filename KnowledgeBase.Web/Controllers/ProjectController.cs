@@ -151,6 +151,8 @@ public class ProjectController : Controller
             ProjectDto? project = _projectService.Get(id);
             var openedIssuesCount = _reportService.GetOpenedByProjectId(id).Count;
             ViewBag.Count = openedIssuesCount;
+            var tags = _tagService.GetAllByProjectId(id);
+            ViewBag.Tags = tags;    
 
             return View(project);
         }

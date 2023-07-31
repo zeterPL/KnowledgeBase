@@ -6,8 +6,15 @@ public class Project : IDeletableEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
+    public DateTime StartDate { get; set; }
     public virtual ICollection<Resource> Resources { get; set; }
     public bool IsDeleted { get; set; }
     public virtual ICollection<UserProjectPermission> UsersPermissions { get; set; }
     public virtual ICollection<ProjectTag> ProjectTags { get; set; }
+    public virtual ICollection<ProjectInterestedUser> InterestedUsers { get; set; }
+    public virtual ICollection<ReportProjectIssue> ReportedIssues { get; set; }
+    public Guid OwnerId { get; set; }
+    public virtual User Owner { get; set; }
+    public ICollection<ProjectPermissionRequest> ProjectPermissionRequests { get; set; }
 }

@@ -19,6 +19,11 @@ namespace KnowledgeBase.Data.Repositories
             return _context.Set<ProjectTag>().Where(pt => pt.ProjectId == projectId).ToList();
         }
 
+        public IList<ProjectTag> GetByTagtId(Guid TagId)
+        {
+            return _context.Set<ProjectTag>().Where(pt => pt.TagId == TagId).ToList();
+        }
+
         public void RemoveByTagAndProjectId(Guid tagId, Guid projectId)
         {
             ProjectTag pt = _context.Set<ProjectTag>().Where(pt => pt.ProjectId == projectId && pt.TagId == tagId).FirstOrDefault();

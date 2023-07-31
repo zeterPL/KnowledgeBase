@@ -1,2 +1,56 @@
-﻿<a asp-action="List">list</a>
-<a asp-action="Create">create</a>
+﻿<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">List</h5>
+                <p class="card-text">View all projects</p>
+                <a asp-action="List" class="btn btn-primary">Show list</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Create</h5>
+                <p class="card-text">Create new project</p>
+                <a asp-action="Create" class="btn btn-primary">Create</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">CSV</h5>
+                <p class="card-text">Import projects from CSV file</p>
+                <a asp-action="CreateProjectsFromCsv" class="btn btn-primary">Import</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Web API</h5>
+                <p class="card-text">Open Swagger UI</p>
+                <a asp-controller="Swagger" asp-action="Index" class="btn btn-primary">Web API</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">List all projects</h5>
+                <p class="card-text">List all projects</p>
+                <a asp-action="ListAll" class="btn btn-primary">Show list</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Projects Achive</h5>
+                <p class="card-text">Show archived projects</p>
+                <a asp-action="ProjectsArchive" class="btn btn-primary">Show archive</a>
+            </div>
+        </div>
+    </div>
+</div>

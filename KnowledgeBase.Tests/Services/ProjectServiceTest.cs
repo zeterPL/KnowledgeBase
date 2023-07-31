@@ -3,7 +3,7 @@ using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
 using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
-using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Services;
 using KnowledgeBase.Logic.Services.Interfaces;
 using KnowledgeBase.Web.Controllers;
@@ -19,6 +19,7 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KnowledgeBase.Logic.AzureServices.Interfaces;
 using Xunit;
 
 namespace KnowledgeBase.Tests.Services
@@ -32,6 +33,8 @@ namespace KnowledgeBase.Tests.Services
 		private readonly Mock<IRoleRepository> _roleRepository;
 		private readonly Mock<ITagRepository> _tagRepository;
 		private readonly Mock<IProjectTagRepository> _projectTagRepository;
+		private readonly Mock<IAzureServiceBusHandler> _azureServiceBusHandler;
+		private readonly Mock<IPermissionRequestRepository> _permissionRequestRepository;
 		private readonly IProjectService _projectService;
 
 		public ProjectServiceTest()
@@ -43,10 +46,13 @@ namespace KnowledgeBase.Tests.Services
 			_roleRepository = new Mock<IRoleRepository>();
 			_tagRepository = new Mock<ITagRepository>();
 			_projectTagRepository = new Mock<IProjectTagRepository>();
+			_azureServiceBusHandler = new Mock<IAzureServiceBusHandler>();
+			_permissionRequestRepository = new Mock<IPermissionRequestRepository>();
 
 			_projectService = new ProjectService(_projectRepository.Object, _permissionRepository.Object,
 				_userRepository.Object, _roleRepository.Object,
-				_mapper.Object, _tagRepository.Object, _projectTagRepository.Object);
+				_mapper.Object, _tagRepository.Object, _projectTagRepository.Object,
+				_azureServiceBusHandler.Object, _permissionRequestRepository.Object);
 		}
 
 		[Fact]

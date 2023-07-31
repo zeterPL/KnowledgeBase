@@ -18,9 +18,30 @@ public static class PermissionsConfiguration
                 policy.Requirements.Add(new ProjectPermissionRequirement(ProjectPermissionName.ReadProject)));
             options.AddPolicy(ProjectPermission.CanDeleteProject, policy =>
                 policy.Requirements.Add(new ProjectPermissionRequirement(ProjectPermissionName.DeleteProject)));
-        });
 
-        services.AddScoped<IAuthorizationHandler, ProjectPermissionHandler>();
+            options.AddPolicy(ResourcePermission.CanReadResource, policy =>
+               policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanRead)));
+            options.AddPolicy(ResourcePermission.CanEditResource, policy =>
+               policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanEdit)));
+            options.AddPolicy(ResourcePermission.CanSaveResource, policy =>
+               policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanSave)));
+            options.AddPolicy(ResourcePermission.CanDeleteResource, policy =>
+                policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanDelete)));
+            options.AddPolicy(ResourcePermission.CanDownloadResource, policy =>
+                policy.Requirements.Add(new ResourcePermissionRequirement(ResourcePermissionName.CanDownload)));
+
+            options.AddPolicy(UserRolesTypes.SuperAdmin, policy =>
+                policy.Requirements.Add(new UserRoleRequirement(UserRoles.SuperAdmin)));
+            options.AddPolicy(UserRolesTypes.Admin, policy =>
+                policy.Requirements.Add(new UserRoleRequirement(UserRoles.Admin)));
+            options.AddPolicy(UserRolesTypes.Basic, policy =>
+                policy.Requirements.Add(new UserRoleRequirement(UserRoles.Basic)));
+       
+    });
+
+        services.AddTransient<IAuthorizationHandler, ProjectPermissionHandler>();
+        services.AddTransient<IAuthorizationHandler, ResourcePermissionHandler>();
+        services.AddTransient<IAuthorizationHandler, UserRoleHandler>();
 
         return services;
     }

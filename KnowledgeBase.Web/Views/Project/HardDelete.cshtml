@@ -1,0 +1,18 @@
+﻿@model KnowledgeBase.Logic.Dto.Project.ProjectDto
+
+@using (Html.BeginForm("HardDelete", "Project", FormMethod.Post, new { @class = "form" }))
+{
+    <div>
+        <h2>Are you sure you want to delete project?</h2>
+        <h5>Project id: @Model.Id</h5>       
+        <p>Deletion cannot be undone.</p>
+       
+        @Html.HiddenFor(project => project.Id)
+        @Html.HiddenFor(project => project.Name)
+        @Html.HiddenFor(project => project.Description)
+        @Html.HiddenFor(project => project.StartDate)
+
+
+        <input type="submit" value="Delete" class="btn btn-danger">
+    </div>
+}

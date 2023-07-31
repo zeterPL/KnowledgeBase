@@ -1,0 +1,17 @@
+﻿@using KnowledgeBase.Logic.Dto;
+@model KnowledgeBase.Logic.Dto.ProjectInterestedUserDto;
+@{
+    ProjectInterestedUserDto projectInterested = Model; 
+}
+@using (Html.BeginForm("EditInterestedUser", "Project", FormMethod.Post))
+{
+    @Html.LabelFor(u => u.Description)
+    @Html.EditorFor(u => u.Description)
+    @Html.ValidationMessageFor(u => u.Description)
+
+    @Html.HiddenFor(u => u.Id, new { value = ViewBag.Id })
+    @Html.HiddenFor(u => u.UserId, new { value = ViewBag.UserId })
+    @Html.HiddenFor(u => u.ProjectId, new { value = ViewBag.ProjectId })
+
+    <input type="submit"/>
+}

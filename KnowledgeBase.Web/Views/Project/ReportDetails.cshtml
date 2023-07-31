@@ -1,0 +1,53 @@
+﻿@using KnowledgeBase.Logic.Dto;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ReportProjectIssueDto report = Model;
+}
+<div>
+    <h1>@report.Title</h1>
+    <h4>#Id: @report.Id</h4>
+    <hr/>
+    <label><b>Status: </b></label>
+    @if(report.IsOpen)
+    {
+        <label style="color: green">Open</label>
+    }
+    else
+    {
+        <label style="color: red">Closed</label>
+    }
+    <div><b>Create date:</b> @report.CreatedDate</div>
+    @if(report.IssueType == KnowledgeBase.Data.Models.Enums.ReportProjectIssuesTypes.Info)
+    {
+        <div class="text-info"><b>@report.IssueType</b></div>
+    }
+    else if(report.IssueType == KnowledgeBase.Data.Models.Enums.ReportProjectIssuesTypes.Help)
+    {
+        <div class="text-secondary"><b>@report.IssueType</b></div>
+    }
+    else if(report.IssueType == KnowledgeBase.Data.Models.Enums.ReportProjectIssuesTypes.BugReport)
+    {
+        <div class="text-danger"><b>@report.IssueType</b></div>
+    }
+    <div><b>Reporting user: </b> @ViewBag.UserFirstName @ViewBag.UserLastName #Id: @ViewBag.UserId </div>
+    <hr/>
+    <div>
+        <div><b>Description: </b></div>
+        @report.Description
+    </div>
+
+    @if(report.IsOpen)
+    {
+        <a asp-action="CloseReport" asp-route-id="@report.Id" class="btn btn-danger">Close</a>
+    }
+    else
+    {
+        <a asp-action="ReopenReport" asp-route-id="@report.Id" class="btn btn-primary">Reopen</a>
+    }
+
+</div>
+
+
+

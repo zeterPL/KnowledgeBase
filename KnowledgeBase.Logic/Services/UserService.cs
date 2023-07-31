@@ -1,9 +1,14 @@
-﻿using KnowledgeBase.Data.Models;
+﻿using AutoMapper;
+using KnowledgeBase.Data.Models;
 using KnowledgeBase.Data.Models.Enums;
+using KnowledgeBase.Data.Repositories;
 using KnowledgeBase.Data.Repositories.Interfaces;
 using KnowledgeBase.Logic.Dto;
+using KnowledgeBase.Logic.Dto.Project;
 using KnowledgeBase.Logic.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 
 namespace KnowledgeBase.Logic.Services
 {
@@ -13,14 +18,19 @@ namespace KnowledgeBase.Logic.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IUserProjectPermissionRepository _permissionRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly IProjectInterestedUserRepository _projectInterestedUserRepository;
+        private readonly IMapper _mapper;
 
         public UserService(IUserRepository userRepository, IProjectRepository projectRepository,
-            IUserProjectPermissionRepository permissionRepository, IRoleRepository roleRepository)
+            IUserProjectPermissionRepository permissionRepository, IRoleRepository roleRepository,
+            IProjectInterestedUserRepository projectInterestedUserRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _projectRepository = projectRepository;
             _permissionRepository = permissionRepository;
             _roleRepository = roleRepository;
+            _projectInterestedUserRepository = projectInterestedUserRepository;
+            _mapper = mapper;
         }
 
         public void AddPermisionsToSpecificProject(Guid projectId, Guid userId)
@@ -77,8 +87,7 @@ namespace KnowledgeBase.Logic.Services
         }
 
         public Guid AddUser(UserDto userDto)
-        {
-            var userRole = _roleRepository.Get(userDto.RoleId);
+        {         
             User user = new User
             {
                 Id = userDto.Id,
@@ -166,19 +175,46 @@ namespace KnowledgeBase.Logic.Services
         public IList<PermissionDto> GetAllUserPermissions(Guid id)
         {
             var permissions = _userRepository.GetAllUserPermissionsByUserId(id);
-            return permissions.Select(perm => perm.ToPermissionDto()).ToList();
+            if (permissions is null) return null;
+            else return permissions.Select(perm => perm.ToPermissionDto()).ToList();
         }
 
         public IEnumerable<UserDto> GetAllUsers()
         {
             var users = _userRepository.GetAll();
-            return users.Select(u => u.ToUserDto());
+            if (users is null) return null;
+            else return users.Select(u => u.ToUserDto());
         }
 
         public UserDto GetById(Guid id)
         {
-            var user = _userRepository.Get(id).ToUserDto();
-            return user;
+            var user = _userRepository.Get(id);
+            if (user is null) return null;
+            return user.ToUserDto();
+        }
+
+        public IList<UserDto> GetInterestedUsersByProjectId(Guid projectId)
+        {
+            return _projectInterestedUserRepository.GetAll().Where(pu => pu.ProjectId == projectId)
+                .Select(pu => pu.User.ToUserDto()).ToList();
+        }
+
+        public IList<UserDto> GetUsersNotInterestedInProject(Guid projectId)
+        {
+            var interesteUsersIds = _projectInterestedUserRepository.GetAll()
+                .Where(pu => pu.ProjectId == projectId).Select(pu => pu.UserId);
+            var notInterestedUsers = _userRepository.GetAll().Where(u => !interesteUsersIds.Contains(u.Id))
+                .Select(u => u.ToUserDto()).ToList();    
+            return notInterestedUsers;
+        }
+
+        public IList<ProjectDto>? GetInterestedProjectsByUserId(Guid userId)
+        {
+            var interestedByUser = _projectInterestedUserRepository.GetAll()
+                .Where(x => x.UserId == userId).Select(x => x.ProjectId);
+            var result = _projectRepository.GetAll().Where(x => interestedByUser.Contains(x.Id))
+                .Select(x => _mapper.Map<ProjectDto>(x)).ToList();
+            return result;
         }
 
         public bool SoftDelete(UserDto user)
@@ -198,5 +234,6 @@ namespace KnowledgeBase.Logic.Services
             _userRepository.Update(user);
             return user.ToUserDto();
         }
+
     }
 }

@@ -39,12 +39,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Configurations\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <ProjectReference Include="..\KnowledgeBase.Shared\KnowledgeBase.Shared.csproj" />
   </ItemGroup>
 
 

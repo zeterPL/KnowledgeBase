@@ -7,6 +7,10 @@
     <UserSecretsId>aspnet-KnowledgeBase.Web-331a7281-8174-4e7e-8da1-b63a5fbfa533</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="C:\Users\PiotrDąbrowski\.nuget\packages\nlog.config\4.7.15\contentFiles\any\any\NLog.config" />
   </ItemGroup>

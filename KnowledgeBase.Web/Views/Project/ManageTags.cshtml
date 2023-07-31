@@ -1,0 +1,37 @@
+﻿@using KnowledgeBase.Logic.Dto
+@{
+    List<TagDto> tags = Model;
+}
+<div>
+    <a asp-action="AddTags" asp-route-id="@ViewBag.projectId" class="btn btn-primary">Add tags</a>
+
+    <h4>Project tags</h4>
+    @if(tags.Count == 0 || tags is null)
+    {
+        <label>No tags</label>
+    }
+    else
+    {
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (TagDto tag in tags)
+                {
+                    <tr>
+                        <td>#@tag.Name</td>
+                        <td>
+                            <a asp-action="DeleteTag" asp-route-TagId="@tag.Id" asp-route-ProjectId="@ViewBag.ProjectId" class="btn btn-danger">Delete</a>
+                        </td>
+                         
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    
+</div>

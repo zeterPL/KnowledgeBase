@@ -1,32 +1,29 @@
-﻿using KnowledgeBase.Web.Models;
+﻿using KnowledgeBase.Web.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace KnowledgeBase.Web.Controllers
 {
+    
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
-            return View();
+            if (!User.Identity.IsAuthenticated || User is null)
+                return View();
+            else return RedirectToAction("MainPage");
         }
 
-        public IActionResult Privacy()
+        [Authorize]
+        public IActionResult MainPage()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [Authorize(Policy = UserRolesTypes.SuperAdmin)]
+        public IActionResult AdminPanel()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
     }
 }

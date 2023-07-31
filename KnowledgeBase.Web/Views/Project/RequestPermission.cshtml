@@ -1,0 +1,22 @@
+﻿@model KnowledgeBase.Logic.Dto.Project.RequestPermissionDto;
+
+@{
+    var requestPermission = Model;
+}
+
+@using (Html.BeginForm("RequestPermission", "Project", FormMethod.Post))
+{
+    <div class="mb-3">
+        <h4>Available permissions</h4>
+        @foreach (var permission in requestPermission.AvailablePermissions)
+        {
+            <div>
+                <input type="checkbox" name="Permissions" value="@permission" id="@permission">
+                <label for="@permission">@permission</label>
+            </div>
+        }
+    </div>
+    <div class="mb-3">
+        <input type="submit" class="btn btn-primary" value="send"/>
+    </div>
+}

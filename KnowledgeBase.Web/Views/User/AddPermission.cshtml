@@ -1,0 +1,15 @@
+﻿@model KnowledgeBase.Logic.Dto.PermissionDto
+
+@{
+}
+
+@using (Html.BeginForm("AddPermission", "User", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.DropDownList("Permissions" ,@ViewBag.PermList as SelectList, "--Select Item--")
+    @Html.HiddenFor(x => x.ProjectId, new { id = "ProjectId" })
+    @Html.HiddenFor(x => x.UserId, new { id = "OwnerId" })
+
+    <input type="submit"/>
+
+}

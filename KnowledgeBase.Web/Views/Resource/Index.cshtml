@@ -1,0 +1,62 @@
+﻿@model IEnumerable<KnowledgeBase.Logic.Dto.Resources.Interfaces.IResourceDto>
+@{
+    var resources = Model;
+}
+<a asp-action="CreateAzure">Create azure</a>
+<a asp-action="CreateNote">Create note</a>
+<a asp-action="CreateCredentials">Create credentials</a>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(r => r.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(r => r.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(r => r.Category)
+        </th>
+        <th>
+            @Html.DisplayNameFor(r => r.ProjectId)
+        </th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var resource in resources)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => resource.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => resource.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => resource.Category)
+            </td>
+            <td>
+                <a asp-action="Details" asp-controller="Project" asp-route-id="@resource.ProjectId">@resource.ProjectId</a>
+            </td>
+            <td>
+            @if(resource.Category == KnowledgeBase.Data.Models.Enums.ResourceCategory.Documentation ||
+                resource.Category == KnowledgeBase.Data.Models.Enums.ResourceCategory.Document)
+            {
+                <a asp-action="EditAzure" asp-route-id="@resource.Id">edit</a>
+                <a asp-action="Download" asp-route-id="@resource.Id">download</a>
+            }
+            @if(resource.Category == KnowledgeBase.Data.Models.Enums.ResourceCategory.Note)
+            {
+                <a asp-action="EditNote" asp-route-id="@resource.Id">edit</a>
+            }
+            @if (resource.Category == KnowledgeBase.Data.Models.Enums.ResourceCategory.Credentials)
+            {
+                <a asp-action="EditCredentials" asp-route-id="@resource.Id">edit</a>
+            }
+            <a asp-action="Delete" asp-route-id="@resource.Id">delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

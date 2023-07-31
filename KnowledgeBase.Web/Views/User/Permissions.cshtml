@@ -1,0 +1,20 @@
+﻿@using KnowledgeBase.Logic.Dto;
+@using KnowledgeBase.Logic.ViewModels;
+
+@{
+    List<PermissionViewModel> permissions = Model;
+}
+
+@foreach(PermissionViewModel permission in permissions)
+{
+    <div> 
+        <label>@permission.ProjectName</label> 
+
+        @foreach(PermissionDto permissionDto in permission.Permissions)
+        {
+            <label> @permissionDto.PermissionName </label>
+        }
+        <a asp-action="ManagePermission" asp-route-projectId="@permission.ProjectId" asp-route-userId="@ViewBag.UserId" class="btn btn-primary">Manage</a>
+
+    </div>
+}

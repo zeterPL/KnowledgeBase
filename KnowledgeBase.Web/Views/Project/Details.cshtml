@@ -1,0 +1,34 @@
+﻿@using KnowledgeBase.Logic.Dto.Project;
+@using KnowledgeBase.Data.Models;
+@using KnowledgeBase.Logic.Dto
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ProjectDto;
+@{
+    ProjectDto project = Model;
+}
+
+<div>
+    <h1>@project.Name</h1>
+    <h4>#Id: @project.Id</h4>
+    <label><b>Start date:</b> @project.StartDate</label>
+    <br/>
+    <a asp-action="ReportsList" asp-route-id="@project.Id">Open issues for this project: (@ViewBag.Count)</a> 
+    <div style="margin-top: 5px;">
+        <label><b>Tags:</b></label>
+        @foreach (Tag tag in ViewBag.Tags)
+        {
+            <span class="rounded-pill" 
+            style="color: white; padding: 5px; background-color: orangered">
+            #@tag.Name
+            </span>
+        }
+    </div>
+   
+    <hr />
+
+    <label><b>Description</b></label>
+    <div>@project.Description</div>
+    
+    <a asp-action="Delete" asp-route-id="@project.Id" class="btn btn-danger">Delete</a>
+    <a asp-action="ManageTags" asp-route-id="@project.Id" class="btn btn-primary">Manage tags</a>
+</div>

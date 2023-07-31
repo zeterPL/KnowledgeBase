@@ -1,0 +1,33 @@
+﻿@using KnowledgeBase.Logic.Dto
+@model IEnumerable<UserDto>
+@{
+    IEnumerable<UserDto> users = Model;
+}
+
+<a asp-action="Create" class="btn btn-primary">Add new user</a>
+
+<table class="table">
+    <thead>
+        <tr class="table-primary">
+            <th scope="col">First name</th>
+            <th scope="col">Last name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(UserDto user in users)
+        {
+            <tr>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Email</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-primary">Details</a>
+                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }       
+    </tbody>
+</table>

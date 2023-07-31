@@ -11,10 +11,13 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    // Add services to the container.
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    builder.Services.AddDbContext<KnowledgeDbContext>(options => options.UseSqlServer(connectionString));
-    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+	//AZURE CONNECTION
+	var connectionString = builder.Configuration.GetConnectionString("AzureConnection");
+
+	builder.Services.AddDbContext<KnowledgeDbContext>(options =>
+		options.UseSqlServer(connectionString));
+
+	builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
     builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<KnowledgeDbContext>();

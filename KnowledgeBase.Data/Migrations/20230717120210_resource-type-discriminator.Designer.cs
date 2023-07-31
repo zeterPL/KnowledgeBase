@@ -95,7 +95,7 @@ namespace KnowledgeBase.Data.Migrations
 
                     b.HasDiscriminator<string>("ResourceType").HasValue("Resource");
 
-                    b.UseTphMappingStrategy();
+                   
                 });
 
             modelBuilder.Entity("KnowledgeBase.Data.Models.Role", b =>
